@@ -1,0 +1,54 @@
+<div class="demo-step-content">
+    <h3 class="title is-4"><span class="tag is-success is-medium">2. Decomposition (Part 2)</span> The second-round decomposition</h3>
+    <p class="demo-step-desc">A further decomposition: the two lemmas are decomposed into four base lemmas (with sorry); the two lemmas are then proved below.</p>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">The base lemmas (with sorry)</h4>
+        <pre class="demo-code"><code class="language-lean">lemma length_filterlist_eq_count (x : Int) (nums : List Int) :
+  (filterlist x nums).length = nums.count x := by sorry
+
+/-- There exists an element of `nums` that occurs exactly once. -/
+lemma exists_count_eq_one (nums : List Int) (h_precond : FindSingleNumber_precond nums) :
+  ∃ x ∈ nums, nums.count x = 1 := by sorry
+
+/-- The recursive scanner returns a value whose `filterlist`-length is `1`. -/
+lemma findUnique_returns_length_one (nums : List Int) :
+  ∀ remaining : List Int,
+    (∃ u ∈ remaining, (filterlist u nums).length = 1) →
+    (filterlist (FindSingleNumber.findUnique (nums := nums) remaining) nums).length = 1 := by sorry
+
+lemma precond_unique_count_one (nums : List Int) (h_precond : FindSingleNumber_precond nums)
+  {a b : Int} (ha : a ∈ nums) (hb : b ∈ nums) (hca : nums.count a = 1) (hcb : nums.count b = 1) :
+  a = b := by sorry</code></pre>
+    </div>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">Lemmas that use the base lemmas (with proofs)</h4>
+        <pre class="demo-code"><code class="language-lean">/-- The algorithm returns a value that occurs exactly once. -/
+lemma FindSingleNumber_result_characterization (nums : List Int) (h_precond : FindSingleNumber_precond nums) :
+  nums.count (FindSingleNumber nums h_precond) = 1 := by
+  classical
+  rcases exists_count_eq_one nums h_precond with ⟨u, hu_mem, hu_count⟩
+  have hu_len : (filterlist u nums).length = 1 := by simp [length_filterlist_eq_count, hu_count]
+  have hlen : (filterlist (FindSingleNumber nums h_precond) nums).length = 1 :=
+    by simpa [FindSingleNumber] using findUnique_returns_length_one nums nums ⟨u, hu_mem, hu_len⟩
+  simpa [length_filterlist_eq_count] using hlen
+
+lemma count_eq_two_of_ne_of_count_eq_one
+  (nums : List Int) (h_precond : FindSingleNumber_precond nums)
+  (r x : Int) (hx : x ∈ nums) (hcr : nums.count r = 1) (hxr : x ≠ r) :
+  nums.count x = 2 := by
+  classical
+  unfold FindSingleNumber_precond at h_precond; rcases h_precond with ⟨hall, huniq⟩
+  have precond_counts (x' : Int) (hx' : x' ∈ nums) : nums.count x' = 1 ∨ nums.count x' = 2 := by
+    have hall' : ∀ n ∈ (nums.map fun y => nums.count y), (n = 1 ∨ n = 2) := by simpa [List.all_eq_true] using hall
+    exact hall' (nums.count x') (List.mem_map.mpr ⟨x', hx', rfl⟩)
+  have mem_of_one (a : Int) (h : nums.count a = 1) : a ∈ nums := by
+    by_contra hmem; have : nums.count a = 0 := by simp [List.count_eq_zero, hmem]
+    exact Nat.zero_ne_one (by simpa [this] using h)
+  have h_precond' : FindSingleNumber_precond nums := by unfold FindSingleNumber_precond; exact ⟨hall, huniq⟩
+  cases precond_counts x hx with
+  | inl h1 => exact (hxr (precond_unique_count_one nums h_precond' hx (mem_of_one r hcr) h1 hcr)).elim
+  | inr h2 => exact h2</code></pre>
+    </div>
+</div>

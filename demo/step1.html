@@ -1,0 +1,48 @@
+<div class="demo-step-content">
+    <h3 class="title is-4"><span class="tag is-info is-medium">1. Problem</span> Lean-format Specification and Implementation</h3>
+    <p class="demo-step-desc">Task: prove <code>FindSingleNumber_spec_satisfied</code>, i.e., under <code>FindSingleNumber_precond</code>, the result of <code>FindSingleNumber</code> satisfies <code>FindSingleNumber_postcond</code>.</p>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">Specification (precondition, postcondition, target theorem with sorry)</h4>
+        <pre class="demo-code"><code class="language-lean">-- Precondition: every element appears 1 or 2 times; exactly one appears once
+def FindSingleNumber_precond (nums : List Int) : Prop :=
+  let numsCount := nums.map (fun x => nums.count x)
+  numsCount.all (fun count => count = 1 ∨ count = 2) ∧ numsCount.count 1 = 1
+
+-- Postcondition: result is the unique element; others appear twice
+def FindSingleNumber_postcond (nums : List Int) (result: Int) (h_precond : FindSingleNumber_precond (nums)) : Prop :=
+  (nums.length > 0) ∧
+  ((filterlist result nums).length = 1) ∧
+  (∀ (x : Int), x ∈ nums → (x = result) ∨ ((filterlist x nums).length = 2))
+
+-- Top-level verification goal (not yet proved)
+theorem FindSingleNumber_spec_satisfied (nums: List Int) (h_precond : FindSingleNumber_precond nums) :
+  FindSingleNumber_postcond nums (FindSingleNumber nums h_precond) h_precond := by sorry</code></pre>
+    </div>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">Code (implementation)</h4>
+        <pre class="demo-code"><code class="language-lean">-- Implementation: find the unique element that appears exactly once
+def filterlist (x : Int) (nums : List Int) : List Int :=
+  let rec aux (lst : List Int) : List Int :=
+    match lst with
+    | []      => []
+    | y :: ys => if y = x then y :: aux ys else aux ys
+  aux nums
+
+def FindSingleNumber (nums : List Int) (h_precond : FindSingleNumber_precond (nums)) : Int :=
+  let rec findUnique (remaining : List Int) : Int :=
+      match remaining with
+      | [] => 0
+      | x :: xs =>
+        let filtered : List Int :=
+          filterlist x nums
+        let count : Nat :=
+          filtered.length
+        if count = 1 then
+          x
+        else
+          findUnique xs
+  findUnique nums</code></pre>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="demo-step-content">
+    <h3 class="title is-4"><span class="tag is-warning is-medium">3. Completion (Part 1)</span> Proofs of the base lemmas (1/2)</h3>
+    <p class="demo-step-desc">Completion: the four base lemmas (that were with sorry) are now proved. Here, the first three.</p>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">Base lemmas (with full proofs)</h4>
+        <pre class="demo-code"><code class="language-lean">lemma length_filterlist_eq_count (x : Int) (nums : List Int) :
+  (filterlist x nums).length = nums.count x := by
+  classical
+  have aux_eq : ∀ lst : List Int, filterlist.aux x lst = lst.filter (fun y => y = x) := by
+    intro lst; induction lst with
+    | nil => simp [filterlist.aux]
+    | cons y ys ih => by_cases h : y = x &lt;;&gt; simp [filterlist.aux, ih, h]
+  have eq_filter : filterlist x nums = nums.filter (fun y => y = x) := by simp [filterlist, aux_eq]
+  simpa [eq_filter] using (List.count_eq_length_filter (l := nums) (a := x)).symm
+
+/-- There exists an element of `nums` that occurs exactly once. -/
+lemma exists_count_eq_one (nums : List Int) (h_precond : FindSingleNumber_precond nums) :
+  ∃ x ∈ nums, nums.count x = 1 := by
+  classical
+  unfold FindSingleNumber_precond at h_precond; rcases h_precond with ⟨_hall, huniq⟩
+  have hmem : 1 ∈ (nums.map (fun x => nums.count x)) := by
+    by_contra hnot
+    have : (nums.map (fun x => nums.count x)).count 1 = 0 := by simp [List.count_eq_zero, hnot]
+    exact Nat.one_ne_zero (by simpa [this] using huniq)
+  rcases List.mem_map.mp hmem with ⟨x, hx, hxcount⟩
+  exact ⟨x, hx, by simpa using hxcount⟩
+
+/-- The recursive scanner returns a value whose `filterlist`-length is `1`. -/
+lemma findUnique_returns_length_one (nums : List Int) :
+  ∀ remaining : List Int,
+    (∃ u ∈ remaining, (filterlist u nums).length = 1) →
+    (filterlist (FindSingleNumber.findUnique (nums := nums) remaining) nums).length = 1 := by
+  classical
+  intro remaining; induction remaining with
+  | nil => intro hex; rcases hex with ⟨u, hu, _⟩; cases hu
+  | cons x xs ih =>
+    intro hex
+    simp [FindSingleNumber.findUnique]
+    by_cases hx1 : (filterlist x nums).length = 1
+    · simp [hx1]
+    · have hex' : ∃ u ∈ xs, (filterlist u nums).length = 1 := by
+        rcases hex with ⟨u, hu_mem, hu_len⟩; simp at hu_mem
+        cases hu_mem with
+        | inl hu_eq => subst hu_eq; exact False.elim (hx1 hu_len)
+        | inr hu_mem_xs => exact ⟨u, hu_mem_xs, hu_len⟩
+      simpa [hx1] using ih hex'</code></pre>
+    </div>
+</div>

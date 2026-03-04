@@ -1,0 +1,36 @@
+<div class="demo-step-content">
+    <h3 class="title is-4"><span class="tag is-success is-medium">2. Decomposition (Part 1)</span> The first-round decomposition</h3>
+    <p class="demo-step-desc">The main theorem is decomposed into two lemmas (shown with sorry). The main theorem is then proved using these lemmas.</p>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">The decomposed lemmas (with sorry)</h4>
+        <pre class="demo-code"><code class="language-lean">/-- The algorithm returns a value that occurs exactly once. -/
+lemma FindSingleNumber_result_characterization (nums : List Int) (h_precond : FindSingleNumber_precond nums) :
+  nums.count (FindSingleNumber nums h_precond) = 1 := by sorry
+
+/-- Under precondition: if r has count 1 and x ≠ r, then x has count 2 -/
+lemma count_eq_two_of_ne_of_count_eq_one
+  (nums : List Int) (h_precond : FindSingleNumber_precond nums)
+  (r x : Int) (hx : x ∈ nums) (hcr : nums.count r = 1) (hxr : x ≠ r) :
+  nums.count x = 2 := by sorry</code></pre>
+    </div>
+
+    <div class="demo-lemma-block">
+        <h4 class="title is-5 demo-lemma-title">Main theorem: specification satisfied (proved using the decomposed lemmas)</h4>
+        <pre class="demo-code"><code class="language-lean">theorem FindSingleNumber_spec_satisfied (nums : List Int) (h_precond : FindSingleNumber_precond nums) :
+  FindSingleNumber_postcond nums (FindSingleNumber nums h_precond) h_precond := by
+  classical
+  constructor
+  · by_contra h0
+    have hnil : nums = [] := by simpa using List.length_eq_zero_iff.mp (Nat.eq_zero_of_not_pos h0)
+    subst hnil; simp [FindSingleNumber_precond] at h_precond
+  constructor
+  · simpa [length_filterlist_eq_count] using FindSingleNumber_result_characterization nums h_precond
+  · intro x hx
+    by_cases h : x = FindSingleNumber nums h_precond
+    · exact Or.inl h
+    · have hcount := count_eq_two_of_ne_of_count_eq_one nums h_precond
+        (FindSingleNumber nums h_precond) x hx (FindSingleNumber_result_characterization nums h_precond) h
+      exact Or.inr (by simp [length_filterlist_eq_count, hcount])</code></pre>
+    </div>
+</div>

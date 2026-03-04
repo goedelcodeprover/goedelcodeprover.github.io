@@ -1,0 +1,303 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+.publication-title {
+}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+
+    overflow: hidden;
+    border-radius: 10px !important;
+}
+
+.publication-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.publication-body img {
+}
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-video-column {
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+/* Slightly wider than Bulma is-max-desktop (1152px) for demo and methodology */
+.container.is-wider {
+  max-width: 1050px;
+}
+
+/* Our Methodology: 2x2 blocks */
+.methodology-block {
+  height: 100%;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+.methodology-block .title { margin-bottom: 0.75rem; }
+.methodology-block .content { margin-bottom: 0; }
+.methodology-block .content p { margin-bottom: 0; font-size: 0.95rem; }
+#methodology .columns .column { margin-bottom: 1rem; }
+
+/* Our Methodology: three blocks stacked top / middle / bottom */
+#methodology .methodology-three-blocks .methodology-block {
+  margin-bottom: 1.25rem;
+}
+#methodology .methodology-three-blocks .methodology-block:last-child {
+  margin-bottom: 0;
+}
+
+/* Benchmark Performance table (reference: clean slide table style) */
+#benchmark .benchmark-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+#benchmark .table.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.05rem;
+  color: #18181b;
+  background: #fff;
+}
+#benchmark .table.benchmark-table th,
+#benchmark .table.benchmark-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  vertical-align: middle;
+}
+#benchmark .table.benchmark-table thead th {
+  font-weight: 700;
+  border-top: 2px solid #18181b;
+  border-bottom: 2px solid #18181b;
+  background: #fff;
+}
+#benchmark .table.benchmark-table td:first-child,
+#benchmark .table.benchmark-table th:first-child {
+  text-align: left;
+  padding-left: 1.25rem;
+}
+#benchmark .table.benchmark-table td.group-header {
+  font-variant: small-caps;
+  font-weight: 700;
+  text-align: center;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #18181b;
+  padding: 0.5rem 2.5rem;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+#benchmark .table.benchmark-table tr.ours-row td {
+  background: #f3f4f6 !important;
+  font-weight: 700;
+}
+#benchmark .table.benchmark-table tr.delta-row td {
+  background: #f3f4f6 !important;
+  font-weight: 700;
+  border-bottom: 2px solid #18181b;
+}
+#benchmark .table.benchmark-table .delta-val {
+  display: inline-block;
+  font-size: 0.9rem;
+  margin-left: 0.25rem;
+}
+
+/* Demo: step container + Previous/Next + dots (fixed size to avoid layout jump when switching steps) */
+#demo .demo-step-container {
+  height: 600px;
+  min-height: 600px;
+  max-height: 600px;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+#demo .demo-step-container .demo-step-content { padding: 0; }
+#demo .demo-step-desc { margin-bottom: 1.25rem; color: #555; font-size: 0.95rem; }
+#demo .demo-lemma-block { margin-bottom: 1.75rem; }
+#demo .demo-lemma-block:last-child { margin-bottom: 0; }
+#demo .demo-lemma-title { margin-bottom: 0.5rem; font-size: 1rem; color: #333; }
+#demo .demo-step-container .demo-code {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+#demo .demo-step-container .demo-code code { background: none; padding: 0; color: inherit; }
+
+#demo .demo-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+#demo .demo-dot {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #363636;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+#demo .demo-dot:hover {
+  background: #f5f5f5;
+}
+
+#demo .demo-dot.is-active {
+  background: #363636;
+  color: #fff;
+}
+
+/* Completion tag: darker yellow */
+#demo .tag.is-warning {
+  background-color: #c9a227;
+  color: #fff;
+}

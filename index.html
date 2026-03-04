@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Decompose and Conquer: Automated Code Verification in Lean 4 via Hierarchical Proof Search.">
+  <title>Decompose and Conquer: Automated Code Verification in Lean 4</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <script src="./static/js/lean4-highlighter-standalone.js"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], processEscapes: true } };
+  </script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu" id="navMenu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="#introduction">Introduction</a>
+      <a class="navbar-item" href="#demo">Demo</a>
+      <a class="navbar-item" href="#methodology">Our Methodology</a>
+      <a class="navbar-item" href="#benchmark">Benchmark</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Decompose and Conquer:<br>Automated Code Verification in Lean 4 via Hierarchical Proof Search</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Author One<sup>1</sup>,</span>
+            <span class="author-block">Author Two<sup>2</sup>,</span>
+            <span class="author-block">Author Three<sup>1</sup></span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Institution One</span>
+            <span class="author-block"><sup>2</sup>Institution Two</span>
+          </div>
+          <div class="column has-text-centered" style="margin-top:1rem;">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">🤗</span>
+                  <span>Huggingface</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-play"></i></span>
+                  <span>Demo</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="introduction">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Introduction</h2>
+        <div class="content has-text-justified">
+          <p>
+            <strong>Problem.</strong> Large language models (LLMs) can generate syntactically plausible code, yet they provide no guarantee of formal correctness; subtle logical errors and specification violations remain prevalent. Automated code verification seeks to address this gap by constructing machine-checkable proofs that implementations satisfy formal specifications in Lean 4.
+          </p>
+          <p>
+            <strong>Method.</strong> We propose a hierarchical two-stage proof search framework: first decomposing a complex verification goal into structurally simpler subgoals, and then discharging each subgoal through iterative proof generation and refinement. To guide decomposition, we introduce a principled scoring mechanism that enforces constructive justification with QuickCheck-style filtering and promotes structural simplification via an operator-footprint metric. The same score is used consistently for both training and inference, ensuring alignment between optimization and deployment. A single unified policy is trained through supervised initialization followed by hybrid reinforcement learning.
+          </p>
+          <p>
+            <strong>Results.</strong> Experiments on multiple Lean-based code verification benchmarks, including Verina, Clever, and AlgoVeri, demonstrate the effectiveness and robustness of our approach.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="demo">
+  <div class="container is-max-desktop is-wider">
+    <h2 class="title is-3 has-text-centered">Example: FindSingleNumber (from Verina dataset)</h2>
+
+    <div id="demo-content" class="demo-step-container"></div>
+
+    <nav class="level is-mobile" style="margin-top:1.5rem;">
+      <div class="level-left">
+        <button type="button" id="demo-prev" class="button is-dark" disabled>← Previous</button>
+      </div>
+      <div class="level-item">
+        <div class="demo-dots" id="demo-dots">
+          <button type="button" class="demo-dot is-active" data-step="1" aria-label="Page 1">1</button>
+          <button type="button" class="demo-dot" data-step="2" aria-label="Page 2">2</button>
+          <button type="button" class="demo-dot" data-step="3" aria-label="Page 3">3</button>
+          <button type="button" class="demo-dot" data-step="4" aria-label="Page 4">4</button>
+          <button type="button" class="demo-dot" data-step="5" aria-label="Page 5">5</button>
+        </div>
+      </div>
+      <div class="level-right">
+        <button type="button" id="demo-next" class="button is-dark">Next →</button>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section" id="methodology">
+  <div class="container is-max-desktop is-wider">
+    <h2 class="title is-3 has-text-centered">Our Methodology</h2>
+
+    <div class="columns is-multiline mt-5">
+      <div class="column is-half">
+        <div class="methodology-block">
+          <h3 class="title is-5">Two-Stage Framework</h3>
+          <p class="content has-text-justified">We use a single model for both stages. (1) Decomposition: for a given theorem, the LLM proposes sub-lemmas with a constructive proof that Lean verifies; we keep the best-scoring decomposition and recurse until remaining goals are simple. (2) Completion: each leaf lemma is proved by the same policy in an iterative loop: generate a candidate proof, then refine it using Lean compiler feedback.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="methodology-block">
+          <h3 class="title is-5">Effective Lemma Decomposition</h3>
+          <p class="content has-text-justified">We score decompositions along two axes. Constructive justification: the decomposed lemma must be provable, and we run quickcheck on candidate lemmas; any counterexample discards the decomposition. Decomposition effectiveness: we measure it via an operator-footprint metric. The score is used both as the RL reward and as the ranking criterion at inference, enabling efficient search and pruning.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="methodology-block">
+          <h3 class="title is-5">Iterative Lemma Completion</h3>
+          <p class="content has-text-justified">For each decomposed lemma, the LLM generates a candidate proof and submits it to Lean. The compiler either accepts the proof or returns an error. When it fails, the model uses the compiler feedback (e.g., type mismatch, unresolved goal) to revise the proof and tries again. This iterative loop mimics how humans fix failed proofs and is also integrated into both supervised fine-tuning and reinforcement learning.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="methodology-block">
+          <h3 class="title is-5">Training: SFT + Hybrid RL</h3>
+          <p class="content has-text-justified">We initialize a supervised model on scaffolded decomposition and completion data. Then we run hybrid RL: GRPO optimizes decomposition using the decomposition score as reward, while we replay high-quality completion trajectories (SFT) to stabilize proof generation. Both losses update the same policy. The problem set is augmented with online lemmas from rollouts, forming a self-generated curriculum.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="benchmark">
+  <div class="container is-max-desktop is-wider">
+    <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Prove success rate (%) of baselines and ours across four different benchmarks.</p>
+    <div class="benchmark-table-wrapper table-container">
+      <table class="table benchmark-table">
+        <thead>
+          <tr>
+            <th>Dataset</th>
+            <th>Verina</th>
+            <th>Clever</th>
+            <th>AlgoVeri</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="5" class="group-header">Proprietary Reasoning Models</td></tr>
+          <tr><td>Claude-Opus-4.6</td><td>10.6</td><td>11.1</td><td>3.8</td><td>—</td></tr>
+          <tr><td>Gemini-3-Flash</td><td>19.6</td><td>21.1</td><td>7.7</td><td>—</td></tr>
+          <tr><td>GPT-5.2-Pro</td><td>16.9</td><td>18.0</td><td>7.7</td><td>—</td></tr>
+          <tr><td>GPT-5.3-Codex</td><td>15.9</td><td>23.6</td><td>7.7</td><td>—</td></tr>
+          <tr><td>Deepseek-V3.2-Speciale</td><td>12.2</td><td>14.9</td><td>5.2</td><td>—</td></tr>
+          <tr><td colspan="5" class="group-header">Open-sourced Neural Provers</td></tr>
+          <tr><td>Kimina-Prover-72B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>DeepSeek-Prover-V2-671B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Goedel-Prover-V2-32B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>BFS-Prover-V2</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="ours-row"><td>Ours</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="delta-row"><td>Δ</td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This website is licensed under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This website is forked from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and adapted for this project.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.navbar-burger').forEach(el => {
+    el.addEventListener('click', () => {
+      el.classList.toggle('is-active');
+      document.getElementById('navMenu')?.classList.toggle('is-active');
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Demo: load step from demo/stepN.html, Previous / Next and dots
+  (function() {
+    var content = document.getElementById('demo-content');
+    var prevBtn = document.getElementById('demo-prev');
+    var nextBtn = document.getElementById('demo-next');
+    var dots = document.getElementById('demo-dots');
+    var total = 5;
+    var current = 1;
+
+    function loadStep(n) {
+      current = n;
+      var path = (document.location.pathname || '').replace(/\/[^/]*$/, '/') || './';
+      var url = path + 'demo/step' + n + '.html';
+      fetch(url, { cache: 'no-store' }).then(function(r) { if (!r.ok) throw new Error(r.status); return r.text(); }).then(function(html) {
+        content.innerHTML = html;
+        if (window.Lean4Highlighter) Lean4Highlighter.highlightAll(content);
+      }).catch(function() {
+        content.innerHTML = '<p class="has-text-danger">Failed to load ' + url + '.</p>' +
+          '<p class="is-size-7 mt-2">When opening via file://, the browser cannot fetch local files. Start a local server in this project directory, e.g.:<br>' +
+          '<code>cd /Users/zenan/Github/Pages && python3 -m http.server 8000</code><br>Then open <a href="http://localhost:8000">http://localhost:8000</a></p>';
+      });
+      prevBtn.disabled = n <= 1;
+      nextBtn.disabled = n >= total;
+      if (dots) {
+        dots.querySelectorAll('.demo-dot').forEach(function(d) {
+          d.classList.toggle('is-active', parseInt(d.getAttribute('data-step'), 10) === n);
+        });
+      }
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function() { if (current > 1) loadStep(current - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function() { if (current < total) loadStep(current + 1); });
+    if (dots) dots.querySelectorAll('.demo-dot').forEach(function(d) {
+      d.addEventListener('click', function() { loadStep(parseInt(d.getAttribute('data-step'), 10)); });
+    });
+    loadStep(1);
+  })();
+</script>
+</body>
+</html>

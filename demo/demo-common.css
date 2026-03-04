@@ -1,0 +1,15 @@
+/* Shared styles: demo step content is injected into the main page and uses the main site styles.
+   If steps are loaded in an iframe, add step-specific styles here. */
+.demo-step-content { padding: 0.5rem 0; }
+.demo-step-content .demo-code {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.demo-step-content .demo-code code { background: none; padding: 0; color: inherit; }
