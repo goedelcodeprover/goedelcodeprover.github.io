@@ -358,7 +358,7 @@
     </div>
 
     <div id="tp-container" style="width:100%;overflow:hidden;">
-      <svg id="tp-svg" viewBox="0 0 960 700" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+      <svg id="tp-svg" viewBox="0 0 960 690" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
         <defs>
           <marker id="tp-a-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#94a3b8"/></marker>
           <marker id="tp-a-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f46e5"/></marker>
@@ -376,228 +376,210 @@
         </defs>
 
         <!-- ════════════════════════════════════════ -->
-        <!-- STAGE 1 TITLE (shown with data)        -->
+        <!-- STAGE 1: SFT                            -->
         <!-- ════════════════════════════════════════ -->
         <g class="tp-el" data-tp="data" data-tp-d="0">
           <rect x="28" y="14" width="5" height="24" rx="2.5" fill="#4f46e5"/>
           <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 1: Supervised Fine-Tuning (SFT)</text>
-          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier model capabilities into a unified Qwen3-8B policy</text>
+          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier-model trajectories into a unified Qwen3-8B policy</text>
         </g>
 
-        <!-- ════════════════════════════════════════ -->
-        <!-- DATA: Formal Problems                   -->
-        <!-- ════════════════════════════════════════ -->
+        <!-- Formal Problems -->
         <g class="tp-el" data-tp="data" data-tp-d="200">
-          <rect x="30" y="75" width="155" height="65" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-          <text x="56" y="102" font-size="16">📋</text>
-          <text x="78" y="100" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Formal Problems</text>
-          <text x="78" y="116" fill="#64748b" font-size="9.5" class="tp-txt">LeetCode + OpenCodeInstruct</text>
+          <rect x="30" y="75" width="155" height="58" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="107" y="101" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Formal Problems</text>
+          <text x="107" y="117" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">LeetCode + OpenCodeInstruct</text>
         </g>
-        <!-- Arrow to decompose -->
-        <path class="tp-line" data-tp="data" data-tp-d="500" d="M185,107 L225,107" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#tp-a-gray)"/>
+
+        <path class="tp-line" data-tp="data" data-tp-d="400" d="M185,104 L228,104" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#tp-a-gray)"/>
 
         <!-- GPT Decompose -->
-        <g class="tp-el" data-tp="data" data-tp-d="600">
-          <rect x="228" y="78" width="178" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="317" y="102" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="600" class="tp-txt">Lemma-Decompose</text>
-          <text x="317" y="119" text-anchor="middle" fill="#6366f1" font-size="9.5" font-weight="500" class="tp-txt">GPT-Curated · depth=128 · w=8</text>
+        <g class="tp-el" data-tp="data" data-tp-d="500">
+          <rect x="230" y="75" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="310" y="99" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decompose</text>
+          <text x="310" y="115" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-Curated</text>
         </g>
 
-        <!-- ════════════════════════════════════════ -->
-        <!-- SFT: Data products + Model              -->
-        <!-- ════════════════════════════════════════ -->
-
-        <!-- Arrows from decompose -->
-        <path class="tp-line" data-tp="sft" data-tp-d="0" d="M406,95 L462,78" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
-        <path class="tp-line" data-tp="sft" data-tp-d="100" d="M406,118 L462,148" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
+        <!-- Arrows from decompose to data products -->
+        <path class="tp-line" data-tp="sft" data-tp-d="0" d="M390,90 L445,72" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="100" d="M390,115 L445,140" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
 
         <!-- Decomposition Trajectories -->
         <g class="tp-el" data-tp="sft" data-tp-d="200">
-          <rect x="464" y="52" width="200" height="48" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="564" y="72" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
-          <text x="564" y="88" text-anchor="middle" fill="#92400e" font-size="9" class="tp-txt">input-output pairs</text>
+          <rect x="447" y="52" width="190" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.3"/>
+          <text x="542" y="76" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
         </g>
+
         <!-- Decomposed Lemmas -->
         <g class="tp-el" data-tp="sft" data-tp-d="400">
-          <rect x="464" y="132" width="200" height="48" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-          <text x="564" y="152" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
-          <text x="564" y="168" text-anchor="middle" fill="#065f46" font-size="9" class="tp-txt">intermediate sub-goals</text>
+          <rect x="447" y="125" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="149" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
         </g>
-        <!-- Arrow from lemmas to completion -->
-        <path class="tp-line" data-tp="sft" data-tp-d="700" d="M564,180 L564,210 L317,210 L317,225" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
+
+        <!-- Arrow lemmas → completion -->
+        <path class="tp-line" data-tp="sft" data-tp-d="600" d="M542,165 L542,192 L310,192 L310,210" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
 
         <!-- Gemini Completion -->
-        <g class="tp-el" data-tp="sft" data-tp-d="900">
-          <rect x="228" y="225" width="178" height="55" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
-          <text x="317" y="248" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="600" class="tp-txt">Lemma-Completion</text>
-          <text x="317" y="265" text-anchor="middle" fill="#db2777" font-size="9.5" font-weight="500" class="tp-txt">Gemini-Curated · depth=20 · w=8</text>
+        <g class="tp-el" data-tp="sft" data-tp-d="800">
+          <rect x="230" y="210" width="160" height="58" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+          <text x="310" y="234" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Completion</text>
+          <text x="310" y="250" text-anchor="middle" fill="#db2777" font-size="9" class="tp-txt">Gemini-Curated</text>
         </g>
 
-        <!-- Arrow to completion trajectories -->
-        <path class="tp-line" data-tp="sft" data-tp-d="1100" d="M406,252 L462,252" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1000" d="M390,239 L445,239" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
 
         <!-- Completion Trajectories -->
-        <g class="tp-el" data-tp="sft" data-tp-d="1200">
-          <rect x="464" y="228" width="200" height="48" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="564" y="248" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completion Trajectories</text>
-          <text x="564" y="264" text-anchor="middle" fill="#92400e" font-size="9" class="tp-txt">input-output pairs</text>
-        </g>
-        <!-- Data decontamination -->
-        <g class="tp-el" data-tp="sft" data-tp-d="1600" style="opacity:0;">
-          <rect x="466" y="302" width="130" height="20" rx="4" fill="none" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <text x="531" y="315" text-anchor="middle" fill="#94a3b8" font-size="8.5" class="tp-txt">+ data de-contamination</text>
+        <g class="tp-el" data-tp="sft" data-tp-d="1100">
+          <rect x="447" y="219" width="190" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.3"/>
+          <text x="542" y="243" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
         </g>
 
         <!-- Arrows to SFT model -->
-        <path class="tp-line" data-tp="sft" data-tp-d="1800" d="M664,76 L735,76 L735,170 L772,170" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
-        <path class="tp-line" data-tp="sft" data-tp-d="1900" d="M664,252 L735,252 L735,196 L772,196" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1500" d="M637,72 L710,72 L710,155 L748,155" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1600" d="M637,239 L710,239 L710,180 L748,180" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
-        <!-- SFT-S1 Model -->
-        <g class="tp-el" data-tp="sft" data-tp-d="2200">
-          <rect x="772" y="138" width="170" height="85" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="857" y="170" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="857" y="190" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B backbone</text>
-          <text x="857" y="208" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
+        <!-- SFT Model -->
+        <g class="tp-el" data-tp="sft" data-tp-d="1900">
+          <rect x="750" y="128" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+          <text x="840" y="160" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
+          <text x="840" y="178" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Qwen3-8B backbone</text>
+          <text x="840" y="194" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
         </g>
 
         <!-- ════════════════════════════════════════ -->
         <!-- DIVIDER                                 -->
         <!-- ════════════════════════════════════════ -->
-        <line class="tp-line" data-tp="rl-title" data-tp-d="0" x1="30" y1="340" x2="930" y2="340" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="5,5"/>
+        <line class="tp-line" data-tp="rl-title" data-tp-d="0" x1="30" y1="320" x2="930" y2="320" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="5,5"/>
 
         <!-- ════════════════════════════════════════ -->
-        <!-- STAGE 2: RL                             -->
+        <!-- STAGE 2: Hybrid RL (HIGHLIGHTED)        -->
         <!-- ════════════════════════════════════════ -->
 
         <!-- Title -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="200">
-          <rect x="28" y="355" width="5" height="24" rx="2.5" fill="#d97706"/>
-          <text x="42" y="373" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
-          <text x="42" y="391" fill="#94a3b8" font-size="11" class="tp-txt">On-policy GRPO for decomposition + Off-policy SFT replay for completion</text>
+          <rect x="28" y="335" width="5" height="24" rx="2.5" fill="#d97706"/>
+          <text x="42" y="355" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
+          <text x="42" y="373" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion</text>
         </g>
 
-        <!-- SFT-S1 Model (left) -->
+        <!-- SFT Model (left) -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="500">
-          <rect x="30" y="412" width="150" height="72" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-          <text x="105" y="442" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="105" y="462" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">unified policy π</text>
+          <rect x="30" y="394" width="150" height="68" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+          <text x="105" y="422" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT Model</text>
+          <text x="105" y="442" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">unified policy π</text>
         </g>
 
-        <!-- Arrow to decompose -->
-        <path class="tp-line" data-tp="rl-title" data-tp-d="700" d="M180,448 L228,448" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
+        <path class="tp-line" data-tp="rl-title" data-tp-d="700" d="M180,428 L228,428" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
 
         <!-- Decompose diamond -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="800">
-          <polygon points="268,418 308,448 268,478 228,448" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="268" y="444" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decompose</text>
-          <text x="268" y="458" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">rollout</text>
+          <polygon points="268,400 308,428 268,456 228,428" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="268" y="424" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decompose</text>
+          <text x="268" y="438" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">rollout</text>
         </g>
 
-        <!-- ── ON-POLICY (GRPO) ── -->
-        <!-- On-policy region box -->
+        <!-- ═══ ON-POLICY: Lemma Decomposition (GRPO) ═══ -->
         <g class="tp-el" data-tp="rl-grpo" data-tp-d="0">
-          <rect x="330" y="402" width="600" height="82" rx="8" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.4"/>
-          <rect x="343" y="407" width="108" height="18" rx="4" fill="#fffbeb"/>
-          <text x="350" y="419" fill="#d97706" font-size="11" font-weight="600" class="tp-txt">On-Policy (GRPO)</text>
+          <rect x="330" y="383" width="600" height="100" rx="10" fill="#fffbeb" fill-opacity="0.35" stroke="#d97706" stroke-width="2"/>
+          <rect x="343" y="388" width="170" height="20" rx="4" fill="#d97706"/>
+          <text x="350" y="402" fill="#fff" font-size="11" font-weight="700" class="tp-txt">On-Policy Decomposition</text>
         </g>
 
-        <!-- Arrow to trajectories -->
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="300" d="M308,436 L378,436" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="300" d="M308,416 L378,416" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
         <!-- Decomposition Trajectories (RL) -->
         <g class="tp-el" data-tp="rl-grpo" data-tp-d="500">
-          <rect x="380" y="418" width="180" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.3"/>
-          <text x="470" y="442" text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
+          <rect x="380" y="412" width="162" height="38" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="461" y="435" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomp. Trajectories</text>
         </g>
 
-        <!-- Arrow to compiler -->
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="700" d="M560,438 L618,438" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="700" d="M542,431 L596,431" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
-        <!-- Compiler diamond -->
+        <!-- Compiler -->
         <g class="tp-el" data-tp="rl-grpo" data-tp-d="900">
-          <polygon points="655,414 692,438 655,462 618,438" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="655" y="434" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600" class="tp-txt">Lean 4</text>
-          <text x="655" y="448" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">Compiler</text>
+          <polygon points="633,407 670,431 633,455 596,431" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="633" y="427" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600" class="tp-txt">Lean 4</text>
+          <text x="633" y="441" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">Compiler</text>
         </g>
 
-        <!-- Arrow to GRPO -->
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1100" d="M692,438 L750,438" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1100" d="M670,431 L730,431" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
         <!-- GRPO Gradients -->
         <g class="tp-el" data-tp="rl-grpo" data-tp-d="1300">
-          <rect x="752" y="418" width="158" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
-          <text x="831" y="442" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="700" class="tp-txt">GRPO Gradients</text>
+          <rect x="732" y="412" width="178" height="38" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+          <text x="821" y="435" text-anchor="middle" fill="#92400e" font-size="13" font-weight="700" class="tp-txt">GRPO Gradients</text>
         </g>
 
-        <!-- GRPO annotation -->
+        <!-- GRPO annotation: WHY this matters -->
         <g class="tp-el" data-tp="rl-grpo" data-tp-d="1500">
-          <text x="831" y="470" text-anchor="middle" fill="#d97706" font-size="9" font-style="italic" class="tp-txt">reward = decomposition score R</text>
-          <text x="831" y="482" text-anchor="middle" fill="#94a3b8" font-size="8" class="tp-txt">(continuous, dense signal)</text>
+          <text x="821" y="460" text-anchor="middle" fill="#d97706" font-size="9" font-weight="600" class="tp-txt">reward = decomposition score R</text>
+          <text x="821" y="473" text-anchor="middle" fill="#92400e" font-size="8.5" font-style="italic" class="tp-txt">continuous dense signal</text>
         </g>
 
         <!-- GRPO feedback arrow -->
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1700" d="M831,418 L831,398 L105,398 L105,412" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1700" d="M821,412 L821,380 L105,380 L105,394" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-amber)"/>
 
-        <!-- ── OFF-POLICY (SFT Replay) ── -->
-        <!-- Off-policy region box -->
+        <!-- ═══ OFF-POLICY: Lemma Completion (SFT Replay) ═══ -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="0">
-          <rect x="330" y="500" width="600" height="82" rx="8" fill="none" stroke="#db2777" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.4"/>
-          <rect x="343" y="505" width="130" height="18" rx="4" fill="#fdf2f8"/>
-          <text x="350" y="517" fill="#db2777" font-size="11" font-weight="600" class="tp-txt">Off-Policy (SFT Replay)</text>
+          <rect x="330" y="490" width="600" height="96" rx="10" fill="#fdf2f8" fill-opacity="0.35" stroke="#db2777" stroke-width="2"/>
+          <rect x="343" y="495" width="170" height="20" rx="4" fill="#db2777"/>
+          <text x="350" y="509" fill="#fff" font-size="11" font-weight="700" class="tp-txt">Off-Policy Completion</text>
         </g>
 
-        <!-- Arrow from decompose down -->
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="300" d="M268,478 L268,540 L378,540" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="300" d="M268,456 L268,530 L378,530" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
 
         <!-- Decomposed Lemmas (RL) -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="500">
-          <rect x="380" y="522" width="160" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
-          <text x="460" y="546" text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <rect x="380" y="512" width="162" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+          <text x="461" y="535" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
         </g>
 
-        <!-- Arrow to Gemini -->
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="700" d="M540,542 L592,542" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="700" d="M542,531 L592,531" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
 
-        <!-- Gemini Completion (RL) -->
+        <!-- Teacher Completion -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="900">
-          <rect x="594" y="522" width="165" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3"/>
-          <text x="676" y="537" text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="600" class="tp-txt">Gemini Completion</text>
-          <text x="676" y="553" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">teacher model · depth=20</text>
+          <rect x="594" y="512" width="140" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+          <text x="664" y="528" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Teacher Completion</text>
+          <text x="664" y="543" text-anchor="middle" fill="#9d174d" font-size="9" class="tp-txt">Gemini · depth=20</text>
         </g>
 
-        <!-- Arrow to SFT gradients -->
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1100" d="M759,542 L778,542" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1100" d="M734,531 L748,531" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
 
         <!-- SFT Gradients -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1300">
-          <rect x="752" y="522" width="158" height="40" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
-          <text x="831" y="546" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="700" class="tp-txt">SFT Gradients</text>
+          <rect x="750" y="512" width="160" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="2.5"/>
+          <text x="830" y="535" text-anchor="middle" fill="#9d174d" font-size="13" font-weight="700" class="tp-txt">SFT Gradients</text>
         </g>
 
-        <!-- Off-policy annotation -->
+        <!-- SFT Replay annotation: WHY this matters -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1500">
-          <text x="831" y="574" text-anchor="middle" fill="#db2777" font-size="9" font-style="italic" class="tp-txt">stabilize completion ability</text>
-          <text x="831" y="586" text-anchor="middle" fill="#94a3b8" font-size="8" class="tp-txt">(high-quality replay)</text>
+          <text x="830" y="560" text-anchor="middle" fill="#db2777" font-size="9" font-weight="600" class="tp-txt">replay high-quality proofs</text>
+          <text x="830" y="573" text-anchor="middle" fill="#9d174d" font-size="8.5" font-style="italic" class="tp-txt">stabilize via supervised signal</text>
         </g>
 
         <!-- Off-policy feedback arrow -->
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1700" d="M831,562 L910,562 L910,598 L105,598 L105,484" fill="none" stroke="#db2777" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-pink)"/>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1700" d="M830,550 L910,550 L910,590 L105,590 L105,462" fill="none" stroke="#db2777" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-pink)"/>
 
         <!-- Hybrid loss -->
         <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1900">
-          <rect x="22" y="495" width="190" height="38" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1" opacity="0.8"/>
-          <text x="117" y="516" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">𝒥 = 𝒥_GRPO + λ · 𝒥_SFT</text>
-          <text x="117" y="546" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">+ online lemma augmentation</text>
+          <rect x="22" y="475" width="190" height="30" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1" opacity="0.8"/>
+          <text x="117" y="495" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">𝒥 = 𝒥_GRPO + λ · 𝒥_SFT</text>
+        </g>
+
+        <!-- Online Lemma Augmentation label (on the vertical arrow from decompose to off-policy) -->
+        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1800">
+          <rect x="275" y="480" width="88" height="16" rx="4" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
+          <text x="319" y="492" text-anchor="middle" fill="#059669" font-size="8" font-weight="600" class="tp-txt">+ add to 𝒫</text>
         </g>
 
         <!-- ════════════════════════════════════════ -->
         <!-- FINAL MODEL                              -->
         <!-- ════════════════════════════════════════ -->
-        <path class="tp-line" data-tp="final" data-tp-d="0" d="M105,484 L105,632 L350,632" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#tp-a-indigo)"/>
+        <path class="tp-line" data-tp="final" data-tp-d="0" d="M105,462 L105,630 L350,630" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#tp-a-indigo)"/>
         <g class="tp-el" data-tp="final" data-tp-d="500">
-          <rect x="352" y="612" width="250" height="60" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
-          <text x="477" y="638" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="700" class="tp-txt">Final Model</text>
-          <text x="477" y="658" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
+          <rect x="352" y="610" width="250" height="60" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
+          <text x="477" y="636" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="700" class="tp-txt">Final Model</text>
+          <text x="477" y="656" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
         </g>
       </svg>
     </div>
@@ -1193,12 +1175,12 @@
     //   t=9000   → "rl-grpo" (GRPO path first)
     //   t=12000  → "rl-offpolicy" (off-policy path)
     var phases = [
-      { group: 'data',          start: 0,     dur: 800 },
-      { group: 'sft',           start: 2000,  dur: 3000 },
-      { group: 'rl-title',      start: 10000, dur: 1000 },
-      { group: 'rl-grpo',       start: 11000, dur: 2000 },
-      { group: 'rl-offpolicy',  start: 13000, dur: 2000 },
-      { group: 'final',          start: 16000, dur: 800 },
+      { group: 'data',          start: 0,     dur: 600 },
+      { group: 'sft',           start: 1200,  dur: 2200 },
+      { group: 'rl-title',      start: 3800,  dur: 1000 },
+      { group: 'rl-grpo',       start: 5000,  dur: 2200 },
+      { group: 'rl-offpolicy',  start: 7500,  dur: 2200 },
+      { group: 'final',          start: 10500, dur: 800 },
     ];
 
     function reset() {
