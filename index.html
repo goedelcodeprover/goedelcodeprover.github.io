@@ -138,21 +138,30 @@
               .pt-label { font-family: 'Noto Sans', 'Inter', sans-serif; font-size: 11.5px; fill: #1e293b; font-weight: 600; pointer-events: none; }
               .pt-sublabel { font-family: 'Noto Sans', 'Inter', sans-serif; font-size: 9px; fill: #64748b; pointer-events: none; }
               /* Animation primitives */
-              .pt-anim { opacity: 0; transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+              .pt-anim { opacity: 0; transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1); }
               .pt-anim.pt-vis { opacity: 1; }
-              .pt-anim-slide { transform: translateY(-8px); }
+              .pt-anim-slide { transform: translateY(-12px); }
               .pt-anim-slide.pt-vis { transform: translateY(0); }
               /* Node states */
-              .pt-sorry rect { stroke: #dc2626; stroke-width: 2; stroke-dasharray: 6,3; fill: #fef2f2; transition: all 0.6s ease; }
-              .pt-proved rect { stroke: #059669; stroke-width: 2; stroke-dasharray: none; fill: #ecfdf5; transition: all 0.6s ease; }
+              .pt-sorry rect { stroke: #dc2626; stroke-width: 2; stroke-dasharray: 6,3; fill: #fef2f2; transition: all 0.5s ease; }
+              .pt-proved rect { stroke: #059669; stroke-width: 2; stroke-dasharray: none; fill: #ecfdf5; transition: all 0.5s ease; }
               .pt-active rect { stroke: #2563eb !important; stroke-width: 2.5 !important; fill: #eff6ff !important; }
               /* Completion flash */
-              @keyframes ptFlash { 0%{filter:none} 30%{filter:brightness(1.15) drop-shadow(0 0 6px #059669)} 100%{filter:none} }
-              .pt-flash { animation: ptFlash 0.7s ease; }
+              @keyframes ptFlash { 0%{filter:none} 30%{filter:brightness(1.18) drop-shadow(0 0 8px #059669)} 100%{filter:none} }
+              .pt-flash { animation: ptFlash 0.6s ease; }
+              /* Checkmark pop */
+              @keyframes ptCheck { 0%{opacity:0;transform:scale(0)} 50%{opacity:1;transform:scale(1.3)} 100%{opacity:1;transform:scale(1)} }
+              .pt-check { animation: ptCheck 0.35s ease-out forwards; }
               /* Action label */
               .pt-action-label { font-family: 'Noto Sans', sans-serif; font-size: 11px; font-weight: 700; pointer-events: none; }
-              .pt-edge-anim { stroke: #94a3b8; stroke-width: 1.5; fill: none; opacity: 0; transition: opacity 0.4s ease; }
+              .pt-edge-anim { stroke: #94a3b8; stroke-width: 1.5; fill: none; opacity: 0; transition: opacity 0.35s ease; }
               .pt-edge-anim.pt-vis { opacity: 0.7; }
+              /* Edge draw animation */
+              @keyframes ptEdgeDraw { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
+              .pt-edge-draw { stroke-dasharray: 200; stroke-dashoffset: 200; animation: ptEdgeDraw 0.4s ease-out forwards; }
+              /* Completion arrow glow */
+              @keyframes ptArrowGlow { 0%{filter:none} 50%{filter:drop-shadow(0 0 4px #059669)} 100%{filter:none} }
+              .pt-arrow-glow { animation: ptArrowGlow 0.6s ease; }
             </style>
           </defs>
 
@@ -736,10 +745,9 @@
   })();
 
   // ═══════════════════════════════════════════
-  // Proof Tree: interactive node selection + phases
+  // Proof Tree: interactive node selection + animated phases
   // ═══════════════════════════════════════════
   (function() {
-    // Code content for each node
     var nodeData = {
       root: {
         title: 'FindSingleNumber_spec_satisfied',
@@ -792,47 +800,24 @@
       }
     };
 
-    // Phase definitions: which nodes are proved at each phase
-    // phase 0 = all sorry, phase 1 = root proved (decomp round 1), phase 2 = root+level1 proved (decomp round 2), phase 3 = all proved
-    var currentPhase = 3;
+    var currentPhase = 0;
     var selectedNode = null;
+    var animTimers = [];
+    var animPlayed = false;
+    var animating = false;
 
     function isProvedAtPhase(nodeId, phase) {
       var d = nodeData[nodeId];
       return d && phase >= d.provedAt;
     }
 
-    function updateTreeVisuals() {
-      document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
-        var id = g.getAttribute('data-pt-id');
-        var step = parseInt(g.getAttribute('data-pt-step'), 10);
-        g.classList.remove('pt-node-sorry', 'pt-node-proved', 'pt-node-active');
+    function setPhase(phase) {
+      currentPhase = phase;
+      updateTreeVisuals();
+      updatePhaseButtons();
+    }
 
-        // Visibility: only show nodes that exist at this phase
-        // phase 0: only root (sorry). phase 1: root + level1. phase 2+: all
-        var visible = (step <= currentPhase);
-        g.style.opacity = visible ? '1' : '0.15';
-        g.style.pointerEvents = visible ? 'auto' : 'none';
-
-        if (visible) {
-          if (id === selectedNode) {
-            g.classList.add('pt-node-active');
-          } else if (isProvedAtPhase(id, currentPhase)) {
-            g.classList.add('pt-node-proved');
-          } else {
-            g.classList.add('pt-node-sorry');
-          }
-        }
-      });
-
-      // Update edges visibility
-      document.querySelectorAll('#pt-svg .pt-edge').forEach(function(edge, i) {
-        // edges 0,1 = root to level1 (visible at phase>=1), edges 2,3,4,5 = level1 to level2 (visible at phase>=2)
-        var minPhase = (i < 2) ? 1 : 2;
-        edge.style.opacity = (currentPhase >= minPhase) ? '0.7' : '0.1';
-      });
-
-      // Update phase buttons
+    function updatePhaseButtons() {
       document.querySelectorAll('#pt-step-btns button').forEach(function(btn) {
         var p = parseInt(btn.getAttribute('data-pt-phase'), 10);
         btn.classList.toggle('is-dark', p === currentPhase);
@@ -840,6 +825,256 @@
       });
     }
 
+    function updateTreeVisuals() {
+      // Nodes
+      document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
+        var id = g.getAttribute('data-pt-id');
+        var step = parseInt(g.getAttribute('data-pt-step'), 10);
+        g.classList.remove('pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
+
+        var visible = (step <= currentPhase);
+        if (!visible) {
+          g.classList.remove('pt-vis');
+          g.style.pointerEvents = 'none';
+        } else {
+          g.classList.add('pt-vis');
+          g.style.pointerEvents = 'auto';
+          if (id === selectedNode) {
+            g.classList.add('pt-active');
+          } else if (isProvedAtPhase(id, currentPhase)) {
+            g.classList.add('pt-proved');
+          } else {
+            g.classList.add('pt-sorry');
+          }
+        }
+      });
+
+      // Edges
+      document.querySelectorAll('#pt-svg .pt-edge-anim').forEach(function(edge) {
+        var ep = parseInt(edge.getAttribute('data-pt-phase'), 10);
+        if (currentPhase >= ep) {
+          edge.classList.add('pt-vis');
+        } else {
+          edge.classList.remove('pt-vis');
+        }
+      });
+
+      // Action labels
+      document.querySelectorAll('#pt-svg .pt-anim:not(.pt-node)').forEach(function(el) {
+        var ep = parseInt(el.getAttribute('data-pt-phase'), 10);
+        if (currentPhase >= ep) {
+          el.classList.add('pt-vis');
+        } else {
+          el.classList.remove('pt-vis');
+        }
+      });
+    }
+
+    // ── Animation engine ──
+    function resetAnimation() {
+      animTimers.forEach(clearTimeout);
+      animTimers = [];
+      animating = false;
+
+      // Hide everything
+      document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
+        g.classList.remove('pt-vis', 'pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
+        g.style.pointerEvents = 'none';
+      });
+      document.querySelectorAll('#pt-svg .pt-edge-anim').forEach(function(e) {
+        e.classList.remove('pt-vis', 'pt-edge-draw', 'pt-arrow-glow');
+      });
+      document.querySelectorAll('#pt-svg .pt-anim:not(.pt-node)').forEach(function(e) {
+        e.classList.remove('pt-vis');
+      });
+      // Remove any injected checkmarks
+      document.querySelectorAll('#pt-svg .pt-checkmark').forEach(function(e) {
+        e.remove();
+      });
+
+      currentPhase = 0;
+      selectedNode = null;
+      updatePhaseButtons();
+    }
+
+    function addCheckmark(nodeG) {
+      var rect = nodeG.querySelector('rect');
+      if (!rect) return;
+      var rx = parseFloat(rect.getAttribute('x'));
+      var ry = parseFloat(rect.getAttribute('y'));
+      var rw = parseFloat(rect.getAttribute('width'));
+      var check = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      check.setAttribute('x', rx + rw - 14);
+      check.setAttribute('y', ry + 16);
+      check.setAttribute('font-size', '14');
+      check.setAttribute('fill', '#059669');
+      check.setAttribute('class', 'pt-checkmark pt-check');
+      check.textContent = '✓';
+      nodeG.appendChild(check);
+    }
+
+    function sched(fn, delay) {
+      animTimers.push(setTimeout(fn, delay));
+    }
+
+    function playAnimation() {
+      resetAnimation();
+      animating = true;
+      var T = 0;
+
+      // ─── Phase 0: Root appears (sorry) ───
+      sched(function() {
+        var root = document.querySelector('[data-pt-id="root"]');
+        root.classList.add('pt-vis', 'pt-sorry');
+        root.style.pointerEvents = 'auto';
+        currentPhase = 0;
+        updatePhaseButtons();
+      }, T);
+
+      T += 800;
+
+      // ─── Phase 1: Decompose #1 — root → level 1 ───
+      sched(function() {
+        currentPhase = 1;
+        updatePhaseButtons();
+
+        // Show "Decompose" label
+        document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="1"]').forEach(function(el) {
+          el.classList.add('pt-vis');
+        });
+      }, T);
+
+      T += 200;
+
+      // Animate edges root → level 1
+      sched(function() {
+        document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="1"]').forEach(function(e, i) {
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-edge-draw');
+          }, i * 100);
+        });
+      }, T);
+
+      T += 250;
+
+      // Level 1 nodes slide in (staggered)
+      sched(function() {
+        var l1nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]');
+        l1nodes.forEach(function(g, i) {
+          setTimeout(function() {
+            g.classList.add('pt-vis', 'pt-sorry');
+            g.style.pointerEvents = 'auto';
+          }, i * 150);
+        });
+      }, T);
+
+      T += 350;
+
+      // Root transitions sorry → proved
+      sched(function() {
+        var root = document.querySelector('[data-pt-id="root"]');
+        root.classList.remove('pt-sorry');
+        root.classList.add('pt-proved', 'pt-flash');
+        addCheckmark(root);
+      }, T);
+
+      T += 800;
+
+      // ─── Phase 2: Decompose #2 — level 1 → level 2 ───
+      sched(function() {
+        currentPhase = 2;
+        updatePhaseButtons();
+
+        document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="2"]').forEach(function(el) {
+          el.classList.add('pt-vis');
+        });
+      }, T);
+
+      T += 200;
+
+      // Animate edges level 1 → level 2
+      sched(function() {
+        var edges = document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="2"]');
+        edges.forEach(function(e, i) {
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-edge-draw');
+          }, i * 80);
+        });
+      }, T);
+
+      T += 200;
+
+      // Level 2 nodes slide in (staggered)
+      sched(function() {
+        var l2nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]');
+        l2nodes.forEach(function(g, i) {
+          setTimeout(function() {
+            g.classList.add('pt-vis', 'pt-sorry');
+            g.style.pointerEvents = 'auto';
+          }, i * 120);
+        });
+      }, T);
+
+      T += 500;
+
+      // Level 1 transitions sorry → proved
+      sched(function() {
+        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
+          setTimeout(function() {
+            g.classList.remove('pt-sorry');
+            g.classList.add('pt-proved', 'pt-flash');
+            addCheckmark(g);
+          }, i * 150);
+        });
+      }, T);
+
+      T += 800;
+
+      // ─── Phase 3: Lemma Completion — leaf nodes sorry → proved ───
+      sched(function() {
+        currentPhase = 3;
+        updatePhaseButtons();
+
+        // Show completion label
+        document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="3"]').forEach(function(el) {
+          el.classList.add('pt-vis');
+        });
+      }, T);
+
+      T += 300;
+
+      // Completion arrows animate up to each leaf
+      sched(function() {
+        var compEdges = document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="3"]');
+        compEdges.forEach(function(e, i) {
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-edge-draw', 'pt-arrow-glow');
+          }, i * 100);
+        });
+      }, T);
+
+      T += 400;
+
+      // Leaf nodes flash sorry → proved (staggered)
+      sched(function() {
+        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]').forEach(function(g, i) {
+          setTimeout(function() {
+            g.classList.remove('pt-sorry');
+            g.classList.add('pt-proved', 'pt-flash');
+            addCheckmark(g);
+          }, i * 150);
+        });
+      }, T);
+
+      T += 700;
+
+      // Animation done
+      sched(function() {
+        animating = false;
+      }, T);
+    }
+
+    // ── Code panel ──
     function showNodeCode(nodeId) {
       selectedNode = nodeId;
       var d = nodeData[nodeId];
@@ -859,7 +1094,14 @@
       if (window.Lean4Highlighter) {
         Lean4Highlighter.highlightAll(document.getElementById('pt-code-body'));
       }
-      updateTreeVisuals();
+      // Highlight selected node without disrupting animation state
+      document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
+        g.classList.remove('pt-active');
+      });
+      var nodeEl = document.querySelector('[data-pt-id="' + nodeId + '"]');
+      if (nodeEl && nodeEl.classList.contains('pt-vis')) {
+        nodeEl.classList.add('pt-active');
+      }
     }
 
     // Wire up node clicks
@@ -869,11 +1111,19 @@
       });
     });
 
-    // Wire up phase buttons
+    // Wire up phase buttons (manual jump, stops animation)
     document.querySelectorAll('#pt-step-btns button').forEach(function(btn) {
       btn.addEventListener('click', function() {
+        if (animating) {
+          animTimers.forEach(clearTimeout);
+          animTimers = [];
+          animating = false;
+        }
         currentPhase = parseInt(btn.getAttribute('data-pt-phase'), 10);
-        // If selected node is not visible at this phase, deselect
+        // Remove all animation artifacts and set clean state
+        document.querySelectorAll('#pt-svg .pt-checkmark').forEach(function(e) { e.remove(); });
+        document.querySelectorAll('#pt-svg .pt-edge-draw').forEach(function(e) { e.classList.remove('pt-edge-draw'); });
+
         if (selectedNode) {
           var step = parseInt(document.querySelector('[data-pt-id="' + selectedNode + '"]').getAttribute('data-pt-step'), 10);
           if (step > currentPhase) {
@@ -882,16 +1132,38 @@
             document.getElementById('pt-code-status').textContent = '';
             document.getElementById('pt-code-content').textContent = '-- Select a node in the proof tree above to see its Lean 4 code here.';
           } else {
-            // Refresh code for current phase
             showNodeCode(selectedNode);
           }
         }
         updateTreeVisuals();
+        updatePhaseButtons();
       });
     });
 
-    // Initial state
-    updateTreeVisuals();
+    // Wire up Replay button
+    var replayBtn = document.getElementById('pt-replay');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', function() {
+        playAnimation();
+      });
+    }
+
+    // Auto-play on first scroll into view
+    var ptContainer = document.getElementById('pt-container');
+    if (ptContainer && 'IntersectionObserver' in window) {
+      var ptObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !animPlayed) {
+            animPlayed = true;
+            playAnimation();
+          }
+        });
+      }, { threshold: 0.3 });
+      ptObserver.observe(ptContainer);
+    }
+
+    // Initial state: everything hidden
+    resetAnimation();
   })();
 
   // ═══════════════════════════════════════════
