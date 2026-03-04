@@ -21,24 +21,24 @@ const COLORS = {
   glow2: "rgba(245, 158, 11, 0.3)",
 };
 
-// Arrow marker SVG definition
+// Arrow marker SVG definition (same as Example: refX=6.5 + markerUnits=strokeWidth to avoid line through arrow)
 const ArrowDefs = () => (
   <svg width="0" height="0" style={{ position: "absolute" }}>
     <defs>
-      <marker id="arrow-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L8,3 L0,6" fill={COLORS.connector} />
+      <marker id="arrow-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,2.5 L0,5 Z" fill={COLORS.connector} />
       </marker>
-      <marker id="arrow-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L8,3 L0,6" fill={COLORS.accent1} />
+      <marker id="arrow-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,2.5 L0,5 Z" fill={COLORS.accent1} />
       </marker>
-      <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L8,3 L0,6" fill={COLORS.accent2} />
+      <marker id="arrow-amber" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,2.5 L0,5 Z" fill={COLORS.accent2} />
       </marker>
-      <marker id="arrow-emerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L8,3 L0,6" fill={COLORS.accent3} />
+      <marker id="arrow-emerald" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,2.5 L0,5 Z" fill={COLORS.accent3} />
       </marker>
-      <marker id="arrow-violet" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <path d="M0,0 L8,3 L0,6" fill={COLORS.accent5} />
+      <marker id="arrow-violet" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L8,2.5 L0,5 Z" fill={COLORS.accent5} />
       </marker>
     </defs>
   </svg>

@@ -126,81 +126,235 @@
 
       <!-- Proof tree SVG -->
       <div id="pt-container" style="overflow-x:auto;margin-bottom:1rem;">
-        <svg id="pt-svg" viewBox="0 0 900 370" width="100%" style="display:block;min-width:700px;">
+        <svg id="pt-svg" viewBox="0 0 900 298" width="100%" style="display:block;min-width:700px;">
           <defs>
-            <marker id="pt-arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#94a3b8"/></marker>
-            <marker id="pt-arr-blue" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#4f46e5"/></marker>
-            <marker id="pt-arr-green" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#059669"/></marker>
-            <filter id="pt-glow-green"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+
+            <!-- Arrow markers (fixed overshoot issue) -->
+            <marker id="pt-arr"
+                    markerWidth="8"
+                    markerHeight="5"
+                    refX="6.5"
+                    refY="2.5"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+              <path d="M0,0 L8,2.5 L0,5 Z" fill="#94a3b8"/>
+            </marker>
+          
+            <marker id="pt-arr-blue"
+                    markerWidth="8"
+                    markerHeight="5"
+                    refX="6.5"
+                    refY="2.5"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+              <path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/>
+            </marker>
+          
+            <marker id="pt-arr-green"
+                    markerWidth="8"
+                    markerHeight="5"
+                    refX="6.5"
+                    refY="2.5"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+              <path d="M0,0 L8,2.5 L0,5 Z" fill="#d97706"/>
+            </marker>
+          
+            <filter id="pt-glow-green">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          
             <style>
+          
               .pt-node { cursor: pointer; }
-              .pt-node:hover { filter: brightness(0.93); }
-              .pt-label { font-family: 'Noto Sans', 'Inter', sans-serif; font-size: 11.5px; fill: #1e293b; font-weight: 600; pointer-events: none; }
-              .pt-sublabel { font-family: 'Noto Sans', 'Inter', sans-serif; font-size: 9px; fill: #64748b; pointer-events: none; }
+          
+              .pt-node:hover {
+                filter: brightness(0.93);
+              }
+          
+              .pt-label {
+                font-family: 'Noto Sans', 'Inter', sans-serif;
+                font-size: 11.5px;
+                fill: #1e293b;
+                font-weight: 600;
+                pointer-events: none;
+              }
+          
+              .pt-sublabel {
+                font-family: 'Noto Sans', 'Inter', sans-serif;
+                font-size: 9px;
+                fill: #64748b;
+                pointer-events: none;
+              }
+          
               /* Animation primitives */
-              .pt-anim { opacity: 0; transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1); }
-              .pt-anim.pt-vis { opacity: 1; }
-              .pt-anim-slide { transform: translateY(-12px); }
-              .pt-anim-slide.pt-vis { transform: translateY(0); }
+          
+              .pt-anim {
+                opacity: 0;
+                transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1);
+              }
+          
+              .pt-anim.pt-vis {
+                opacity: 1;
+              }
+          
+              .pt-anim-slide {
+                transform: translateY(-12px);
+              }
+          
+              .pt-anim-slide.pt-vis {
+                transform: translateY(0);
+              }
+          
               /* Node states */
-              .pt-sorry rect { stroke: #dc2626; stroke-width: 2; stroke-dasharray: 6,3; fill: #fef2f2; transition: all 0.5s ease; }
-              .pt-pending rect { stroke: #6ee7b7; stroke-width: 2; stroke-dasharray: 6,3; fill: #f0fdf4; transition: all 0.5s ease; }
-              .pt-proved rect { stroke: #059669; stroke-width: 2; stroke-dasharray: none; fill: #ecfdf5; transition: all 0.5s ease; }
-              .pt-active rect { stroke: #2563eb !important; stroke-width: 2.5 !important; fill: #eff6ff !important; }
+          
+              .pt-sorry rect {
+                stroke: #dc2626;
+                stroke-width: 2;
+                stroke-dasharray: 6,3;
+                fill: #fef2f2;
+                transition: all 0.5s ease;
+              }
+          
+              .pt-proved rect {
+                stroke: #059669;
+                stroke-width: 2;
+                stroke-dasharray: none;
+                fill: #ecfdf5;
+                transition: all 0.5s ease;
+              }
+          
+              .pt-active rect {
+                stroke: #7c3aed !important;
+                stroke-width: 2.5 !important;
+                fill: #f5f3ff !important;
+              }
+          
               /* Completion flash */
-              @keyframes ptFlash { 0%{filter:none} 30%{filter:brightness(1.18) drop-shadow(0 0 8px #059669)} 100%{filter:none} }
-              .pt-flash { animation: ptFlash 0.6s ease; }
+          
+              @keyframes ptFlash {
+                0% { filter:none }
+                30% { filter:brightness(1.18) drop-shadow(0 0 8px #059669) }
+                100% { filter:none }
+              }
+          
+              .pt-flash {
+                animation: ptFlash 0.6s ease;
+              }
+          
               /* Checkmark pop */
-              @keyframes ptCheck { 0%{opacity:0;transform:scale(0)} 50%{opacity:1;transform:scale(1.3)} 100%{opacity:1;transform:scale(1)} }
-              .pt-check { animation: ptCheck 0.35s ease-out forwards; }
+          
+              @keyframes ptCheck {
+                0% { opacity:0; transform:scale(0) }
+                50% { opacity:1; transform:scale(1.3) }
+                100% { opacity:1; transform:scale(1) }
+              }
+          
+              .pt-check {
+                animation: ptCheck 0.35s ease-out forwards;
+              }
+          
               /* Action label */
-              .pt-action-label { font-family: 'Noto Sans', sans-serif; font-size: 11px; font-weight: 700; pointer-events: none; }
-              .pt-edge-anim { stroke: #94a3b8; stroke-width: 1.5; fill: none; opacity: 0; transition: opacity 0.35s ease; }
-              .pt-edge-anim.pt-vis { opacity: 0.7; }
+          
+              .pt-action-label {
+                font-family: 'Noto Sans', sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                pointer-events: none;
+              }
+          
+              /* Edge style */
+          
+              .pt-edge-anim,
+              .pt-edge-comp {
+                stroke-linecap: round;
+                fill: none;
+                opacity: 0;
+                transition: opacity 0.35s ease;
+              }
+          
+              .pt-edge-anim {
+                stroke: #94a3b8;
+                stroke-width: 1.8;
+              }
+          
+              .pt-edge-comp {
+                stroke: #d97706;
+                stroke-width: 1.8;
+              }
+          
+              .pt-edge-anim.pt-vis,
+              .pt-edge-comp.pt-vis {
+                opacity: 0.85;
+              }
+          
               /* Edge draw animation */
-              @keyframes ptEdgeDraw { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
-              .pt-edge-draw { stroke-dasharray: 200; stroke-dashoffset: 200; animation: ptEdgeDraw 0.4s ease-out forwards; }
+          
+              @keyframes ptEdgeDraw {
+                from { stroke-dashoffset: 200; }
+                to { stroke-dashoffset: 0; }
+              }
+          
+              .pt-edge-draw {
+                stroke-dasharray: 200;
+                stroke-dashoffset: 200;
+                animation: ptEdgeDraw 0.4s ease-out forwards;
+              }
+          
               /* Completion arrow glow */
-              @keyframes ptArrowGlow { 0%{filter:none} 50%{filter:drop-shadow(0 0 4px #059669)} 100%{filter:none} }
-              .pt-arrow-glow { animation: ptArrowGlow 0.6s ease; }
+          
+              @keyframes ptArrowGlow {
+                0% { filter:none }
+                50% { filter:drop-shadow(0 0 4px #059669) }
+                100% { filter:none }
+              }
+          
+              .pt-arrow-glow {
+                animation: ptArrowGlow 0.6s ease;
+              }
+          
             </style>
+          
           </defs>
 
           <!-- ════ EDGES (animated) ════ -->
-          <!-- Root → Level 1 -->
-          <path class="pt-edge-anim" data-pt-phase="1" d="M450,60 L290,100" marker-end="url(#pt-arr-blue)"/>
-          <path class="pt-edge-anim" data-pt-phase="1" d="M450,60 L610,100" marker-end="url(#pt-arr-blue)"/>
-          <!-- Level 1 → Level 2 -->
-          <path class="pt-edge-anim" data-pt-phase="2" d="M290,150 L120,197" marker-end="url(#pt-arr-blue)"/>
-          <path class="pt-edge-anim" data-pt-phase="2" d="M290,150 L311,197" marker-end="url(#pt-arr-blue)"/>
-          <path class="pt-edge-anim" data-pt-phase="2" d="M290,150 L500,197" marker-end="url(#pt-arr-blue)"/>
-          <path class="pt-edge-anim" data-pt-phase="2" d="M610,150 L710,197" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="1" d="M430,60 Q370,80 290,100" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="1" d="M470,60 Q530,80 610,100" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="2" d="M240,150 Q180,170 120,197" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="2" d="M290,150 Q300,170 311,197" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="2" d="M350,150 Q420,168 500,197" marker-end="url(#pt-arr-blue)"/>
+          <path class="pt-edge-anim" data-pt-phase="2" d="M640,150 Q675,170 710,197" marker-end="url(#pt-arr-blue)"/>
 
           <!-- ════ ACTION LABELS (animated) ════ -->
-          <!-- Decompose #1 label -->
           <g class="pt-anim" data-pt-phase="1" data-pt-d="0">
-            <rect x="396" y="63" width="108" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
-            <text x="450" y="78" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decompose</text>
-          </g>
-          <!-- Decompose #2 label -->
-          <g class="pt-anim" data-pt-phase="2" data-pt-d="0">
-            <rect x="225" y="155" width="108" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
-            <text x="279" y="170" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decompose</text>
+            <rect x="383" y="63" width="146" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
+            <text x="456" y="78" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decomposition #1</text>
           </g>
           <g class="pt-anim" data-pt-phase="2" data-pt-d="0">
-            <rect x="556" y="155" width="108" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
-            <text x="610" y="170" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decompose</text>
+            <rect x="206" y="155" width="146" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
+            <text x="279" y="170" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decomposition #2</text>
           </g>
-          <!-- Completion label -->
+          <g class="pt-anim" data-pt-phase="2" data-pt-d="0">
+            <rect x="537" y="155" width="146" height="22" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
+            <text x="610" y="170" text-anchor="middle" class="pt-action-label" fill="#4f46e5">Decomposition #2</text>
+          </g>
           <g class="pt-anim" data-pt-phase="3" data-pt-d="0">
-            <rect x="350" y="280" width="200" height="24" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
-            <text x="450" y="296" text-anchor="middle" class="pt-action-label" fill="#059669">Lemma Completion</text>
+            <rect x="247" y="275" width="124" height="20" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1"/>
+            <text x="309" y="289" text-anchor="middle" class="pt-action-label" fill="#b45309">Completion #1</text>
           </g>
-          <!-- Completion arrows (up from label to each base lemma) -->
-          <path class="pt-edge-anim" data-pt-phase="3" d="M400,280 L120,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M425,280 L311,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M475,280 L500,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M520,280 L710,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-comp" data-pt-phase="3" d="M270,275 Q200,260 120,245" stroke="#d97706" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-comp" data-pt-phase="3" d="M309,275 Q310,260 311,245" stroke="#d97706" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-comp" data-pt-phase="3" d="M348,275 Q420,260 500,245" stroke="#d97706" marker-end="url(#pt-arr-green)"/>
+
+          <g class="pt-anim" data-pt-phase="4" data-pt-d="0">
+            <rect x="648" y="275" width="124" height="20" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1"/>
+            <text x="710" y="289" text-anchor="middle" class="pt-action-label" fill="#b45309">Completion #2</text>
+          </g>
+          <path class="pt-edge-comp" data-pt-phase="4" d="M710,275 Q710,260 710,245" stroke="#d97706" marker-end="url(#pt-arr-green)"/>
 
           <!-- ════ NODES ════ -->
           <!-- Level 0: Root -->
@@ -244,33 +398,42 @@
             <text x="710" y="231" text-anchor="middle" class="pt-sublabel">count-1 element is unique</text>
           </g>
 
-          <!-- ════ LEGEND ════ -->
-          <g transform="translate(18,330)">
-            <rect x="0" y="0" width="14" height="14" rx="3" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,2" fill="#fef2f2"/>
-            <text x="20" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Unproved</text>
-            <rect x="95" y="0" width="14" height="14" rx="3" stroke="#6ee7b7" stroke-width="2" stroke-dasharray="4,2" fill="#f0fdf4"/>
-            <text x="115" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Pending</text>
-            <rect x="185" y="0" width="14" height="14" rx="3" stroke="#059669" stroke-width="2" fill="#ecfdf5"/>
-            <text x="205" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Proved</text>
-            <rect x="260" y="0" width="14" height="14" rx="3" stroke="#2563eb" stroke-width="2.5" fill="#eff6ff"/>
-            <text x="280" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Selected</text>
-            <text x="345" y="11" font-size="10" fill="#4f46e5" font-weight="600" font-family="'Noto Sans',sans-serif">↓ Decompose</text>
-            <text x="460" y="11" font-size="10" fill="#059669" font-weight="600" font-family="'Noto Sans',sans-serif">↑ Completion</text>
-          </g>
         </svg>
       </div>
 
+      <!-- ════ LEGEND (external HTML) ════ -->
+      <div id="pt-legend" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 24px;margin-top:0.5rem;margin-bottom:0.25rem;font-family:'Noto Sans','Inter',sans-serif;font-size:12px;color:#374151;">
+        <span style="display:inline-flex;align-items:center;gap:5px;">
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;border:2px dashed #dc2626;background:#fef2f2;"></span>
+          Unproved
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;">
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #059669;background:#ecfdf5;"></span>
+          Proved
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;">
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;border:2.5px solid #7c3aed;background:#f5f3ff;"></span>
+          Selected
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;color:#4f46e5;font-weight:600;">
+          ↓ Decomposition
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;color:#b45309;font-weight:600;">
+          ↑ Completion
+        </span>
+      </div>
+
       <!-- Controls: Replay + manual phase buttons -->
-      <div class="has-text-centered" style="margin-bottom:1rem;">
+      <div class="has-text-centered" style="margin-top:0.75rem;margin-bottom:1rem;">
         <button id="pt-replay" class="button is-small is-rounded is-light" title="Replay animation" style="margin-right:12px;">
           <span class="icon is-small"><i class="fas fa-redo"></i></span><span>Replay</span>
         </button>
         <div class="buttons has-addons is-centered" style="display:inline-flex;" id="pt-step-btns">
           <button class="button is-small is-rounded" data-pt-phase="0">Problem</button>
-          <button class="button is-small is-rounded" data-pt-phase="1">Decompose #1</button>
-          <button class="button is-small is-rounded" data-pt-phase="2">Decompose #2</button>
-          <button class="button is-small is-rounded" data-pt-phase="3">Completion</button>
-          <button class="button is-small is-rounded is-dark is-selected" data-pt-phase="4">Verified</button>
+          <button class="button is-small is-rounded" data-pt-phase="1">Decomposition #1</button>
+          <button class="button is-small is-rounded" data-pt-phase="2">Decomposition #2</button>
+          <button class="button is-small is-rounded" data-pt-phase="3">Completion #1</button>
+          <button class="button is-small is-rounded is-dark is-selected" data-pt-phase="4">Completion #2</button>
         </div>
       </div>
 
@@ -358,14 +521,14 @@
     </div>
 
     <div id="tp-container" style="width:100%;overflow:hidden;">
-      <svg id="tp-svg" viewBox="0 0 960 690" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+      <svg id="tp-svg" viewBox="0 0 960 670" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
         <defs>
-          <marker id="tp-a-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#94a3b8"/></marker>
-          <marker id="tp-a-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f46e5"/></marker>
-          <marker id="tp-a-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#d97706"/></marker>
-          <marker id="tp-a-emerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker>
-          <marker id="tp-a-pink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#db2777"/></marker>
-          <marker id="tp-a-violet" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#7c3aed"/></marker>
+          <marker id="tp-a-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#94a3b8"/></marker>
+          <marker id="tp-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
+          <marker id="tp-a-amber" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#d97706"/></marker>
+          <marker id="tp-a-emerald" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#059669"/></marker>
+          <marker id="tp-a-pink" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#db2777"/></marker>
+          <marker id="tp-a-violet" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#7c3aed"/></marker>
           <style>
             .tp-el { opacity: 0; transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1); transform: translateY(6px); }
             .tp-el.tp-show { opacity: 1; transform: translateY(0); }
@@ -396,7 +559,7 @@
         <!-- GPT Decompose -->
         <g class="tp-el" data-tp="data" data-tp-d="500">
           <rect x="230" y="75" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="310" y="99" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decompose</text>
+          <text x="310" y="99" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decomposition</text>
           <text x="310" y="115" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-Curated</text>
         </g>
 
@@ -406,180 +569,148 @@
 
         <!-- Decomposition Trajectories -->
         <g class="tp-el" data-tp="sft" data-tp-d="200">
-          <rect x="447" y="52" width="190" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.3"/>
-          <text x="542" y="76" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
+          <rect x="447" y="52" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="71" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
+          <text x="542" y="84" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~280K input-output pairs</text>
         </g>
 
         <!-- Decomposed Lemmas -->
         <g class="tp-el" data-tp="sft" data-tp-d="400">
-          <rect x="447" y="125" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
-          <text x="542" y="149" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <rect x="447" y="125" width="190" height="40" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.3"/>
+          <text x="542" y="144" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <text x="542" y="157" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">filtered by decomp. score</text>
         </g>
 
         <!-- Arrow lemmas → completion -->
-        <path class="tp-line" data-tp="sft" data-tp-d="600" d="M542,165 L542,192 L310,192 L310,210" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="600" d="M542,165 L542,185 L310,185 L310,210" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#tp-a-gray)"/>
 
         <!-- Gemini Completion -->
         <g class="tp-el" data-tp="sft" data-tp-d="800">
-          <rect x="230" y="210" width="160" height="58" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+          <rect x="230" y="210" width="160" height="58" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
           <text x="310" y="234" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Completion</text>
-          <text x="310" y="250" text-anchor="middle" fill="#db2777" font-size="9" class="tp-txt">Gemini-Curated</text>
+          <text x="310" y="250" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">Gemini-Curated</text>
         </g>
 
-        <path class="tp-line" data-tp="sft" data-tp-d="1000" d="M390,239 L445,239" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1000" d="M390,239 L445,239" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
         <!-- Completion Trajectories -->
         <g class="tp-el" data-tp="sft" data-tp-d="1100">
-          <rect x="447" y="219" width="190" height="40" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.3"/>
-          <text x="542" y="243" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
+          <rect x="447" y="219" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="238" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
+          <text x="542" y="251" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~150K input-output pairs</text>
         </g>
 
         <!-- Arrows to SFT model -->
-        <path class="tp-line" data-tp="sft" data-tp-d="1500" d="M637,72 L710,72 L710,155 L748,155" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
-        <path class="tp-line" data-tp="sft" data-tp-d="1600" d="M637,239 L710,239 L710,180 L748,180" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1500" d="M637,72 L710,72 L710,135 L748,135" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
+        <path class="tp-line" data-tp="sft" data-tp-d="1600" d="M637,239 L710,239 L710,160 L748,160" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
 
         <!-- SFT Model -->
         <g class="tp-el" data-tp="sft" data-tp-d="1900">
-          <rect x="750" y="128" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="840" y="160" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="840" y="178" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Qwen3-8B backbone</text>
-          <text x="840" y="194" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
+          <rect x="750" y="108" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+          <text x="840" y="140" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
+          <text x="840" y="158" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Qwen3-8B backbone</text>
+          <text x="840" y="174" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
         </g>
 
         <!-- ════════════════════════════════════════ -->
         <!-- DIVIDER                                 -->
         <!-- ════════════════════════════════════════ -->
-        <line class="tp-line" data-tp="rl-title" data-tp-d="0" x1="30" y1="320" x2="930" y2="320" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="5,5"/>
+        <line class="tp-line" data-tp="rl-title" data-tp-d="0" x1="30" y1="290" x2="930" y2="290" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="5,5"/>
 
         <!-- ════════════════════════════════════════ -->
-        <!-- STAGE 2: Hybrid RL (HIGHLIGHTED)        -->
+        <!-- STAGE 2: Hybrid RL — circular layout    -->
         <!-- ════════════════════════════════════════ -->
 
         <!-- Title -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="200">
-          <rect x="28" y="335" width="5" height="24" rx="2.5" fill="#d97706"/>
-          <text x="42" y="355" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
-          <text x="42" y="373" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion</text>
+          <rect x="28" y="305" width="5" height="24" rx="2.5" fill="#d97706"/>
+          <text x="42" y="325" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
+          <text x="42" y="343" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion</text>
         </g>
 
-        <!-- SFT Model (left) -->
+        <!-- ═══ TOP ROW ═══ -->
+        <g class="tp-el" data-tp="rl-grpo" data-tp-d="1400">
+          <rect x="222" y="360" width="196" height="44" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="320" y="379" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">GRPO Gradients</text>
+          <text x="320" y="395" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">decomposition reward</text>
+        </g>
+
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1200" d="M528,382 L420,382" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+
+        <g class="tp-el" data-tp="rl-grpo" data-tp-d="1000">
+          <polygon points="570,352 614,382 570,412 526,382" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="570" y="386" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600" class="tp-txt">Scorer</text>
+        </g>
+
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1600" d="M222,382 L140,382 L140,434" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-amber)"/>
+
+        <!-- ═══ MIDDLE ROW ═══ -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="500">
-          <rect x="30" y="394" width="150" height="68" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-          <text x="105" y="422" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="105" y="442" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">unified policy π</text>
+          <rect x="30" y="434" width="160" height="68" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+          <text x="110" y="462" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT Model</text>
+          <text x="110" y="480" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">unified policy π</text>
         </g>
 
-        <path class="tp-line" data-tp="rl-title" data-tp-d="700" d="M180,428 L228,428" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
+        <path class="tp-line" data-tp="rl-title" data-tp-d="700" d="M190,468 L248,468" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#tp-a-indigo)"/>
 
-        <!-- Decompose diamond -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="800">
-          <polygon points="268,400 308,428 268,456 228,428" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="268" y="424" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decompose</text>
-          <text x="268" y="438" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">rollout</text>
+          <rect x="250" y="446" width="140" height="44" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="320" y="465" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposition</text>
+          <text x="320" y="481" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">rollout</text>
         </g>
 
-        <!-- ═══ ON-POLICY: Lemma Decomposition (GRPO) ═══ -->
-        <g class="tp-el" data-tp="rl-grpo" data-tp-d="0">
-          <rect x="330" y="383" width="600" height="100" rx="10" fill="#fffbeb" fill-opacity="0.35" stroke="#d97706" stroke-width="2"/>
-          <rect x="343" y="388" width="170" height="20" rx="4" fill="#d97706"/>
-          <text x="350" y="402" fill="#fff" font-size="11" font-weight="700" class="tp-txt">On-Policy Decomposition</text>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="0" d="M390,468 L470,468" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#tp-a-gray)"/>
+
+        <g class="tp-el" data-tp="rl-grpo" data-tp-d="200">
+          <rect x="472" y="446" width="196" height="44" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="570" y="465" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <text x="570" y="481" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">filtered by decomp. score</text>
         </g>
 
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="300" d="M308,416 L378,416" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="400" d="M668,468 L738,468" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
 
-        <!-- Decomposition Trajectories (RL) -->
-        <g class="tp-el" data-tp="rl-grpo" data-tp-d="500">
-          <rect x="380" y="412" width="162" height="38" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="461" y="435" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomp. Trajectories</text>
+        <g class="tp-el" data-tp="rl-grpo" data-tp-d="600">
+          <rect x="740" y="446" width="140" height="44" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="810" y="465" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completion</text>
+          <text x="810" y="481" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">rollout</text>
         </g>
 
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="700" d="M542,431 L596,431" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-grpo" data-tp-d="800" d="M570,446 L570,412" fill="none" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#tp-a-violet)"/>
 
-        <!-- Compiler -->
-        <g class="tp-el" data-tp="rl-grpo" data-tp-d="900">
-          <polygon points="633,407 670,431 633,455 596,431" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="633" y="427" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600" class="tp-txt">Lean 4</text>
-          <text x="633" y="441" text-anchor="middle" fill="#7c3aed" font-size="8" class="tp-txt">Compiler</text>
+        <!-- ═══ BOTTOM ROW ═══ -->
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="0" d="M810,490 L810,554 L658,554" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+
+        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="200">
+          <rect x="590" y="532" width="140" height="44" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="660" y="551" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completed Proofs</text>
+          <text x="660" y="567" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">candidate proof tactics</text>
         </g>
 
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1100" d="M670,431 L730,431" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="400" d="M590,554 L554,554" fill="none" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#tp-a-violet)"/>
 
-        <!-- GRPO Gradients -->
-        <g class="tp-el" data-tp="rl-grpo" data-tp-d="1300">
-          <rect x="732" y="412" width="178" height="38" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
-          <text x="821" y="435" text-anchor="middle" fill="#92400e" font-size="13" font-weight="700" class="tp-txt">GRPO Gradients</text>
+        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="600">
+          <polygon points="510,524 554,554 510,584 466,554" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="510" y="558" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600" class="tp-txt">Compiler</text>
         </g>
 
-        <!-- GRPO annotation: WHY this matters -->
-        <g class="tp-el" data-tp="rl-grpo" data-tp-d="1500">
-          <text x="821" y="460" text-anchor="middle" fill="#d97706" font-size="9" font-weight="600" class="tp-txt">reward = decomposition score R</text>
-          <text x="821" y="473" text-anchor="middle" fill="#92400e" font-size="8.5" font-style="italic" class="tp-txt">continuous dense signal</text>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="800" d="M466,554 L420,554" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#tp-a-amber)"/>
+
+        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1000">
+          <rect x="222" y="532" width="196" height="44" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+          <text x="320" y="551" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">GRPO Gradients</text>
+          <text x="320" y="567" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">compilation reward</text>
         </g>
 
-        <!-- GRPO feedback arrow -->
-        <path class="tp-line" data-tp="rl-grpo" data-tp-d="1700" d="M821,412 L821,380 L105,380 L105,394" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-amber)"/>
-
-        <!-- ═══ OFF-POLICY: Lemma Completion (SFT Replay) ═══ -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="0">
-          <rect x="330" y="490" width="600" height="96" rx="10" fill="#fdf2f8" fill-opacity="0.35" stroke="#db2777" stroke-width="2"/>
-          <rect x="343" y="495" width="170" height="20" rx="4" fill="#db2777"/>
-          <text x="350" y="509" fill="#fff" font-size="11" font-weight="700" class="tp-txt">Off-Policy Completion</text>
-        </g>
-
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="300" d="M268,456 L268,530 L378,530" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
-
-        <!-- Decomposed Lemmas (RL) -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="500">
-          <rect x="380" y="512" width="162" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
-          <text x="461" y="535" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
-        </g>
-
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="700" d="M542,531 L592,531" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
-
-        <!-- Teacher Completion -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="900">
-          <rect x="594" y="512" width="140" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
-          <text x="664" y="528" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Teacher Completion</text>
-          <text x="664" y="543" text-anchor="middle" fill="#9d174d" font-size="9" class="tp-txt">Gemini · depth=20</text>
-        </g>
-
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1100" d="M734,531 L748,531" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#tp-a-pink)"/>
-
-        <!-- SFT Gradients -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1300">
-          <rect x="750" y="512" width="160" height="38" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="2.5"/>
-          <text x="830" y="535" text-anchor="middle" fill="#9d174d" font-size="13" font-weight="700" class="tp-txt">SFT Gradients</text>
-        </g>
-
-        <!-- SFT Replay annotation: WHY this matters -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1500">
-          <text x="830" y="560" text-anchor="middle" fill="#db2777" font-size="9" font-weight="600" class="tp-txt">replay high-quality proofs</text>
-          <text x="830" y="573" text-anchor="middle" fill="#9d174d" font-size="8.5" font-style="italic" class="tp-txt">stabilize via supervised signal</text>
-        </g>
-
-        <!-- Off-policy feedback arrow -->
-        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1700" d="M830,550 L910,550 L910,590 L105,590 L105,462" fill="none" stroke="#db2777" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-pink)"/>
-
-        <!-- Hybrid loss -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1900">
-          <rect x="22" y="475" width="190" height="30" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1" opacity="0.8"/>
-          <text x="117" y="495" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">𝒥 = 𝒥_GRPO + λ · 𝒥_SFT</text>
-        </g>
-
-        <!-- Online Lemma Augmentation label (on the vertical arrow from decompose to off-policy) -->
-        <g class="tp-el" data-tp="rl-offpolicy" data-tp-d="1800">
-          <rect x="275" y="480" width="88" height="16" rx="4" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
-          <text x="319" y="492" text-anchor="middle" fill="#059669" font-size="8" font-weight="600" class="tp-txt">+ add to 𝒫</text>
-        </g>
+        <path class="tp-line" data-tp="rl-offpolicy" data-tp-d="1200" d="M222,554 L140,554 L140,502" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#tp-a-amber)"/>
 
         <!-- ════════════════════════════════════════ -->
         <!-- FINAL MODEL                              -->
         <!-- ════════════════════════════════════════ -->
-        <path class="tp-line" data-tp="final" data-tp-d="0" d="M105,462 L105,630 L350,630" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#tp-a-indigo)"/>
+        <path class="tp-line" data-tp="final" data-tp-d="0" d="M110,502 L110,620 L350,620" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#tp-a-indigo)"/>
         <g class="tp-el" data-tp="final" data-tp-d="500">
-          <rect x="352" y="610" width="250" height="60" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
-          <text x="477" y="636" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="700" class="tp-txt">Final Model</text>
-          <text x="477" y="656" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
+          <rect x="352" y="598" width="250" height="56" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
+          <text x="477" y="622" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="700" class="tp-txt">Final Model</text>
+          <text x="477" y="640" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
         </g>
       </svg>
     </div>
@@ -772,7 +903,7 @@
         phase: 'Base lemma: count-1 element is unique',
         sorry: 'lemma precond_unique_count_one (nums : List Int) (h_precond : FindSingleNumber_precond nums)\n  {a b : Int} (ha : a ∈ nums) (hb : b ∈ nums) (hca : nums.count a = 1) (hcb : nums.count b = 1) :\n  a = b := by sorry',
         proved: 'lemma precond_unique_count_one (nums : List Int) (h_precond : FindSingleNumber_precond nums)\n  {a b : Int} (ha : a ∈ nums) (hb : b ∈ nums) (hca : nums.count a = 1) (hcb : nums.count b = 1) :\n  a = b := by\n  classical\n  unfold FindSingleNumber_precond at h_precond; rcases h_precond with ⟨_hall, huniq⟩\n  by_contra hne\n  let p : Int → Prop := fun x => nums.count x = 1\n  have haF : a ∈ nums.filter p := List.mem_filter.2 ⟨ha, by simp [p, hca]⟩\n  have hbF : b ∈ nums.filter p := List.mem_filter.2 ⟨hb, by simp [p, hcb]⟩\n  have two_le {α : Type} {l : List α} {a b : α} (ha : a ∈ l) (hb : b ∈ l) (hne : a ≠ b) : 2 ≤ l.length := by\n    induction l with\n    | nil => cases ha\n    | cons c tl ih =>\n      cases (by simpa using ha : a = c ∨ a ∈ tl) with\n      | inl hac => cases (by simpa using hb : b = c ∨ b ∈ tl) with\n        | inl hbc => exact (hne (by simpa [hac] using hbc.symm)).elim\n        | inr hb_tl => exact Nat.succ_le_succ (Nat.succ_le_of_lt (List.length_pos_of_mem hb_tl))\n      | inr ha_tl => cases (by simpa using hb : b = c ∨ b ∈ tl) with\n        | inl hbc => exact Nat.succ_le_succ (Nat.succ_le_of_lt (List.length_pos_of_mem ha_tl))\n        | inr hb_tl => exact le_trans (ih ha_tl hb_tl) (Nat.le_succ tl.length)\n  have hlen_ge : 2 ≤ (nums.filter p).length := two_le haF hbF hne\n  have hlen_eq_one : (nums.filter p).length = 1 := by\n    simp only [p]; exact (count_map_eq_aux nums).symm.trans huniq\n  exact Nat.not_succ_le_self 1 (by simpa [hlen_eq_one] using hlen_ge)',
-        provedAt: 3
+        provedAt: 4
       }
     };
 
@@ -782,24 +913,15 @@
     var animPlayed = false;
     var animating = false;
 
-    // Node state logic:
-    //   phase 0: root=sorry
-    //   phase 1: root=pending (decomposed, relies on children), L1=sorry
-    //   phase 2: root=pending, L1=pending, L2=sorry
-    //   phase 3: root=pending, L1=pending, L2=proved (completion)
-    //   phase 4: everything proved (bottom-up verification)
-    function getNodeState(nodeId, phase) {
-      var step = parseInt(document.querySelector('[data-pt-id="' + nodeId + '"]').getAttribute('data-pt-step'), 10);
-      if (step > phase) return 'hidden';
-      if (phase >= 4) return 'proved';
-      if (step === 2) return phase >= 3 ? 'proved' : 'sorry';
-      if (step === 1) return 'pending';
-      if (step === 0) return phase >= 1 ? 'pending' : 'sorry';
-      return 'sorry';
+    function isProvedAtPhase(nodeId, phase) {
+      var d = nodeData[nodeId];
+      return d && phase >= d.provedAt;
     }
 
-    function isProvedAtPhase(nodeId, phase) {
-      return getNodeState(nodeId, phase) === 'proved';
+    function setPhase(phase) {
+      currentPhase = phase;
+      updateTreeVisuals();
+      updatePhaseButtons();
     }
 
     function updatePhaseButtons() {
@@ -811,10 +933,11 @@
     }
 
     function updateTreeVisuals() {
+      // Nodes
       document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
         var id = g.getAttribute('data-pt-id');
         var step = parseInt(g.getAttribute('data-pt-step'), 10);
-        g.classList.remove('pt-sorry', 'pt-proved', 'pt-pending', 'pt-active', 'pt-flash');
+        g.classList.remove('pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
 
         var visible = (step <= currentPhase);
         if (!visible) {
@@ -825,15 +948,16 @@
           g.style.pointerEvents = 'auto';
           if (id === selectedNode) {
             g.classList.add('pt-active');
+          } else if (isProvedAtPhase(id, currentPhase)) {
+            g.classList.add('pt-proved');
           } else {
-            var state = getNodeState(id, currentPhase);
-            g.classList.add('pt-' + state);
+            g.classList.add('pt-sorry');
           }
         }
       });
 
-      // Edges
-      document.querySelectorAll('#pt-svg .pt-edge-anim').forEach(function(edge) {
+      // Edges (decompose + completion)
+      document.querySelectorAll('#pt-svg .pt-edge-anim, #pt-svg .pt-edge-comp').forEach(function(edge) {
         var ep = parseInt(edge.getAttribute('data-pt-phase'), 10);
         if (currentPhase >= ep) {
           edge.classList.add('pt-vis');
@@ -859,16 +983,18 @@
       animTimers = [];
       animating = false;
 
+      // Hide everything
       document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
-        g.classList.remove('pt-vis', 'pt-sorry', 'pt-proved', 'pt-pending', 'pt-active', 'pt-flash');
+        g.classList.remove('pt-vis', 'pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
         g.style.pointerEvents = 'none';
       });
-      document.querySelectorAll('#pt-svg .pt-edge-anim').forEach(function(e) {
+      document.querySelectorAll('#pt-svg .pt-edge-anim, #pt-svg .pt-edge-comp').forEach(function(e) {
         e.classList.remove('pt-vis', 'pt-edge-draw', 'pt-arrow-glow');
       });
       document.querySelectorAll('#pt-svg .pt-anim:not(.pt-node)').forEach(function(e) {
         e.classList.remove('pt-vis');
       });
+      // Remove any injected checkmarks
       document.querySelectorAll('#pt-svg .pt-checkmark').forEach(function(e) {
         e.remove();
       });
@@ -903,7 +1029,7 @@
       animating = true;
       var T = 0;
 
-      // ─── Phase 0: Root appears (sorry/unproved) ───
+      // ─── Phase 0: Root appears (sorry) ───
       sched(function() {
         var root = document.querySelector('[data-pt-id="root"]');
         root.classList.add('pt-vis', 'pt-sorry');
@@ -912,154 +1038,178 @@
         updatePhaseButtons();
       }, T);
 
-      T += 800;
+      T += 380;
 
       // ─── Phase 1: Decompose #1 — root → level 1 ───
       sched(function() {
         currentPhase = 1;
         updatePhaseButtons();
+
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="1"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
       }, T);
 
-      T += 200;
+      T += 100;
 
+      // Animate edges root → level 1
       sched(function() {
         document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="1"]').forEach(function(e, i) {
-          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw'); }, i * 100);
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-edge-draw');
+          }, i * 50);
         });
       }, T);
 
-      T += 250;
+      T += 120;
 
-      // Level 1 nodes appear as sorry
+      // Level 1 nodes slide in (staggered)
       sched(function() {
-        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
+        var l1nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]');
+        l1nodes.forEach(function(g, i) {
           setTimeout(function() {
             g.classList.add('pt-vis', 'pt-sorry');
             g.style.pointerEvents = 'auto';
-          }, i * 150);
+          }, i * 80);
         });
       }, T);
 
-      T += 350;
+      T += 180;
 
-      // Root transitions sorry → pending (light green dashed — relies on children)
+      // Root transitions sorry → proved
       sched(function() {
         var root = document.querySelector('[data-pt-id="root"]');
         root.classList.remove('pt-sorry');
-        root.classList.add('pt-pending');
+        root.classList.add('pt-proved', 'pt-flash');
+        addCheckmark(root);
       }, T);
 
-      T += 800;
+      T += 380;
 
       // ─── Phase 2: Decompose #2 — level 1 → level 2 ───
       sched(function() {
         currentPhase = 2;
         updatePhaseButtons();
+
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="2"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
       }, T);
 
-      T += 200;
+      T += 100;
 
+      // Animate edges level 1 → level 2
       sched(function() {
-        document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="2"]').forEach(function(e, i) {
-          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw'); }, i * 80);
+        var edges = document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="2"]');
+        edges.forEach(function(e, i) {
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-edge-draw');
+          }, i * 40);
         });
       }, T);
 
-      T += 200;
+      T += 100;
 
-      // Level 2 nodes appear as sorry
+      // Level 2 nodes slide in (staggered)
       sched(function() {
-        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]').forEach(function(g, i) {
+        var l2nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]');
+        l2nodes.forEach(function(g, i) {
           setTimeout(function() {
             g.classList.add('pt-vis', 'pt-sorry');
             g.style.pointerEvents = 'auto';
-          }, i * 120);
+          }, i * 60);
         });
       }, T);
 
-      T += 500;
+      T += 250;
 
-      // Level 1 transitions sorry → pending
+      // Level 1 transitions sorry → proved
       sched(function() {
         document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
           setTimeout(function() {
             g.classList.remove('pt-sorry');
-            g.classList.add('pt-pending');
-          }, i * 150);
+            g.classList.add('pt-proved', 'pt-flash');
+            addCheckmark(g);
+          }, i * 80);
         });
       }, T);
 
-      T += 800;
+      T += 380;
 
-      // ─── Phase 3: Lemma Completion — leaf nodes sorry → proved ───
+      // ─── Phase 3: Completion #1 — first 3 leaf nodes sorry → proved ───
       sched(function() {
         currentPhase = 3;
         updatePhaseButtons();
+
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="3"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
       }, T);
 
-      T += 300;
+      T += 120;
 
+      // Completion #1: show lines + arrows (no pt-edge-draw so line is always visible)
       sched(function() {
-        document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="3"]').forEach(function(e, i) {
-          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw', 'pt-arrow-glow'); }, i * 100);
+        var compEdges = document.querySelectorAll('#pt-svg .pt-edge-comp[data-pt-phase="3"]');
+        compEdges.forEach(function(e, i) {
+          setTimeout(function() {
+            e.classList.add('pt-vis', 'pt-arrow-glow');
+          }, i * 60);
         });
       }, T);
 
-      T += 400;
+      T += 200;
 
-      // Leaf nodes flash sorry → proved
-      sched(function() {
-        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]').forEach(function(g, i) {
-          setTimeout(function() {
+      // First 3 leaf nodes flash sorry → proved (staggered)
+      var comp1Nodes = ['filterlist', 'exists_one', 'findunique'];
+      comp1Nodes.forEach(function(nid, i) {
+        sched(function() {
+          var g = document.querySelector('[data-pt-id="' + nid + '"]');
+          if (g) {
             g.classList.remove('pt-sorry');
             g.classList.add('pt-proved', 'pt-flash');
             addCheckmark(g);
-          }, i * 150);
-        });
-      }, T);
+          }
+        }, T + i * 200);
+      });
 
-      T += 800;
+      T += comp1Nodes.length * 200 + 200;
 
-      // ─── Phase 4: Bottom-up verification — pending → proved ───
+      // ─── Phase 4: Completion #2 — precond_unique sorry → proved ───
       sched(function() {
         currentPhase = 4;
         updatePhaseButtons();
-      }, T);
 
-      T += 100;
-
-      // Level 1 nodes: pending → proved (bottom-up)
-      sched(function() {
-        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
-          setTimeout(function() {
-            g.classList.remove('pt-pending');
-            g.classList.add('pt-proved', 'pt-flash');
-            addCheckmark(g);
-          }, i * 200);
+        document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="4"]').forEach(function(el) {
+          el.classList.add('pt-vis');
         });
       }, T);
 
-      T += 500;
+      T += 120;
 
-      // Root: pending → proved
+      // Completion #2: show line + arrow
       sched(function() {
-        var root = document.querySelector('[data-pt-id="root"]');
-        root.classList.remove('pt-pending');
-        root.classList.add('pt-proved', 'pt-flash');
-        addCheckmark(root);
+        var compEdges = document.querySelectorAll('#pt-svg .pt-edge-comp[data-pt-phase="4"]');
+        compEdges.forEach(function(e) {
+          e.classList.add('pt-vis', 'pt-arrow-glow');
+        });
       }, T);
 
-      T += 700;
+      T += 200;
 
+      // precond_unique flash sorry → proved
+      sched(function() {
+        var g = document.querySelector('[data-pt-id="precond_unique"]');
+        if (g) {
+          g.classList.remove('pt-sorry');
+          g.classList.add('pt-proved', 'pt-flash');
+          addCheckmark(g);
+        }
+      }, T);
+
+      T += 320;
+
+      // Animation done
       sched(function() {
         animating = false;
       }, T);
@@ -1071,20 +1221,16 @@
       var d = nodeData[nodeId];
       if (!d) return;
 
-      var state = getNodeState(nodeId, currentPhase);
-      var code = (state === 'proved') ? d.proved : d.sorry;
+      var proved = isProvedAtPhase(nodeId, currentPhase);
+      var code = proved ? d.proved : d.sorry;
       var titleEl = document.getElementById('pt-code-title');
       var statusEl = document.getElementById('pt-code-status');
       var codeEl = document.getElementById('pt-code-content');
 
       titleEl.textContent = d.title;
-      if (state === 'proved') {
-        statusEl.innerHTML = '<span style="color:#059669;font-weight:600;">✓ Proved</span>';
-      } else if (state === 'pending') {
-        statusEl.innerHTML = '<span style="color:#6ee7b7;font-weight:600;">⏳ Pending</span>';
-      } else {
-        statusEl.innerHTML = '<span style="color:#dc2626;font-weight:600;">✗ Unproved</span>';
-      }
+      statusEl.innerHTML = proved
+        ? '<span style="color:#059669;font-weight:600;">✓ Proved</span>'
+        : '<span style="color:#dc2626;font-weight:600;">✗ Sorry</span>';
       codeEl.textContent = code;
       if (window.Lean4Highlighter) {
         Lean4Highlighter.highlightAll(document.getElementById('pt-code-body'));
@@ -1176,11 +1322,11 @@
     //   t=12000  → "rl-offpolicy" (off-policy path)
     var phases = [
       { group: 'data',          start: 0,     dur: 600 },
-      { group: 'sft',           start: 1200,  dur: 2200 },
-      { group: 'rl-title',      start: 3800,  dur: 1000 },
-      { group: 'rl-grpo',       start: 5000,  dur: 2200 },
-      { group: 'rl-offpolicy',  start: 7500,  dur: 2200 },
-      { group: 'final',          start: 10500, dur: 800 },
+      { group: 'sft',           start: 1200, dur: 2200 },
+      { group: 'rl-title',      start: 3800, dur: 1000 },
+      { group: 'rl-grpo',       start: 5000, dur: 2200 },
+      { group: 'rl-offpolicy',  start: 7500, dur: 2200 },
+      { group: 'final',         start: 10500, dur: 800 },
     ];
 
     function reset() {
