@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" width="960" height="340">
+  <defs>
+    <marker id="a-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#64748b"/></marker>
+    <marker id="a-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f46e5"/></marker>
+    <marker id="a-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#d97706"/></marker>
+    <marker id="a-emerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker>
+    <marker id="a-pink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#db2777"/></marker>
+    <style>
+      text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="340" fill="white" rx="8"/>
+
+  <!-- Title -->
+  <rect x="28" y="18" width="5" height="24" rx="2.5" fill="#4f46e5"/>
+  <text x="42" y="36" fill="#1e293b" font-size="20" font-weight="700">Stage 1: Supervised Fine-Tuning (SFT)</text>
+  <text x="42" y="54" fill="#94a3b8" font-size="11">Distill frontier model capabilities into a unified Qwen3-8B policy</text>
+
+  <!-- Formal Problems -->
+  <rect x="30" y="80" width="150" height="65" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="55" y="106" font-size="16">📋</text>
+  <text x="76" y="104" fill="#1e293b" font-size="12" font-weight="600">Formal Problems</text>
+  <text x="76" y="120" fill="#64748b" font-size="9">LeetCode + OpenCodeInstruct</text>
+  <rect x="70" y="148" width="72" height="18" rx="9" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="106" y="160" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600">~5K problems</text>
+
+  <!-- Arrow -->
+  <path d="M180,112 L220,112" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#a-gray)"/>
+
+  <!-- GPT Decompose -->
+  <rect x="222" y="82" width="175" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+  <text x="309" y="106" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="600">Lemma-Decompose</text>
+  <text x="309" y="122" text-anchor="middle" fill="#6366f1" font-size="9.5" font-weight="500">GPT-Curated · depth=128 · w=8</text>
+
+  <!-- Arrows from decompose -->
+  <path d="M397,100 L458,82" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+  <path d="M397,120 L458,152" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+
+  <!-- Decomposition Trajectories -->
+  <rect x="460" y="58" width="200" height="48" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+  <text x="560" y="78" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Decomposition Trajectories</text>
+  <text x="560" y="94" text-anchor="middle" fill="#92400e" font-size="9">input-output pairs</text>
+  <rect x="530" y="110" width="58" height="18" rx="9" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
+  <text x="559" y="122" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700">~281K</text>
+
+  <!-- Decomposed Lemmas -->
+  <rect x="460" y="137" width="200" height="48" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="560" y="157" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Decomposed Lemmas</text>
+  <text x="560" y="173" text-anchor="middle" fill="#065f46" font-size="9">intermediate sub-goals</text>
+  <rect x="532" y="189" width="54" height="18" rx="9" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="559" y="201" text-anchor="middle" fill="#065f46" font-size="10" font-weight="700">~29K</text>
+
+  <!-- Arrow from lemmas to completion -->
+  <path d="M560,185 L560,216 L309,216 L309,230" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#a-emerald)"/>
+
+  <!-- Gemini Completion -->
+  <rect x="222" y="228" width="175" height="55" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+  <text x="309" y="250" text-anchor="middle" fill="#1e293b" font-size="13" font-weight="600">Lemma-Completion</text>
+  <text x="309" y="268" text-anchor="middle" fill="#db2777" font-size="9.5" font-weight="500">Gemini-Curated · depth=20 · w=8</text>
+
+  <!-- Arrow to completion trajectories -->
+  <path d="M397,255 L458,255" fill="none" stroke="#db2777" stroke-width="1.8" marker-end="url(#a-pink)"/>
+
+  <!-- Completion Trajectories -->
+  <rect x="460" y="230" width="200" height="48" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+  <text x="560" y="250" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Completion Trajectories</text>
+  <text x="560" y="266" text-anchor="middle" fill="#92400e" font-size="9">input-output pairs</text>
+  <rect x="532" y="282" width="54" height="18" rx="9" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
+  <text x="559" y="294" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700">~18K</text>
+
+  <!-- Data decontamination -->
+  <rect x="462" y="305" width="130" height="20" rx="4" fill="none" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="3,3"/>
+  <text x="527" y="318" text-anchor="middle" fill="#94a3b8" font-size="8.5">+ data de-contamination</text>
+
+  <!-- Arrows to SFT model -->
+  <path d="M660,82 L730,82 L730,168 L768,168" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#a-amber)"/>
+  <path d="M660,254 L730,254 L730,195 L768,195" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#a-amber)"/>
+
+  <!-- SFT-S1 Model -->
+  <rect x="768" y="140" width="170" height="85" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+  <text x="853" y="172" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700">SFT-S1 Model</text>
+  <text x="853" y="192" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500">Qwen3-8B backbone</text>
+  <text x="853" y="210" text-anchor="middle" fill="#94a3b8" font-size="9">decomposition + completion</text>
+</svg>

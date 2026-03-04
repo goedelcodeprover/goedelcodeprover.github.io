@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training Pipeline — Decompose and Conquer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1117; font-family: 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif; display: flex; justify-content: center; padding: 24px 12px; min-height: 100vh; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  .container { max-width: 1000px; width: 100%; }
+  h2 { color: #e2e8f0; font-size: 22px; font-weight: 700; text-align: center; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .subtitle { color: #64748b; font-size: 13px; text-align: center; margin-bottom: 20px; }
+
+  .controls { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .step-btn {
+    background: #1a1d27; color: #64748b; border: 1px solid #2a2d3a; border-radius: 20px;
+    padding: 6px 16px; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  .step-btn.active-sft { background: #6366f1; color: #e2e8f0; border-color: transparent; font-weight: 600; }
+  .step-btn.active-rl { background: #f59e0b; color: #0f1117; border-color: transparent; font-weight: 600; }
+  .step-btn.visited-sft { background: rgba(99,102,241,0.2); color: #e2e8f0; }
+  .step-btn.visited-rl { background: rgba(245,158,11,0.2); color: #e2e8f0; }
+  .auto-btn { margin-left: 8px; }
+  .auto-btn.playing { background: #10b981; color: #e2e8f0; border-color: #10b981; }
+
+  .svg-wrap { background: #0f1117; border-radius: 12px; overflow: hidden; }
+  .svg-wrap svg { display: block; width: 100%; height: auto; }
+
+  .step-desc {
+    text-align: center; color: #94a3b8; font-size: 12px; margin-top: 12px;
+    padding: 8px 16px; background: #1a1d27; border-radius: 8px;
+  }
+  .step-desc .highlight { color: #e2e8f0; }
+  .step-desc .dim { color: #64748b; }
+
+  /* SVG animation classes */
+  .fade-in { opacity: 0; transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4,0,0.2,1); transform: scale(0.9); }
+  .fade-in.show { opacity: 1; transform: scale(1); }
+  .connector-fade { opacity: 0; transition: opacity 0.4s ease; }
+  .connector-fade.show { opacity: 0.85; }
+  .glow-pulse { animation: glowPulse 2s ease-in-out infinite alternate; }
+  @keyframes glowPulse { from { opacity: 0.3; } to { opacity: 0.6; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Training Pipeline</h2>
+  <p class="subtitle">Supervised Initialization → Hybrid Reinforcement Learning</p>
+
+  <div class="controls" id="controls"></div>
+
+  <div class="svg-wrap">
+    <svg id="diagram" viewBox="0 0 950 690" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#475569"/></marker>
+        <marker id="a-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#6366f1"/></marker>
+        <marker id="a-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f59e0b"/></marker>
+        <marker id="a-emerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#10b981"/></marker>
+        <marker id="a-pink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#ec4899"/></marker>
+        <marker id="a-violet" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#8b5cf6"/></marker>
+        <filter id="glow-indigo"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="glow-amber"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- ══════ STAGE 1: SFT ══════ -->
+      <!-- Section title -->
+      <g data-step="0" class="fade-in">
+        <rect x="38" y="14" width="4" height="22" rx="2" fill="#6366f1"/>
+        <text x="52" y="30" fill="#6366f1" font-size="18" font-weight="700" font-family="Inter, system-ui, sans-serif">Stage 1: Supervised Fine-Tuning (SFT)</text>
+        <text x="52" y="48" fill="#64748b" font-size="11" font-family="Inter, system-ui, sans-serif">Distill frontier model capabilities into a unified policy</text>
+      </g>
+
+      <!-- Formal Problems -->
+      <g data-step="1" class="fade-in" data-delay="100">
+        <rect x="40" y="68" width="145" height="60" rx="12" fill="rgba(100,116,139,0.15)" stroke="#475569" stroke-width="1.5"/>
+        <text x="60" y="92" font-size="15">📋</text>
+        <text x="82" y="90" fill="#e2e8f0" font-size="12" font-weight="600" font-family="Inter, system-ui, sans-serif">Formal Problems</text>
+        <text x="82" y="106" fill="#94a3b8" font-size="9.5" font-family="Inter, system-ui, sans-serif">LeetCode + OpenCodeInstruct</text>
+        <!-- badge -->
+        <rect x="72" y="133" width="80" height="18" rx="9" fill="rgba(148,163,184,0.15)"/>
+        <text x="112" y="144" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600" font-family="Inter, system-ui, sans-serif">~5K problems</text>
+      </g>
+
+      <!-- Arrow to decompose -->
+      <path data-step="1" data-delay="200" class="connector-fade" d="M185,98 L225,98" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a-gray)"/>
+
+      <!-- GPT Lemma-Decompose -->
+      <g data-step="1" class="fade-in" data-delay="300">
+        <rect x="225" y="72" width="170" height="52" rx="12" fill="rgba(99,102,241,0.12)" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="310" y="93" text-anchor="middle" fill="#e2e8f0" font-size="12.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Lemma-Decompose</text>
+        <text x="310" y="108" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">GPT-Curated · depth=128 · width=8</text>
+      </g>
+
+      <!-- Arrows from decompose to trajectories -->
+      <path data-step="2" data-delay="50" class="connector-fade" d="M395,85 L450,70" fill="none" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+      <path data-step="2" data-delay="100" class="connector-fade" d="M395,108 L450,140" fill="none" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+
+      <!-- Decomposition trajectories -->
+      <g data-step="2" class="fade-in" data-delay="150">
+        <rect x="450" y="48" width="195" height="44" rx="12" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="547" y="66" text-anchor="middle" fill="#e2e8f0" font-size="11.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Decomposition Trajectories</text>
+        <text x="547" y="80" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">input-output pairs</text>
+        <rect x="517" y="96" width="58" height="17" rx="8.5" fill="rgba(245,158,11,0.15)"/>
+        <text x="546" y="107" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600" font-family="Inter, system-ui, sans-serif">~281K</text>
+      </g>
+
+      <!-- Decomposed Lemmas -->
+      <g data-step="2" class="fade-in" data-delay="250">
+        <rect x="450" y="122" width="195" height="44" rx="12" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.5"/>
+        <text x="547" y="140" text-anchor="middle" fill="#e2e8f0" font-size="11.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Decomposed Lemmas</text>
+        <text x="547" y="154" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">intermediate sub-goals</text>
+        <rect x="518" y="170" width="56" height="17" rx="8.5" fill="rgba(16,185,129,0.15)"/>
+        <text x="546" y="181" text-anchor="middle" fill="#10b981" font-size="10" font-weight="600" font-family="Inter, system-ui, sans-serif">~29K</text>
+      </g>
+
+      <!-- Arrow from decomposed lemmas to completion -->
+      <path data-step="2" data-delay="350" class="connector-fade" d="M547,166 L547,196 L310,196 L310,210" fill="none" stroke="#10b981" stroke-width="1.8" marker-end="url(#a-emerald)"/>
+
+      <!-- Gemini Completion -->
+      <g data-step="2" class="fade-in" data-delay="400">
+        <rect x="225" y="210" width="170" height="50" rx="12" fill="rgba(236,72,153,0.1)" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="310" y="230" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600" font-family="Inter, system-ui, sans-serif">Lemma-Completion</text>
+        <text x="310" y="245" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">Gemini-Curated · depth=20 · width=8</text>
+      </g>
+
+      <!-- Arrow from completion to trajectories -->
+      <path data-step="2" data-delay="500" class="connector-fade" d="M395,235 L450,235" fill="none" stroke="#ec4899" stroke-width="1.8" marker-end="url(#a-pink)"/>
+
+      <!-- Completion trajectories -->
+      <g data-step="2" class="fade-in" data-delay="550">
+        <rect x="450" y="210" width="195" height="44" rx="12" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="547" y="228" text-anchor="middle" fill="#e2e8f0" font-size="11.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Completion Trajectories</text>
+        <text x="547" y="242" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">input-output pairs</text>
+        <rect x="520" y="258" width="54" height="17" rx="8.5" fill="rgba(245,158,11,0.15)"/>
+        <text x="547" y="269" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600" font-family="Inter, system-ui, sans-serif">~18K</text>
+      </g>
+
+      <!-- Data decontamination -->
+      <g data-step="2" class="fade-in" data-delay="600" style="opacity:0.6">
+        <rect x="452" y="280" width="130" height="20" rx="4" fill="none" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <text x="517" y="293" text-anchor="middle" fill="#64748b" font-size="8.5" font-family="Inter, system-ui, sans-serif">+ data de-contamination</text>
+      </g>
+
+      <!-- Arrows to SFT model -->
+      <path data-step="2" data-delay="700" class="connector-fade" d="M645,70 L720,70 L720,170 L760,170" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#a-amber)"/>
+      <path data-step="2" data-delay="750" class="connector-fade" d="M645,235 L720,235 L720,190 L760,190" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#a-amber)"/>
+
+      <!-- SFT-S1 Model -->
+      <g data-step="2" class="fade-in" data-delay="850">
+        <rect x="756" y="138" width="164" height="80" rx="14" fill="rgba(99,102,241,0.15)" stroke="#818cf8" stroke-width="2" filter="url(#glow-indigo)"/>
+        <text x="838" y="168" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700" font-family="Inter, system-ui, sans-serif">SFT-S1 Model</text>
+        <text x="838" y="188" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Inter, system-ui, sans-serif">Qwen3-8B backbone</text>
+        <text x="838" y="204" text-anchor="middle" fill="#64748b" font-size="9" font-family="Inter, system-ui, sans-serif">decomposition + completion</text>
+      </g>
+
+      <!-- ══════ DIVIDER ══════ -->
+      <line data-step="3" data-delay="0" class="connector-fade" x1="30" y1="320" x2="920" y2="320" stroke="#2a2d3a" stroke-width="1" stroke-dasharray="4,6" style="opacity:0.5"/>
+
+      <!-- ══════ STAGE 2: RL ══════ -->
+      <g data-step="3" class="fade-in" data-delay="100">
+        <rect x="38" y="335" width="4" height="22" rx="2" fill="#f59e0b"/>
+        <text x="52" y="351" fill="#f59e0b" font-size="18" font-weight="700" font-family="Inter, system-ui, sans-serif">Stage 2: Hybrid Reinforcement Learning</text>
+        <text x="52" y="369" fill="#64748b" font-size="11" font-family="Inter, system-ui, sans-serif">On-policy GRPO for decomposition + Off-policy SFT for completion</text>
+      </g>
+
+      <!-- SFT-S1 Model (left) -->
+      <g data-step="3" class="fade-in" data-delay="200">
+        <rect x="40" y="395" width="145" height="68" rx="14" fill="rgba(99,102,241,0.15)" stroke="#818cf8" stroke-width="2"/>
+        <text x="112" y="423" text-anchor="middle" fill="#e2e8f0" font-size="13.5" font-weight="700" font-family="Inter, system-ui, sans-serif">SFT-S1 Model</text>
+        <text x="112" y="442" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Inter, system-ui, sans-serif">unified policy π</text>
+      </g>
+
+      <!-- Arrow to decompose diamond -->
+      <path data-step="3" data-delay="350" class="connector-fade" d="M185,429 L235,429" fill="none" stroke="#6366f1" stroke-width="1.8" marker-end="url(#a-indigo)"/>
+
+      <!-- Decompose diamond -->
+      <g data-step="3" class="fade-in" data-delay="400">
+        <polygon points="270,400 308,429 270,458 232,429" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="270" y="426" text-anchor="middle" fill="#e2e8f0" font-size="10.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Decompose</text>
+        <text x="270" y="440" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="Inter, system-ui, sans-serif">rollout</text>
+      </g>
+
+      <!-- On-Policy region -->
+      <g data-step="3" class="fade-in" data-delay="500">
+        <rect x="328" y="385" width="570" height="85" rx="8" fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.3"/>
+        <text x="348" y="401" fill="#f59e0b" font-size="11" font-weight="600" opacity="0.7" font-family="Inter, system-ui, sans-serif">On-Policy (GRPO)</text>
+      </g>
+
+      <!-- Arrow to decomposition trajectories -->
+      <path data-step="3" data-delay="550" class="connector-fade" d="M308,418 L375,418" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#a-amber)"/>
+
+      <!-- Decomposition trajectories (RL) -->
+      <g data-step="3" class="fade-in" data-delay="600">
+        <rect x="375" y="405" width="175" height="38" rx="10" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1.3"/>
+        <text x="462" y="428" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600" font-family="Inter, system-ui, sans-serif">Decomposition Trajectories</text>
+      </g>
+
+      <!-- Arrow to compiler -->
+      <path data-step="3" data-delay="700" class="connector-fade" d="M550,424 L608,424" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#a-amber)"/>
+
+      <!-- Compiler diamond -->
+      <g data-step="3" class="fade-in" data-delay="750">
+        <polygon points="645,400 680,424 645,448 610,424" fill="rgba(139,92,246,0.35)" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="645" y="420" text-anchor="middle" fill="#e2e8f0" font-size="9.5" font-weight="600" font-family="Inter, system-ui, sans-serif">Lean 4</text>
+        <text x="645" y="434" text-anchor="middle" fill="#c4b5fd" font-size="8" font-family="Inter, system-ui, sans-serif">Compiler</text>
+      </g>
+
+      <!-- Arrow to GRPO -->
+      <path data-step="3" data-delay="850" class="connector-fade" d="M680,424 L735,424" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#a-amber)"/>
+
+      <!-- GRPO Gradients -->
+      <g data-step="3" class="fade-in" data-delay="900">
+        <rect x="735" y="405" width="145" height="38" rx="10" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="807" y="428" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600" font-family="Inter, system-ui, sans-serif">GRPO Gradients</text>
+        <text x="807" y="454" text-anchor="middle" fill="#f59e0b" font-size="9" font-style="italic" font-family="Inter, system-ui, sans-serif">reward = decomposition score R</text>
+        <text x="807" y="465" text-anchor="middle" fill="#64748b" font-size="8" font-family="Inter, system-ui, sans-serif">(continuous, dense signal)</text>
+      </g>
+
+      <!-- Off-Policy region -->
+      <g data-step="3" class="fade-in" data-delay="1000">
+        <rect x="328" y="490" width="570" height="95" rx="8" fill="none" stroke="#ec4899" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.3"/>
+        <text x="348" y="506" fill="#ec4899" font-size="11" font-weight="600" opacity="0.7" font-family="Inter, system-ui, sans-serif">Off-Policy (SFT Replay)</text>
+      </g>
+
+      <!-- Arrow from decompose down -->
+      <path data-step="3" data-delay="1100" class="connector-fade" d="M270,458 L270,535 L375,535" fill="none" stroke="#10b981" stroke-width="1.8" marker-end="url(#a-emerald)"/>
+
+      <!-- Decomposed Lemmas (RL) -->
+      <g data-step="3" class="fade-in" data-delay="1150">
+        <rect x="375" y="516" width="155" height="38" rx="10" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.3"/>
+        <text x="452" y="539" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600" font-family="Inter, system-ui, sans-serif">Decomposed Lemmas</text>
+      </g>
+
+      <!-- Arrow to Gemini -->
+      <path data-step="3" data-delay="1250" class="connector-fade" d="M530,535 L580,535" fill="none" stroke="#10b981" stroke-width="1.8" marker-end="url(#a-emerald)"/>
+
+      <!-- Gemini completion (RL) -->
+      <g data-step="3" class="fade-in" data-delay="1300">
+        <rect x="580" y="516" width="160" height="38" rx="10" fill="rgba(100,116,139,0.12)" stroke="#64748b" stroke-width="1.3"/>
+        <text x="660" y="531" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600" font-family="Inter, system-ui, sans-serif">Gemini Completion</text>
+        <text x="660" y="545" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Inter, system-ui, sans-serif">teacher model · depth=20</text>
+      </g>
+
+      <!-- Arrow to SFT gradients -->
+      <path data-step="3" data-delay="1400" class="connector-fade" d="M740,535 L755,535" fill="none" stroke="#ec4899" stroke-width="1.8" marker-end="url(#a-pink)"/>
+
+      <!-- SFT Gradients -->
+      <g data-step="3" class="fade-in" data-delay="1450">
+        <rect x="735" y="516" width="145" height="38" rx="10" fill="rgba(236,72,153,0.12)" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="807" y="539" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600" font-family="Inter, system-ui, sans-serif">SFT Gradients</text>
+        <text x="807" y="565" text-anchor="middle" fill="#ec4899" font-size="9" font-style="italic" font-family="Inter, system-ui, sans-serif">stabilize completion ability</text>
+        <text x="807" y="576" text-anchor="middle" fill="#64748b" font-size="8" font-family="Inter, system-ui, sans-serif">(high-quality replay)</text>
+      </g>
+
+      <!-- Feedback arrows (dashed) -->
+      <path data-step="3" data-delay="1550" class="connector-fade" d="M807,405 L807,380 L112,380 L112,395" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#a-amber)"/>
+      <path data-step="3" data-delay="1650" class="connector-fade" d="M807,554 L895,554 L895,600 L112,600 L112,463" fill="none" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#a-pink)"/>
+
+      <!-- Hybrid loss formula -->
+      <g data-step="3" class="fade-in" data-delay="1700">
+        <rect x="22" y="472" width="185" height="34" rx="8" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1" opacity="0.7"/>
+        <text x="114" y="491" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">𝒥 = 𝒥_GRPO + λ · 𝒥_SFT</text>
+        <text x="114" y="520" text-anchor="middle" fill="#64748b" font-size="8.5" font-family="Inter, system-ui, sans-serif">+ online lemma augmentation</text>
+      </g>
+
+      <!-- ══════ FINAL MODEL ══════ -->
+      <g data-step="4" class="fade-in" data-delay="0">
+        <rect x="325" y="635" width="310" height="48" rx="14" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2"/>
+        <text x="480" y="654" text-anchor="middle" fill="#34d399" font-size="15" font-weight="700" font-family="Inter, system-ui, sans-serif">Final Unified Policy</text>
+        <text x="480" y="672" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Inter, system-ui, sans-serif">decomposition + completion · Qwen3-8B</text>
+      </g>
+      <path data-step="4" data-delay="200" class="connector-fade" d="M112,463 L112,659 L325,659" fill="none" stroke="#10b981" stroke-width="1.8" stroke-dasharray="6,4" marker-end="url(#a-emerald)"/>
+    </svg>
+  </div>
+
+  <div class="step-desc" id="stepDesc"></div>
+</div>
+
+<script>
+(function() {
+  const STEPS = [
+    { label: 'Overview', desc: 'Training Pipeline Overview', group: 'sft' },
+    { label: 'Data', desc: 'Data Curation: 5K formal problems from LeetCode & OpenCodeInstruct', group: 'sft' },
+    { label: 'SFT', desc: 'Supervised Fine-Tuning: distill GPT & Gemini into Qwen3-8B', group: 'sft' },
+    { label: 'RL', desc: 'Hybrid RL: GRPO for decomposition + SFT replay for completion', group: 'rl' },
+    { label: 'Full', desc: 'Complete Pipeline → Final Unified Policy', group: 'rl' },
+  ];
+
+  let current = 0;
+  let autoTimer = null;
+
+  const controls = document.getElementById('controls');
+  const desc = document.getElementById('stepDesc');
+
+  // Build buttons
+  STEPS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'step-btn';
+    btn.textContent = s.label;
+    btn.onclick = () => { stopAuto(); goTo(i); };
+    btn.id = 'btn-' + i;
+    controls.appendChild(btn);
+  });
+  // Auto button
+  const autoBtn = document.createElement('button');
+  autoBtn.className = 'step-btn auto-btn';
+  autoBtn.textContent = '▶ Auto';
+  autoBtn.onclick = () => {
+    if (autoTimer) { stopAuto(); return; }
+    goTo(0);
+    autoBtn.textContent = '▶ Playing';
+    autoBtn.classList.add('playing');
+    autoTimer = setInterval(() => {
+      if (current >= STEPS.length - 1) { stopAuto(); return; }
+      goTo(current + 1);
+    }, 3000);
+  };
+  controls.appendChild(autoBtn);
+
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    autoBtn.textContent = '▶ Auto';
+    autoBtn.classList.remove('playing');
+  }
+
+  function goTo(step) {
+    current = step;
+    updateVisibility();
+    updateButtons();
+    updateDesc();
+  }
+
+  function updateVisibility() {
+    document.querySelectorAll('[data-step]').forEach(el => {
+      const s = parseInt(el.getAttribute('data-step'));
+      const delay = parseInt(el.getAttribute('data-delay') || '0');
+      if (s <= current) {
+        setTimeout(() => el.classList.add('show'), delay);
+      } else {
+        el.classList.remove('show');
+      }
+    });
+  }
+
+  function updateButtons() {
+    STEPS.forEach((s, i) => {
+      const btn = document.getElementById('btn-' + i);
+      btn.className = 'step-btn';
+      if (i === current) {
+        btn.classList.add(s.group === 'rl' ? 'active-rl' : 'active-sft');
+      } else if (i < current) {
+        btn.classList.add(s.group === 'rl' ? 'visited-rl' : 'visited-sft');
+      }
+    });
+  }
+
+  function updateDesc() {
+    const s = STEPS[current];
+    desc.innerHTML = 'Step ' + (current + 1) + '/' + STEPS.length + ': <span class="highlight">' + s.desc + '</span>' +
+      (current < STEPS.length - 1 ? ' <span class="dim">— click next step or press ▶ Auto</span>' : '');
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && current < STEPS.length - 1) { stopAuto(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft' && current > 0) { stopAuto(); goTo(current - 1); }
+  });
+
+  goTo(0);
+})();
+</script>
+</body>
+</html>
