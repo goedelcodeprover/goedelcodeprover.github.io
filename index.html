@@ -126,7 +126,7 @@
 
       <!-- Proof tree SVG -->
       <div id="pt-container" style="overflow-x:auto;margin-bottom:1rem;">
-        <svg id="pt-svg" viewBox="0 0 900 340" width="100%" style="display:block;min-width:700px;">
+        <svg id="pt-svg" viewBox="0 0 900 370" width="100%" style="display:block;min-width:700px;">
           <defs>
             <marker id="pt-arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#94a3b8"/></marker>
             <marker id="pt-arr-blue" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#4f46e5"/></marker>
@@ -144,6 +144,7 @@
               .pt-anim-slide.pt-vis { transform: translateY(0); }
               /* Node states */
               .pt-sorry rect { stroke: #dc2626; stroke-width: 2; stroke-dasharray: 6,3; fill: #fef2f2; transition: all 0.5s ease; }
+              .pt-pending rect { stroke: #6ee7b7; stroke-width: 2; stroke-dasharray: 6,3; fill: #f0fdf4; transition: all 0.5s ease; }
               .pt-proved rect { stroke: #059669; stroke-width: 2; stroke-dasharray: none; fill: #ecfdf5; transition: all 0.5s ease; }
               .pt-active rect { stroke: #2563eb !important; stroke-width: 2.5 !important; fill: #eff6ff !important; }
               /* Completion flash */
@@ -192,14 +193,14 @@
           </g>
           <!-- Completion label -->
           <g class="pt-anim" data-pt-phase="3" data-pt-d="0">
-            <rect x="350" y="255" width="200" height="24" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
-            <text x="450" y="271" text-anchor="middle" class="pt-action-label" fill="#059669">Lemma Completion</text>
+            <rect x="350" y="280" width="200" height="24" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
+            <text x="450" y="296" text-anchor="middle" class="pt-action-label" fill="#059669">Lemma Completion</text>
           </g>
           <!-- Completion arrows (up from label to each base lemma) -->
-          <path class="pt-edge-anim" data-pt-phase="3" d="M400,255 L120,245" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M420,255 L311,245" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M480,255 L500,245" stroke="#059669" marker-end="url(#pt-arr-green)"/>
-          <path class="pt-edge-anim" data-pt-phase="3" d="M520,255 L710,245" stroke="#059669" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-anim" data-pt-phase="3" d="M400,280 L120,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-anim" data-pt-phase="3" d="M425,280 L311,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-anim" data-pt-phase="3" d="M475,280 L500,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
+          <path class="pt-edge-anim" data-pt-phase="3" d="M520,280 L710,248" stroke="#059669" marker-end="url(#pt-arr-green)"/>
 
           <!-- ════ NODES ════ -->
           <!-- Level 0: Root -->
@@ -244,15 +245,17 @@
           </g>
 
           <!-- ════ LEGEND ════ -->
-          <g transform="translate(18,300)">
+          <g transform="translate(18,330)">
             <rect x="0" y="0" width="14" height="14" rx="3" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,2" fill="#fef2f2"/>
-            <text x="20" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Sorry (unproved)</text>
-            <rect x="130" y="0" width="14" height="14" rx="3" stroke="#059669" stroke-width="2" fill="#ecfdf5"/>
-            <text x="150" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Proved</text>
-            <rect x="215" y="0" width="14" height="14" rx="3" stroke="#2563eb" stroke-width="2.5" fill="#eff6ff"/>
-            <text x="235" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Selected</text>
-            <text x="330" y="11" font-size="10" fill="#4f46e5" font-weight="600" font-family="'Noto Sans',sans-serif">↓ Decompose</text>
-            <text x="445" y="11" font-size="10" fill="#059669" font-weight="600" font-family="'Noto Sans',sans-serif">↑ Completion</text>
+            <text x="20" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Unproved</text>
+            <rect x="95" y="0" width="14" height="14" rx="3" stroke="#6ee7b7" stroke-width="2" stroke-dasharray="4,2" fill="#f0fdf4"/>
+            <text x="115" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Pending</text>
+            <rect x="185" y="0" width="14" height="14" rx="3" stroke="#059669" stroke-width="2" fill="#ecfdf5"/>
+            <text x="205" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Proved</text>
+            <rect x="260" y="0" width="14" height="14" rx="3" stroke="#2563eb" stroke-width="2.5" fill="#eff6ff"/>
+            <text x="280" y="11" font-size="10" fill="#374151" font-family="'Noto Sans',sans-serif">Selected</text>
+            <text x="345" y="11" font-size="10" fill="#4f46e5" font-weight="600" font-family="'Noto Sans',sans-serif">↓ Decompose</text>
+            <text x="460" y="11" font-size="10" fill="#059669" font-weight="600" font-family="'Noto Sans',sans-serif">↑ Completion</text>
           </g>
         </svg>
       </div>
@@ -266,7 +269,8 @@
           <button class="button is-small is-rounded" data-pt-phase="0">Problem</button>
           <button class="button is-small is-rounded" data-pt-phase="1">Decompose #1</button>
           <button class="button is-small is-rounded" data-pt-phase="2">Decompose #2</button>
-          <button class="button is-small is-rounded is-dark is-selected" data-pt-phase="3">Completion</button>
+          <button class="button is-small is-rounded" data-pt-phase="3">Completion</button>
+          <button class="button is-small is-rounded is-dark is-selected" data-pt-phase="4">Verified</button>
         </div>
       </div>
 
@@ -354,7 +358,7 @@
     </div>
 
     <div id="tp-container" style="width:100%;overflow:hidden;">
-      <svg id="tp-svg" viewBox="0 0 960 620" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+      <svg id="tp-svg" viewBox="0 0 960 700" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
         <defs>
           <marker id="tp-a-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#94a3b8"/></marker>
           <marker id="tp-a-indigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f46e5"/></marker>
@@ -389,11 +393,6 @@
           <text x="78" y="100" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Formal Problems</text>
           <text x="78" y="116" fill="#64748b" font-size="9.5" class="tp-txt">LeetCode + OpenCodeInstruct</text>
         </g>
-        <g class="tp-el" data-tp="data" data-tp-d="400">
-          <rect x="72" y="145" width="78" height="18" rx="9" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
-          <text x="111" y="157" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600" class="tp-txt">~5K problems</text>
-        </g>
-
         <!-- Arrow to decompose -->
         <path class="tp-line" data-tp="data" data-tp-d="500" d="M185,107 L225,107" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#tp-a-gray)"/>
 
@@ -418,22 +417,12 @@
           <text x="564" y="72" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
           <text x="564" y="88" text-anchor="middle" fill="#92400e" font-size="9" class="tp-txt">input-output pairs</text>
         </g>
-        <g class="tp-el" data-tp="sft" data-tp-d="350">
-          <rect x="535" y="104" width="58" height="18" rx="9" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
-          <text x="564" y="116" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700" class="tp-txt">~281K</text>
-        </g>
-
         <!-- Decomposed Lemmas -->
         <g class="tp-el" data-tp="sft" data-tp-d="400">
           <rect x="464" y="132" width="200" height="48" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
           <text x="564" y="152" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
           <text x="564" y="168" text-anchor="middle" fill="#065f46" font-size="9" class="tp-txt">intermediate sub-goals</text>
         </g>
-        <g class="tp-el" data-tp="sft" data-tp-d="550">
-          <rect x="537" y="184" width="54" height="18" rx="9" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1"/>
-          <text x="564" y="196" text-anchor="middle" fill="#065f46" font-size="10" font-weight="700" class="tp-txt">~29K</text>
-        </g>
-
         <!-- Arrow from lemmas to completion -->
         <path class="tp-line" data-tp="sft" data-tp-d="700" d="M564,180 L564,210 L317,210 L317,225" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#tp-a-emerald)"/>
 
@@ -453,11 +442,6 @@
           <text x="564" y="248" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completion Trajectories</text>
           <text x="564" y="264" text-anchor="middle" fill="#92400e" font-size="9" class="tp-txt">input-output pairs</text>
         </g>
-        <g class="tp-el" data-tp="sft" data-tp-d="1400">
-          <rect x="537" y="280" width="54" height="18" rx="9" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
-          <text x="564" y="292" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700" class="tp-txt">~18K</text>
-        </g>
-
         <!-- Data decontamination -->
         <g class="tp-el" data-tp="sft" data-tp-d="1600" style="opacity:0;">
           <rect x="466" y="302" width="130" height="20" rx="4" fill="none" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="3,3"/>
@@ -471,7 +455,7 @@
         <!-- SFT-S1 Model -->
         <g class="tp-el" data-tp="sft" data-tp-d="2200">
           <rect x="772" y="138" width="170" height="85" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="857" y="170" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT-S1 Model</text>
+          <text x="857" y="170" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
           <text x="857" y="190" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B backbone</text>
           <text x="857" y="208" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
         </g>
@@ -495,7 +479,7 @@
         <!-- SFT-S1 Model (left) -->
         <g class="tp-el" data-tp="rl-title" data-tp-d="500">
           <rect x="30" y="412" width="150" height="72" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-          <text x="105" y="442" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT-S1 Model</text>
+          <text x="105" y="442" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="tp-txt">SFT Model</text>
           <text x="105" y="462" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">unified policy π</text>
         </g>
 
@@ -604,6 +588,16 @@
           <rect x="22" y="495" width="190" height="38" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1" opacity="0.8"/>
           <text x="117" y="516" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" font-family="'SF Mono', 'Fira Code', monospace">𝒥 = 𝒥_GRPO + λ · 𝒥_SFT</text>
           <text x="117" y="546" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">+ online lemma augmentation</text>
+        </g>
+
+        <!-- ════════════════════════════════════════ -->
+        <!-- FINAL MODEL                              -->
+        <!-- ════════════════════════════════════════ -->
+        <path class="tp-line" data-tp="final" data-tp-d="0" d="M105,484 L105,632 L350,632" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#tp-a-indigo)"/>
+        <g class="tp-el" data-tp="final" data-tp-d="500">
+          <rect x="352" y="612" width="250" height="60" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
+          <text x="477" y="638" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="700" class="tp-txt">Final Model</text>
+          <text x="477" y="658" text-anchor="middle" fill="#4f46e5" font-size="11" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
         </g>
       </svg>
     </div>
@@ -806,15 +800,24 @@
     var animPlayed = false;
     var animating = false;
 
-    function isProvedAtPhase(nodeId, phase) {
-      var d = nodeData[nodeId];
-      return d && phase >= d.provedAt;
+    // Node state logic:
+    //   phase 0: root=sorry
+    //   phase 1: root=pending (decomposed, relies on children), L1=sorry
+    //   phase 2: root=pending, L1=pending, L2=sorry
+    //   phase 3: root=pending, L1=pending, L2=proved (completion)
+    //   phase 4: everything proved (bottom-up verification)
+    function getNodeState(nodeId, phase) {
+      var step = parseInt(document.querySelector('[data-pt-id="' + nodeId + '"]').getAttribute('data-pt-step'), 10);
+      if (step > phase) return 'hidden';
+      if (phase >= 4) return 'proved';
+      if (step === 2) return phase >= 3 ? 'proved' : 'sorry';
+      if (step === 1) return 'pending';
+      if (step === 0) return phase >= 1 ? 'pending' : 'sorry';
+      return 'sorry';
     }
 
-    function setPhase(phase) {
-      currentPhase = phase;
-      updateTreeVisuals();
-      updatePhaseButtons();
+    function isProvedAtPhase(nodeId, phase) {
+      return getNodeState(nodeId, phase) === 'proved';
     }
 
     function updatePhaseButtons() {
@@ -826,11 +829,10 @@
     }
 
     function updateTreeVisuals() {
-      // Nodes
       document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
         var id = g.getAttribute('data-pt-id');
         var step = parseInt(g.getAttribute('data-pt-step'), 10);
-        g.classList.remove('pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
+        g.classList.remove('pt-sorry', 'pt-proved', 'pt-pending', 'pt-active', 'pt-flash');
 
         var visible = (step <= currentPhase);
         if (!visible) {
@@ -841,10 +843,9 @@
           g.style.pointerEvents = 'auto';
           if (id === selectedNode) {
             g.classList.add('pt-active');
-          } else if (isProvedAtPhase(id, currentPhase)) {
-            g.classList.add('pt-proved');
           } else {
-            g.classList.add('pt-sorry');
+            var state = getNodeState(id, currentPhase);
+            g.classList.add('pt-' + state);
           }
         }
       });
@@ -876,9 +877,8 @@
       animTimers = [];
       animating = false;
 
-      // Hide everything
       document.querySelectorAll('#pt-svg .pt-node').forEach(function(g) {
-        g.classList.remove('pt-vis', 'pt-sorry', 'pt-proved', 'pt-active', 'pt-flash');
+        g.classList.remove('pt-vis', 'pt-sorry', 'pt-proved', 'pt-pending', 'pt-active', 'pt-flash');
         g.style.pointerEvents = 'none';
       });
       document.querySelectorAll('#pt-svg .pt-edge-anim').forEach(function(e) {
@@ -887,7 +887,6 @@
       document.querySelectorAll('#pt-svg .pt-anim:not(.pt-node)').forEach(function(e) {
         e.classList.remove('pt-vis');
       });
-      // Remove any injected checkmarks
       document.querySelectorAll('#pt-svg .pt-checkmark').forEach(function(e) {
         e.remove();
       });
@@ -922,7 +921,7 @@
       animating = true;
       var T = 0;
 
-      // ─── Phase 0: Root appears (sorry) ───
+      // ─── Phase 0: Root appears (sorry/unproved) ───
       sched(function() {
         var root = document.querySelector('[data-pt-id="root"]');
         root.classList.add('pt-vis', 'pt-sorry');
@@ -937,8 +936,6 @@
       sched(function() {
         currentPhase = 1;
         updatePhaseButtons();
-
-        // Show "Decompose" label
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="1"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
@@ -946,21 +943,17 @@
 
       T += 200;
 
-      // Animate edges root → level 1
       sched(function() {
         document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="1"]').forEach(function(e, i) {
-          setTimeout(function() {
-            e.classList.add('pt-vis', 'pt-edge-draw');
-          }, i * 100);
+          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw'); }, i * 100);
         });
       }, T);
 
       T += 250;
 
-      // Level 1 nodes slide in (staggered)
+      // Level 1 nodes appear as sorry
       sched(function() {
-        var l1nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]');
-        l1nodes.forEach(function(g, i) {
+        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
           setTimeout(function() {
             g.classList.add('pt-vis', 'pt-sorry');
             g.style.pointerEvents = 'auto';
@@ -970,12 +963,11 @@
 
       T += 350;
 
-      // Root transitions sorry → proved
+      // Root transitions sorry → pending (light green dashed — relies on children)
       sched(function() {
         var root = document.querySelector('[data-pt-id="root"]');
         root.classList.remove('pt-sorry');
-        root.classList.add('pt-proved', 'pt-flash');
-        addCheckmark(root);
+        root.classList.add('pt-pending');
       }, T);
 
       T += 800;
@@ -984,7 +976,6 @@
       sched(function() {
         currentPhase = 2;
         updatePhaseButtons();
-
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="2"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
@@ -992,22 +983,17 @@
 
       T += 200;
 
-      // Animate edges level 1 → level 2
       sched(function() {
-        var edges = document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="2"]');
-        edges.forEach(function(e, i) {
-          setTimeout(function() {
-            e.classList.add('pt-vis', 'pt-edge-draw');
-          }, i * 80);
+        document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="2"]').forEach(function(e, i) {
+          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw'); }, i * 80);
         });
       }, T);
 
       T += 200;
 
-      // Level 2 nodes slide in (staggered)
+      // Level 2 nodes appear as sorry
       sched(function() {
-        var l2nodes = document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]');
-        l2nodes.forEach(function(g, i) {
+        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]').forEach(function(g, i) {
           setTimeout(function() {
             g.classList.add('pt-vis', 'pt-sorry');
             g.style.pointerEvents = 'auto';
@@ -1017,13 +1003,12 @@
 
       T += 500;
 
-      // Level 1 transitions sorry → proved
+      // Level 1 transitions sorry → pending
       sched(function() {
         document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
           setTimeout(function() {
             g.classList.remove('pt-sorry');
-            g.classList.add('pt-proved', 'pt-flash');
-            addCheckmark(g);
+            g.classList.add('pt-pending');
           }, i * 150);
         });
       }, T);
@@ -1034,8 +1019,6 @@
       sched(function() {
         currentPhase = 3;
         updatePhaseButtons();
-
-        // Show completion label
         document.querySelectorAll('#pt-svg .pt-anim[data-pt-phase="3"]').forEach(function(el) {
           el.classList.add('pt-vis');
         });
@@ -1043,19 +1026,15 @@
 
       T += 300;
 
-      // Completion arrows animate up to each leaf
       sched(function() {
-        var compEdges = document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="3"]');
-        compEdges.forEach(function(e, i) {
-          setTimeout(function() {
-            e.classList.add('pt-vis', 'pt-edge-draw', 'pt-arrow-glow');
-          }, i * 100);
+        document.querySelectorAll('#pt-svg .pt-edge-anim[data-pt-phase="3"]').forEach(function(e, i) {
+          setTimeout(function() { e.classList.add('pt-vis', 'pt-edge-draw', 'pt-arrow-glow'); }, i * 100);
         });
       }, T);
 
       T += 400;
 
-      // Leaf nodes flash sorry → proved (staggered)
+      // Leaf nodes flash sorry → proved
       sched(function() {
         document.querySelectorAll('#pt-svg .pt-node[data-pt-step="2"]').forEach(function(g, i) {
           setTimeout(function() {
@@ -1066,9 +1045,39 @@
         });
       }, T);
 
+      T += 800;
+
+      // ─── Phase 4: Bottom-up verification — pending → proved ───
+      sched(function() {
+        currentPhase = 4;
+        updatePhaseButtons();
+      }, T);
+
+      T += 100;
+
+      // Level 1 nodes: pending → proved (bottom-up)
+      sched(function() {
+        document.querySelectorAll('#pt-svg .pt-node[data-pt-step="1"]').forEach(function(g, i) {
+          setTimeout(function() {
+            g.classList.remove('pt-pending');
+            g.classList.add('pt-proved', 'pt-flash');
+            addCheckmark(g);
+          }, i * 200);
+        });
+      }, T);
+
+      T += 500;
+
+      // Root: pending → proved
+      sched(function() {
+        var root = document.querySelector('[data-pt-id="root"]');
+        root.classList.remove('pt-pending');
+        root.classList.add('pt-proved', 'pt-flash');
+        addCheckmark(root);
+      }, T);
+
       T += 700;
 
-      // Animation done
       sched(function() {
         animating = false;
       }, T);
@@ -1080,16 +1089,20 @@
       var d = nodeData[nodeId];
       if (!d) return;
 
-      var proved = isProvedAtPhase(nodeId, currentPhase);
-      var code = proved ? d.proved : d.sorry;
+      var state = getNodeState(nodeId, currentPhase);
+      var code = (state === 'proved') ? d.proved : d.sorry;
       var titleEl = document.getElementById('pt-code-title');
       var statusEl = document.getElementById('pt-code-status');
       var codeEl = document.getElementById('pt-code-content');
 
       titleEl.textContent = d.title;
-      statusEl.innerHTML = proved
-        ? '<span style="color:#059669;font-weight:600;">✓ Proved</span>'
-        : '<span style="color:#dc2626;font-weight:600;">✗ Sorry</span>';
+      if (state === 'proved') {
+        statusEl.innerHTML = '<span style="color:#059669;font-weight:600;">✓ Proved</span>';
+      } else if (state === 'pending') {
+        statusEl.innerHTML = '<span style="color:#6ee7b7;font-weight:600;">⏳ Pending</span>';
+      } else {
+        statusEl.innerHTML = '<span style="color:#dc2626;font-weight:600;">✗ Unproved</span>';
+      }
       codeEl.textContent = code;
       if (window.Lean4Highlighter) {
         Lean4Highlighter.highlightAll(document.getElementById('pt-code-body'));
@@ -1185,6 +1198,7 @@
       { group: 'rl-title',      start: 10000, dur: 1000 },
       { group: 'rl-grpo',       start: 11000, dur: 2000 },
       { group: 'rl-offpolicy',  start: 13000, dur: 2000 },
+      { group: 'final',          start: 16000, dur: 800 },
     ];
 
     function reset() {
