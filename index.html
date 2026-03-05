@@ -607,7 +607,7 @@
       </svg>
 
       <!-- STAGE 2: Hybrid RL -->
-      <svg id="tp-stage2" viewBox="0 0 760 310" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
+      <svg id="tp-stage2" viewBox="0 0 960 310" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
         <defs>
           <marker id="s2-a-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#64748b"/></marker>
           <marker id="s2-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
@@ -653,120 +653,120 @@
         <!--              CENTER ROW  (y center ≈ 190)              -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
-        <!-- Policy π -->
+        <!-- Policy π  (x=55..175, center=115) -->
         <g>
-          <rect x="28" y="170" width="120" height="44" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="88" y="190" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="tp-txt">Policy π</text>
-          <text x="88" y="204" text-anchor="middle" fill="#4f46e5" font-size="9" font-weight="500" class="tp-txt">unified model</text>
+          <rect x="55" y="170" width="120" height="44" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+          <text x="115" y="190" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="tp-txt">Policy π</text>
+          <text x="115" y="204" text-anchor="middle" fill="#4f46e5" font-size="9" font-weight="500" class="tp-txt">unified model</text>
         </g>
 
-        <!-- Policy π → Problem Set P  (horizontal) -->
-        <path d="M148,192 L210,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <!-- Policy π → Problem Set P -->
+        <path d="M175,192 L268,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Problem Set P -->
+        <!-- Problem Set P  (x=270..400, center=335) -->
         <g>
-          <rect x="212" y="177" width="120" height="30" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-          <text x="272" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Problem Set P</text>
+          <rect x="270" y="177" width="130" height="30" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="335" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Problem Set P</text>
         </g>
 
-        <!-- Problem Set P → Decomposition  (horizontal) -->
-        <path d="M332,192 L378,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <!-- Problem Set P → Decomposition -->
+        <path d="M400,192 L468,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Decomposition -->
+        <!-- Decomposition  (x=470..600, center=535) -->
         <g>
-          <rect x="380" y="174" width="124" height="36" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="442" y="190" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition</text>
-          <text x="442" y="203" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">on-policy rollout</text>
+          <rect x="470" y="174" width="130" height="36" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="535" y="190" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition</text>
+          <text x="535" y="203" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">on-policy rollout</text>
         </g>
 
-        <!-- Decomposition → Decomposed Lemmas  (horizontal) -->
-        <path d="M504,192 L558,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <!-- Decomposition → Decomposed Lemmas -->
+        <path d="M600,192 L678,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Decomposed Lemmas -->
+        <!-- Decomposed Lemmas  (x=680..850, center=765) -->
         <g>
-          <rect x="560" y="174" width="160" height="36" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="640" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <rect x="680" y="174" width="170" height="36" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+          <text x="765" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
         </g>
 
         <!-- ═══════════════════════════════════════════════════════ -->
         <!--   TOP ARC (outer): Decomposed Lemmas → Scorer → GRPO → Policy π   -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
-        <!-- Decomposed Lemmas → UP to Scorer  (vertical, from top of box) -->
-        <path d="M660,174 L660,132" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+        <!-- Decomposed Lemmas → UP to Scorer -->
+        <path d="M785,174 L785,132" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
 
-        <!-- Scorer (diamond, centered at y=110) -->
+        <!-- Scorer (diamond, centered at x=785, y=110) -->
         <g>
-          <polygon points="660,130 698,110 660,90 622,110" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="660" y="114" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Scorer</text>
+          <polygon points="785,130 823,110 785,90 747,110" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="785" y="114" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Scorer</text>
         </g>
 
         <!-- Scorer → GRPO Gradients  (horizontal left, y=110) -->
-        <path d="M622,110 L228,110" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
+        <path d="M747,110 L255,110" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
 
-        <!-- GRPO Gradients (y=90..130, bottom 40px above Policy π top at 170) -->
+        <!-- GRPO Gradients  (x=55..253, center=154) -->
         <g>
-          <rect x="28" y="90" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-          <text x="127" y="106" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">GRPO Gradients</text>
-          <text x="127" y="119" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">reward = decomposition score R ∈ [0,1]</text>
+          <rect x="55" y="90" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+          <text x="154" y="106" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">GRPO Gradients</text>
+          <text x="154" y="119" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">reward = decomposition score R ∈ [0,1]</text>
         </g>
 
-        <!-- GRPO Gradients → Policy π  (dashed, straight down into top of Policy π) -->
-        <path d="M88,130 L88,170" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+        <!-- GRPO Gradients → Policy π  (dashed, straight down) -->
+        <path d="M115,130 L115,170" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
 
         <!-- ═══════════════════════════════════════════════════════ -->
         <!--   TOP ARC (inner): Decomposed Lemmas → online augment → Problem Set   -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
         <!-- Path: from top of Decomposed Lemmas, arc up to y=152, go left, arc down into Problem Set top -->
-        <path d="M620,174 L620,158 Q620,152 614,152 L278,152 Q272,152 272,158 L272,177" fill="none" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#s2-a-rose)"/>
-        <rect x="388" y="144" width="128" height="16" rx="4" fill="#fafbfd" fill-opacity="0.95" stroke="none"/>
-        <text x="452" y="156" text-anchor="middle" fill="#e11d48" font-size="8.5" font-weight="600" class="tp-txt">online augment P</text>
+        <path d="M740,174 L740,158 Q740,152 734,152 L341,152 Q335,152 335,158 L335,177" fill="none" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#s2-a-rose)"/>
+        <rect x="478" y="144" width="128" height="16" rx="4" fill="#fafbfd" fill-opacity="0.95" stroke="none"/>
+        <text x="542" y="156" text-anchor="middle" fill="#e11d48" font-size="8.5" font-weight="600" class="tp-txt">online augment P</text>
 
         <!-- ═══════════════════════════════════════════════════════ -->
         <!--   BOTTOM PATH: Decomposed Lemmas → ↓ Completion → ← Completed Proofs → ← Compiler → ← SFT   -->
-        <!--   All bottom-row boxes sit at y=260, horizontal line at y=276                                  -->
+        <!--   All at center y=274                                                                           -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
         <!-- Decomposed Lemmas → down to Completion -->
-        <path d="M640,210 L640,256" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#s2-a-amber)"/>
+        <path d="M765,210 L765,256" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#s2-a-amber)"/>
 
-        <!-- Completion (center y=274) -->
+        <!-- Completion  (x=700..830, center=765, y=274) -->
         <g>
-          <rect x="575" y="258" width="130" height="32" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="640" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion</text>
+          <rect x="700" y="258" width="130" height="32" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="765" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion</text>
         </g>
 
-        <!-- Completion → Completed Proofs  (horizontal left, y=274) -->
-        <path d="M575,274 L525,274" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <!-- Completion → Completed Proofs -->
+        <path d="M700,274 L640,274" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Completed Proofs (center y=274) -->
+        <!-- Completed Proofs  (x=510..638, center=574, y=274) -->
         <g>
-          <rect x="397" y="258" width="126" height="32" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="460" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completed Proofs</text>
+          <rect x="510" y="258" width="128" height="32" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+          <text x="574" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completed Proofs</text>
         </g>
 
-        <!-- Completed Proofs → Compiler  (horizontal left, y=274) -->
-        <path d="M397,274 L362,274" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+        <!-- Completed Proofs → Compiler -->
+        <path d="M510,274 L472,274" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
 
-        <!-- Compiler (diamond, centered at x=324, y=274) -->
+        <!-- Compiler (diamond, centered at x=434, y=274) -->
         <g>
-          <polygon points="324,294 360,274 324,254 288,274" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="324" y="278" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Compiler</text>
+          <polygon points="434,294 470,274 434,254 398,274" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="434" y="278" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Compiler</text>
         </g>
 
-        <!-- Compiler → SFT Gradients  (horizontal left, y=274) -->
-        <path d="M288,274 L228,274" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
+        <!-- Compiler → SFT Gradients -->
+        <path d="M398,274 L255,274" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
 
-        <!-- SFT Gradients (y=254..294, top 40px below Policy π bottom at 214) -->
+        <!-- SFT Gradients  (x=55..253, center=154, y=274) -->
         <g>
-          <rect x="28" y="254" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-          <text x="127" y="270" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">SFT Gradients</text>
-          <text x="127" y="283" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">replay high-quality proofs · stabilize</text>
+          <rect x="55" y="254" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+          <text x="154" y="270" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">SFT Gradients</text>
+          <text x="154" y="283" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">replay high-quality proofs · stabilize</text>
         </g>
 
-        <!-- SFT Gradients → Policy π  (dashed, straight up into bottom of Policy π) -->
-        <path d="M88,254 L88,214" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+        <!-- SFT Gradients → Policy π  (dashed, straight up) -->
+        <path d="M115,254 L115,214" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
       </svg>
 
     </div>
