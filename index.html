@@ -107,10 +107,10 @@
             <strong>Method.</strong> We propose a <em>hierarchical proof search</em> framework built around two stages: <strong>lemma decomposition</strong>, which breaks a complex verification goal into simpler, independently provable subgoals, and <strong>lemma completion</strong>, which solves each subgoal through iterative proof search with compiler feedback. A principled decomposition score drives both stages&mdash;guiding candidate selection at inference and serving as a dense reward signal during training.
           </p>
           <p>
-            <strong>Model &amp; Release.</strong> We train a single unified model, <strong>Goedel-Verifier-Preview (8B)</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
+            <strong>Model &amp; Release.</strong> We train a single unified model, <strong>Goedel-Verifier-Preview-8B</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
           </p>
           <p>
-            <strong>Results.</strong> Goedel-Verifier-Preview achieves strong performance across multiple Lean 4 code verification benchmarks&mdash;including Verina, Clever, and AlgoVeri&mdash;demonstrating the effectiveness of hierarchical proof search at scale.
+            <strong>Results.</strong> Goedel-Verifier-Preview-8B achieves strong performance across multiple Lean 4 code verification benchmarks&mdash;including Verina, Clever, and AlgoVeri&mdash;demonstrating the effectiveness of hierarchical proof search at scale.
           </p>
         </div>
       </div>
@@ -120,8 +120,8 @@
 
 <section class="section" id="demo">
   <div class="container is-max-desktop is-wider">
-    <h2 class="title is-3 has-text-centered">Example: FindSingleNumber (from Verina dataset)</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">Given a list of integers where every element appears exactly twice except for one unique element that appears exactly once, find and return that single element. The goal is to formally verify that the implementation correctly identifies this unique element.</p>
+    <h2 class="title is-3 has-text-centered">Example: Find the Unique Number (from Verina Benchmark)</h2>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">This example asks the program to solve a simple task: given a list in which one integer appears exactly once and every other integer appears exactly twice, return the unique integer. The verification goal is stronger than testing on a few examples: we want a machine-checkable proof that for every valid input list, the implementation always returns the correct answer.</p>
 
     <!-- View toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -499,7 +499,7 @@
 
     <div id="training-pipeline" style="margin-top:2.5rem;">
     <h3 class="title is-4 has-text-centered">Training Pipeline</h3>
-    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training Goedel-Verifier-Preview proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-model-generated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves.</p>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training Goedel-Verifier-Preview-8B proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-model-generated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves.</p>
 
     <!-- Stage toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -528,7 +528,7 @@
         <g>
           <rect x="28" y="14" width="5" height="24" rx="2.5" fill="#4f46e5"/>
           <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 1: Supervised Fine-Tuning (SFT)</text>
-          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier-model trajectories into Goedel-Verifier-Preview</text>
+          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier-model trajectories into Goedel-Verifier-Preview-8B</text>
         </g>
 
         <!-- Formal Problems -->
@@ -702,7 +702,7 @@
         <!-- Shared policy -->
         <g filter="url(#s2-sh)">
           <rect x="198" y="224" width="184" height="64" rx="16" fill="#ecfdf5" stroke="#22c55e" stroke-width="1.9"/>
-          <text x="290" y="249" text-anchor="middle" fill="#14532d" font-size="11.5" font-weight="700" class="tp-txt">Goedel-Verifier-Preview</text>
+          <text x="290" y="249" text-anchor="middle" fill="#14532d" font-size="11.5" font-weight="700" class="tp-txt">Goedel-Verifier-Preview-8B</text>
           <text x="290" y="263" text-anchor="middle" fill="#16a34a" font-size="8.8" font-weight="700" class="tp-txt">unified</text>
           <text x="290" y="276" text-anchor="middle" fill="#16a34a" font-size="8.2" font-weight="700" class="tp-txt">(decompose+completion) policy</text>
         </g>
@@ -718,7 +718,7 @@
     <div id="inference-pipeline" style="margin-top:2.5rem;">
     <h3 class="title is-4 has-text-centered">Inference Pipeline</h3>
     <p class="content has-text-justified is-size-6" style="margin-bottom:1rem;">
-      Goedel-Verifier-Preview uses a single unified model for both stages at inference time. Starting from the original theorem, it performs <em>iterative recursive decomposition</em>: for each currently unsolved goal, the model generates <em>N</em> parallel decomposition candidates, filters them with QuickCheck random testing, ranks survivors by the decomposition score, and recursively expands the best decomposition until a proof tree of manageable sub-lemmas is obtained or a budget is reached. Each resulting leaf sub-lemma is then proved independently via an iterative edit&ndash;compile&ndash;fix loop with the Lean 4 compiler, and the resulting proofs are assembled into a final verified proof of the original theorem.
+      Goedel-Verifier-Preview-8B uses a single unified model for both stages at inference time. Starting from the original theorem, it performs <em>iterative recursive decomposition</em>: for each currently unsolved goal, the model generates <em>N</em> parallel decomposition candidates, filters them with QuickCheck random testing, ranks survivors by the decomposition score, and recursively expands the best decomposition until a proof tree of manageable sub-lemmas is obtained or a budget is reached. Each resulting leaf sub-lemma is then proved independently via an iterative edit&ndash;compile&ndash;fix loop with the Lean 4 compiler, and the resulting proofs are assembled into a final verified proof of the original theorem.
     </p>
 
     <svg viewBox="-35 0 1020 385" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
