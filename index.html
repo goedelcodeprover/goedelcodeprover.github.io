@@ -94,13 +94,16 @@
         <h2 class="title is-3">Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            <strong>Problem.</strong> Large language models (LLMs) can generate syntactically plausible code, yet they provide no guarantee of formal correctness; subtle logical errors and specification violations remain prevalent. Automated code verification seeks to address this gap by constructing machine-checkable proofs that implementations satisfy formal specifications in Lean 4.
+            <strong>Problem.</strong> Large language models (LLMs) can generate plausible code, yet they provide no guarantee of formal correctness&mdash;subtle logical errors and specification violations remain prevalent. Automated code verification addresses this gap by constructing machine-checkable proofs that implementations satisfy formal specifications. We study this problem in Lean 4, a modern interactive theorem prover.
           </p>
           <p>
-            <strong>Method.</strong> We propose a hierarchical two-stage proof search framework: first decomposing a complex verification goal into structurally simpler subgoals, and then discharging each subgoal through iterative proof generation and refinement. To guide decomposition, we introduce a principled scoring mechanism that enforces constructive justification with QuickCheck-style filtering and promotes structural simplification via an operator-footprint metric. The same score is used consistently for both training and inference, ensuring alignment between optimization and deployment. A single unified policy is trained through supervised initialization followed by hybrid reinforcement learning.
+            <strong>Method.</strong> We propose a <em>hierarchical proof search</em> framework with two stages: <strong>lemma decomposition</strong>, which breaks a complex verification goal into simpler subgoals, and <strong>lemma completion</strong>, which discharges each subgoal through iterative proof generation. A principled decomposition score guides both training and inference, ensuring alignment between optimization and deployment.
           </p>
           <p>
-            <strong>Results.</strong> Experiments on multiple Lean-based code verification benchmarks, including Verina, Clever, and AlgoVeri, demonstrate the effectiveness and robustness of our approach.
+            <strong>Model Training &amp; Release.</strong> We train a single unified 8B model for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning, using the decomposition score as a dense reward signal. We publicly release our trained model along with an evaluation framework to facilitate future research in automated code verification.
+          </p>
+          <p>
+            <strong>Results.</strong> Experiments on multiple Lean-based code verification benchmarks, including Verina, Clever, and AlgoVeri, demonstrate the effectiveness of our approach.
           </p>
         </div>
       </div>
@@ -111,6 +114,7 @@
 <section class="section" id="demo">
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Example: FindSingleNumber (from Verina dataset)</h2>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">Given a list of integers where every element appears exactly twice except for one unique element that appears exactly once, find and return that single element. The goal is to formally verify that the implementation correctly identifies this unique element.</p>
 
     <!-- View toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -603,13 +607,14 @@
       </svg>
 
       <!-- STAGE 2: Hybrid RL -->
-      <svg id="tp-stage2" viewBox="0 0 960 350" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
+      <svg id="tp-stage2" viewBox="0 0 760 310" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
         <defs>
           <marker id="s2-a-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#64748b"/></marker>
           <marker id="s2-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
           <marker id="s2-a-amber" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#b45309"/></marker>
           <marker id="s2-a-violet" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#6d28d9"/></marker>
           <marker id="s2-a-emerald" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#047857"/></marker>
+          <marker id="s2-a-rose" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#e11d48"/></marker>
           <filter id="s2-sh" x="-3%" y="-3%" width="106%" height="112%">
             <feDropShadow dx="0" dy="1.5" stdDeviation="3" flood-color="#1e293b" flood-opacity="0.08"/>
           </filter>
@@ -620,91 +625,148 @@
         <g>
           <rect x="28" y="14" width="5" height="24" rx="2.5" fill="#d97706"/>
           <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
-          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion</text>
+          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion &amp; online lemma collection</text>
         </g>
 
-        <!-- TOP ROW: GRPO Gradients -->
-        <g>
-          <rect x="222" y="65" width="196" height="56" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-          <text x="320" y="84" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">GRPO Gradients</text>
-          <text x="320" y="98" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">reward = decomposition score</text>
-          <text x="320" y="111" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">continuous dense signal</text>
-        </g>
-        <path d="M526,93 L420,93" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s2-a-emerald)"/>
+        <!--
+          HORIZONTAL FLOW layout.  All main boxes sit on a center row (y≈190).
+          Policy π is at the far left.
 
-        <!-- Scorer -->
-        <g>
-          <polygon points="570,63 614,93 570,123 526,93" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="570" y="97" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600" class="tp-txt">Scorer</text>
-        </g>
-        <path d="M222,93 L140,93 L140,140" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+          CENTER ROW (left→right, all at y=190 center):
+            Policy π → Problem Set P → Decomposition → Decomposed Lemmas → Completion
 
-        <!-- MIDDLE ROW: SFT Model -->
+          TWO ARCS FROM DECOMPOSED LEMMAS going UPWARD:
+            1. (outer/higher) Decomposed Lemmas  →  Scorer  →  GRPO Gradients  →(dashed)→  Policy π   (top arc)
+            2. (inner/lower)  Decomposed Lemmas  →  online augment  →  Problem Set P               (shorter top arc)
+
+          BOTTOM PATH:
+            Completion  →  Completed Proofs  →  Compiler  →  SFT Gradients  →(dashed)→  Policy π
+
+          GRPO enters Policy π from TOP.
+          SFT  enters Policy π from BOTTOM.
+          They are vertically aligned on x=88.
+
+          Final Model exits to the RIGHT from Policy π, on its own separate line — no overlap.
+        -->
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--              CENTER ROW  (y center ≈ 190)              -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Policy π -->
         <g>
-          <rect x="30" y="140" width="160" height="56" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="110" y="162" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="110" y="178" text-anchor="middle" fill="#4f46e5" font-size="9" font-weight="500" class="tp-txt">unified policy π</text>
+          <rect x="28" y="170" width="120" height="44" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+          <text x="88" y="190" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="tp-txt">Policy π</text>
+          <text x="88" y="204" text-anchor="middle" fill="#4f46e5" font-size="9" font-weight="500" class="tp-txt">unified model</text>
         </g>
-        <path d="M190,168 L248,168" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s2-a-indigo)"/>
+
+        <!-- Policy π → Problem Set P  (horizontal) -->
+        <path d="M148,192 L210,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+
+        <!-- Problem Set P -->
+        <g>
+          <rect x="212" y="177" width="120" height="30" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="272" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Problem Set P</text>
+        </g>
+
+        <!-- Problem Set P → Decomposition  (horizontal) -->
+        <path d="M332,192 L378,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
         <!-- Decomposition -->
         <g>
-          <rect x="250" y="146" width="140" height="44" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="320" y="165" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposition</text>
-          <text x="320" y="181" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">rollout</text>
+          <rect x="380" y="174" width="124" height="36" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="442" y="190" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition</text>
+          <text x="442" y="203" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">on-policy rollout</text>
         </g>
-        <path d="M390,168 L485,168" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s2-a-gray)"/>
+
+        <!-- Decomposition → Decomposed Lemmas  (horizontal) -->
+        <path d="M504,192 L558,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
 
         <!-- Decomposed Lemmas -->
         <g>
-          <rect x="485" y="146" width="170" height="44" rx="12" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="570" y="165" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
-          <text x="570" y="181" text-anchor="middle" fill="#e11d48" font-size="9" class="tp-txt">Online collected</text>
+          <rect x="560" y="174" width="160" height="36" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+          <text x="640" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
         </g>
-        <path d="M655,168 L738,168" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Completion -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--   TOP ARC (outer): Decomposed Lemmas → Scorer → GRPO → Policy π   -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Decomposed Lemmas → UP to Scorer  (vertical, from top of box) -->
+        <path d="M660,174 L660,132" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+
+        <!-- Scorer (diamond, centered at y=110) -->
         <g>
-          <rect x="740" y="140" width="140" height="56" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="810" y="157" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completion</text>
-          <text x="810" y="171" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">rollout or off-the-shelf</text>
-          <text x="810" y="184" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">model generation</text>
+          <polygon points="660,130 698,110 660,90 622,110" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="660" y="114" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Scorer</text>
         </g>
-        <path d="M570,146 L570,123" fill="none" stroke="#6d28d9" stroke-width="1.8" marker-end="url(#s2-a-violet)"/>
 
-        <!-- BOTTOM ROW -->
-        <path d="M810,196 L810,228 L757,228" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#s2-a-amber)"/>
+        <!-- Scorer → GRPO Gradients  (horizontal left, y=110) -->
+        <path d="M622,110 L228,110" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- GRPO Gradients (y=90..130, bottom 40px above Policy π top at 170) -->
         <g>
-          <rect x="587" y="212" width="170" height="44" rx="12" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="672" y="231" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completed Proofs</text>
-          <text x="672" y="247" text-anchor="middle" fill="#e11d48" font-size="9" class="tp-txt">candidate proof tactics</text>
+          <rect x="28" y="90" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+          <text x="127" y="106" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">GRPO Gradients</text>
+          <text x="127" y="119" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">reward = decomposition score R ∈ [0,1]</text>
         </g>
-        <path d="M587,228 L554,228" fill="none" stroke="#6d28d9" stroke-width="1.8" marker-end="url(#s2-a-violet)"/>
 
-        <!-- Compiler -->
+        <!-- GRPO Gradients → Policy π  (dashed, straight down into top of Policy π) -->
+        <path d="M88,130 L88,170" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--   TOP ARC (inner): Decomposed Lemmas → online augment → Problem Set   -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Path: from top of Decomposed Lemmas, arc up to y=152, go left, arc down into Problem Set top -->
+        <path d="M620,174 L620,158 Q620,152 614,152 L278,152 Q272,152 272,158 L272,177" fill="none" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#s2-a-rose)"/>
+        <rect x="388" y="144" width="128" height="16" rx="4" fill="#fafbfd" fill-opacity="0.95" stroke="none"/>
+        <text x="452" y="156" text-anchor="middle" fill="#e11d48" font-size="8.5" font-weight="600" class="tp-txt">online augment P</text>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--   BOTTOM PATH: Decomposed Lemmas → ↓ Completion → ← Completed Proofs → ← Compiler → ← SFT   -->
+        <!--   All bottom-row boxes sit at y=260, horizontal line at y=276                                  -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Decomposed Lemmas → down to Completion -->
+        <path d="M640,210 L640,256" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#s2-a-amber)"/>
+
+        <!-- Completion (center y=274) -->
         <g>
-          <polygon points="510,204 554,228 510,252 466,228" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="510" y="232" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600" class="tp-txt">Compiler</text>
+          <rect x="575" y="258" width="130" height="32" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="640" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion</text>
         </g>
-        <path d="M466,228 L420,228" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s2-a-emerald)"/>
 
-        <!-- SFT Gradients -->
+        <!-- Completion → Completed Proofs  (horizontal left, y=274) -->
+        <path d="M575,274 L525,274" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+
+        <!-- Completed Proofs (center y=274) -->
         <g>
-          <rect x="222" y="207" width="196" height="56" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-          <text x="320" y="226" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">SFT Gradients</text>
-          <text x="320" y="240" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">replay high-quality proofs</text>
-          <text x="320" y="253" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">stabilize via supervised signal</text>
+          <rect x="397" y="258" width="126" height="32" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+          <text x="460" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completed Proofs</text>
         </g>
-        <path d="M222,228 L140,228 L140,196" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
 
-        <!-- Final Model (subtle shadow) -->
-        <path d="M110,196 L110,308 L337,308" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#s2-a-indigo)"/>
-        <text x="230" y="322" text-anchor="middle" fill="#4f46e5" font-size="9" class="tp-txt">update using fused gradients</text>
-        <g filter="url(#s2-sh)">
-          <rect x="337" y="280" width="190" height="56" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="3"/>
-          <text x="432" y="302" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">Final Model</text>
-          <text x="432" y="318" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="500" class="tp-txt">Qwen3-8B · SFT + Hybrid RL</text>
+        <!-- Completed Proofs → Compiler  (horizontal left, y=274) -->
+        <path d="M397,274 L362,274" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+
+        <!-- Compiler (diamond, centered at x=324, y=274) -->
+        <g>
+          <polygon points="324,294 360,274 324,254 288,274" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="324" y="278" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Compiler</text>
         </g>
+
+        <!-- Compiler → SFT Gradients  (horizontal left, y=274) -->
+        <path d="M288,274 L228,274" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- SFT Gradients (y=254..294, top 40px below Policy π bottom at 214) -->
+        <g>
+          <rect x="28" y="254" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+          <text x="127" y="270" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">SFT Gradients</text>
+          <text x="127" y="283" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">replay high-quality proofs · stabilize</text>
+        </g>
+
+        <!-- SFT Gradients → Policy π  (dashed, straight up into bottom of Policy π) -->
+        <path d="M88,254 L88,214" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
       </svg>
 
     </div>
