@@ -30,10 +30,8 @@
   <div class="navbar-menu" id="navMenu">
     <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
       <a class="navbar-item" href="#introduction">Introduction</a>
-      <a class="navbar-item" href="#demo">Demo</a>
-      <a class="navbar-item" href="#methodology">Our Methodology</a>
-      <a class="navbar-item" href="#training-pipeline">Training</a>
-      <a class="navbar-item" href="#inference-pipeline">Inference</a>
+      <a class="navbar-item" href="#demo">Example</a>
+      <a class="navbar-item" href="#methodology">Overview</a>
       <a class="navbar-item" href="#benchmark">Benchmark</a>
     </div>
   </div>
@@ -481,41 +479,19 @@
 
 <section class="section" id="methodology">
   <div class="container is-max-desktop is-wider">
-    <h2 class="title is-3 has-text-centered">Our Methodology</h2>
+    <h2 class="title is-3 has-text-centered">Technical Overview</h2>
 
-    <div class="columns is-multiline mt-5">
-      <div class="column is-half">
-        <div class="methodology-block">
-          <h3 class="title is-5">Two-Stage Framework</h3>
-          <p class="content has-text-justified">We use a single model for both stages. (1) Decomposition: for a given theorem, the LLM proposes sub-lemmas with a constructive proof that Lean verifies; we keep the best-scoring decomposition and recurse until remaining goals are simple. (2) Completion: each leaf lemma is proved by the same policy in an iterative loop: generate a candidate proof, then refine it using Lean compiler feedback.</p>
-        </div>
-      </div>
-      <div class="column is-half">
-        <div class="methodology-block">
-          <h3 class="title is-5">Effective Lemma Decomposition</h3>
-          <p class="content has-text-justified">We score decompositions along two axes. Constructive justification: the decomposed lemma must be provable, and we run quickcheck on candidate lemmas; any counterexample discards the decomposition. Decomposition effectiveness: we measure it via an operator-footprint metric. The score is used both as the RL reward and as the ranking criterion at inference, enabling efficient search and pruning.</p>
-        </div>
-      </div>
-      <div class="column is-half">
-        <div class="methodology-block">
-          <h3 class="title is-5">Iterative Lemma Completion</h3>
-          <p class="content has-text-justified">For each decomposed lemma, the LLM generates a candidate proof and submits it to Lean. The compiler either accepts the proof or returns an error. When it fails, the model uses the compiler feedback (e.g., type mismatch, unresolved goal) to revise the proof and tries again. This iterative loop mimics how humans fix failed proofs and is also integrated into both supervised fine-tuning and reinforcement learning.</p>
-        </div>
-      </div>
-      <div class="column is-half">
-        <div class="methodology-block">
-          <h3 class="title is-5">Training: SFT + Hybrid RL</h3>
-          <p class="content has-text-justified">We initialize a supervised model on scaffolded decomposition and completion data. Then we run hybrid RL: GRPO optimizes decomposition using the decomposition score as reward, while we replay high-quality completion trajectories (SFT) to stabilize proof generation. Both losses update the same policy. The problem set is augmented with online lemmas from rollouts, forming a self-generated curriculum.</p>
-        </div>
+    <div class="mt-5">
+      <div class="methodology-block">
+        <h3 class="title is-5">Key Insight: Lemma Decomposition + Lemma Completion</h3>
+        <p class="content has-text-justified"><strong>Effective Lemma Decomposition.</strong> We score decompositions along two axes. Constructive justification: the decomposed lemma must be provable, and we run quickcheck on candidate lemmas; any counterexample discards the decomposition. Decomposition effectiveness: we measure it via an operator-footprint metric. The score is used both as the RL reward and as the ranking criterion at inference, enabling efficient search and pruning.</p>
+        <p class="content has-text-justified"><strong>Iterative Lemma Completion.</strong> For each decomposed lemma, the LLM generates a candidate proof and submits it to Lean. The compiler either accepts the proof or returns an error. When it fails, the model uses the compiler feedback (e.g., type mismatch, unresolved goal) to revise the proof and tries again. This iterative loop mimics how humans fix failed proofs and is also integrated into both supervised fine-tuning and reinforcement learning.</p>
       </div>
     </div>
-  </div>
-</section>
 
-<section class="section" id="training-pipeline">
-  <div class="container is-max-desktop is-wider">
-    <h2 class="title is-3 has-text-centered">Training Pipeline</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:0.5rem;">Supervised Initialization → Hybrid Reinforcement Learning</p>
+    <div id="training-pipeline" style="margin-top:2.5rem;">
+    <h3 class="title is-4 has-text-centered">Training Pipeline</h3>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">We initialize a supervised model on scaffolded decomposition and completion data. Then we run hybrid RL: GRPO optimizes decomposition using the decomposition score as reward, while we replay high-quality completion trajectories (SFT) to stabilize proof generation. Both losses update the same policy. The problem set is augmented with online lemmas from rollouts, forming a self-generated curriculum.</p>
 
     <!-- Stage toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -528,14 +504,14 @@
     <div id="tp-container" style="width:100%;overflow:hidden;">
 
       <!-- STAGE 1: SFT -->
-      <svg id="tp-stage1" viewBox="0 0 960 300" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
+      <svg id="tp-stage1" viewBox="0 0 960 300" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
         <defs>
           <marker id="s1-a-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#64748b"/></marker>
           <marker id="s1-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
           <marker id="s1-a-amber" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#b45309"/></marker>
           <marker id="s1-a-emerald" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#047857"/></marker>
-          <filter id="s1-sh" x="-3%" y="-3%" width="106%" height="112%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="3" flood-color="#1e293b" flood-opacity="0.08"/>
+          <filter id="s1-sh" x="-4%" y="-4%" width="108%" height="116%">
+            <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#1e293b" flood-opacity="0.08"/>
           </filter>
           <style>.tp-txt{font-family:'Inter','Helvetica Neue',Arial,sans-serif;}</style>
         </defs>
@@ -549,66 +525,66 @@
 
         <!-- Formal Problems -->
         <g>
-          <rect x="30" y="75" width="155" height="58" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-          <text x="107" y="101" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Formal Problems</text>
-          <text x="107" y="117" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">LeetCode + OpenCodeInstruct</text>
+          <rect x="30" y="85" width="155" height="58" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="107" y="111" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Formal Problems</text>
+          <text x="107" y="127" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">LeetCode + OpenCodeInstruct</text>
         </g>
-        <path d="M185,104 L228,104" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s1-a-gray)"/>
+        <path d="M185,114 L228,114" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s1-a-gray)"/>
 
         <!-- Lemma-Decomposition -->
         <g>
-          <rect x="230" y="75" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="310" y="101" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decomposition</text>
-          <text x="310" y="117" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-Curated</text>
+          <rect x="230" y="85" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="310" y="111" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decomposition</text>
+          <text x="310" y="127" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-Curated</text>
         </g>
-        <path d="M390,90 L445,72" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
-        <path d="M390,115 L455,140" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
+        <path d="M390,100 L445,82" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
+        <path d="M390,125 L455,150" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
 
         <!-- Decomposition Trajectories -->
         <g>
-          <rect x="447" y="52" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
-          <text x="542" y="71" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
-          <text x="542" y="84" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~280K input-output pairs</text>
+          <rect x="447" y="62" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="81" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
+          <text x="542" y="94" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~280K input-output pairs</text>
         </g>
 
         <!-- Decomposed Lemmas -->
         <g>
-          <rect x="457" y="125" width="170" height="40" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.3"/>
-          <text x="542" y="144" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
-          <text x="542" y="157" text-anchor="middle" fill="#e11d48" font-size="9" class="tp-txt">Online collected</text>
+          <rect x="457" y="135" width="170" height="40" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.3"/>
+          <text x="542" y="154" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <text x="542" y="167" text-anchor="middle" fill="#e11d48" font-size="9" class="tp-txt">Online collected</text>
         </g>
-        <path d="M542,165 L542,185 L310,185 L310,210" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s1-a-gray)"/>
+        <path d="M542,175 L542,195 L310,195 L310,220" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s1-a-gray)"/>
 
         <!-- Lemma-Completion -->
         <g>
-          <rect x="230" y="210" width="160" height="58" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="310" y="236" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Completion</text>
-          <text x="310" y="252" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">Gemini-Curated</text>
+          <rect x="230" y="220" width="160" height="58" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="310" y="246" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Completion</text>
+          <text x="310" y="262" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">Gemini-Curated</text>
         </g>
-        <path d="M390,239 L445,239" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#s1-a-amber)"/>
+        <path d="M390,249 L445,249" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#s1-a-amber)"/>
 
         <!-- Completion Trajectories -->
         <g>
-          <rect x="447" y="219" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
-          <text x="542" y="238" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
-          <text x="542" y="251" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~150K input-output pairs</text>
+          <rect x="447" y="229" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="248" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
+          <text x="542" y="261" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~150K input-output pairs</text>
         </g>
 
         <!-- Arrows to SFT Model -->
-        <path d="M637,72 L710,72 L710,135 L748,135" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s1-a-emerald)"/>
-        <path d="M637,239 L710,239 L710,160 L748,160" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s1-a-emerald)"/>
+        <path d="M637,82 L710,82 L710,145 L748,145" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s1-a-emerald)"/>
+        <path d="M637,249 L710,249 L710,170 L748,170" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s1-a-emerald)"/>
 
         <!-- SFT Model (subtle shadow) -->
         <g filter="url(#s1-sh)">
-          <rect x="750" y="108" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="840" y="140" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
-          <text x="840" y="158" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Qwen3-8B backbone</text>
-          <text x="840" y="174" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
+          <rect x="750" y="118" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+          <text x="840" y="150" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">SFT Model</text>
+          <text x="840" y="168" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Qwen3-8B backbone</text>
+          <text x="840" y="184" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
         </g>
       </svg>
 
       <!-- STAGE 2: Hybrid RL -->
-      <svg id="tp-stage2" viewBox="0 0 960 310" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfd;">
+      <svg id="tp-stage2" viewBox="0 0 960 300" width="100%" style="display:none;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
         <defs>
           <marker id="s2-a-gray" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#64748b"/></marker>
           <marker id="s2-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
@@ -616,8 +592,8 @@
           <marker id="s2-a-violet" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#6d28d9"/></marker>
           <marker id="s2-a-emerald" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#047857"/></marker>
           <marker id="s2-a-rose" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#e11d48"/></marker>
-          <filter id="s2-sh" x="-3%" y="-3%" width="106%" height="112%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="3" flood-color="#1e293b" flood-opacity="0.08"/>
+          <filter id="s2-sh" x="-4%" y="-4%" width="108%" height="116%">
+            <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#1e293b" flood-opacity="0.08"/>
           </filter>
           <style>.tp-txt{font-family:'Inter','Helvetica Neue',Arial,sans-serif;}</style>
         </defs>
@@ -625,315 +601,291 @@
         <!-- Title -->
         <g>
           <rect x="28" y="14" width="5" height="24" rx="2.5" fill="#d97706"/>
-          <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning</text>
+          <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 2: Hybrid Reinforcement Learning (RL)</text>
           <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Joint optimization with decoupled gradient fusion &amp; online lemma collection</text>
         </g>
 
-        <!--
-          HORIZONTAL FLOW layout.  All main boxes sit on a center row (y≈190).
-          Policy π is at the far left.
-
-          CENTER ROW (left→right, all at y=190 center):
-            Policy π → Problem Set P → Decomposition → Decomposed Lemmas → Completion
-
-          TWO ARCS FROM DECOMPOSED LEMMAS going UPWARD:
-            1. (outer/higher) Decomposed Lemmas  →  Scorer  →  GRPO Gradients  →(dashed)→  Policy π   (top arc)
-            2. (inner/lower)  Decomposed Lemmas  →  online augment  →  Problem Set P               (shorter top arc)
-
-          BOTTOM PATH:
-            Completion  →  Completed Proofs  →  Compiler  →  SFT Gradients  →(dashed)→  Policy π
-
-          GRPO enters Policy π from TOP.
-          SFT  enters Policy π from BOTTOM.
-          They are vertically aligned on x=88.
-
-          Final Model exits to the RIGHT from Policy π, on its own separate line — no overlap.
-        -->
-
         <!-- ═══════════════════════════════════════════════════════ -->
-        <!--              CENTER ROW  (y center ≈ 190)              -->
+        <!--  DECOMPOSITION PATH (top row, y center ≈ 105)          -->
+        <!--  Problem Set P → Decomposition → Decomposed Lemmas     -->
+        <!--       ↑ online augment ──────────────────┘              -->
+        <!--       Decomposed Lemmas → Scorer → GRPO → Policy π     -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
-        <!-- Policy π  (x=55..175, center=115) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--  TOP ROW: Problem Set → Decomposition → Decomposed Lemmas  -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Problem Set  (x=30..185, center=107) -->
         <g>
-          <rect x="55" y="170" width="120" height="44" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-          <text x="115" y="190" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="tp-txt">Policy π</text>
-          <text x="115" y="204" text-anchor="middle" fill="#4f46e5" font-size="9" font-weight="500" class="tp-txt">unified model</text>
+          <rect x="30" y="83" width="155" height="58" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+          <text x="107" y="109" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Problem Set</text>
+          <text x="107" y="125" text-anchor="middle" fill="#64748b" font-size="9" class="tp-txt">Verification theorems</text>
         </g>
 
-        <!-- Policy π → Problem Set P -->
-        <path d="M175,192 L268,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <!-- Problem Set → Decomposition -->
+        <path d="M185,112 L228,112" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Problem Set P  (x=270..400, center=335) -->
+        <!-- Decomposition  (x=230..390, center=310) -->
         <g>
-          <rect x="270" y="177" width="130" height="30" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-          <text x="335" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Problem Set P</text>
-        </g>
-
-        <!-- Problem Set P → Decomposition -->
-        <path d="M400,192 L468,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
-
-        <!-- Decomposition  (x=470..600, center=535) -->
-        <g>
-          <rect x="470" y="174" width="130" height="36" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
-          <text x="535" y="190" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition</text>
-          <text x="535" y="203" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">on-policy rollout</text>
+          <rect x="230" y="83" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+          <text x="310" y="109" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposition</text>
+          <text x="310" y="125" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">On-policy rollout</text>
         </g>
 
         <!-- Decomposition → Decomposed Lemmas -->
-        <path d="M600,192 L678,192" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <path d="M390,112 L445,112" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s2-a-indigo)"/>
 
-        <!-- Decomposed Lemmas  (x=680..850, center=765) -->
+        <!-- Decomposed Lemmas  (x=447..637, same row y=83) -->
         <g>
-          <rect x="680" y="174" width="170" height="36" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="765" y="197" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <rect x="447" y="83" width="190" height="58" rx="12" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+          <text x="542" y="105" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Decomposed Lemmas</text>
+          <text x="542" y="121" text-anchor="middle" fill="#e11d48" font-size="9" class="tp-txt">Online collected</text>
+        </g>
+
+        <!-- Online augment: Decomposed Lemmas → Problem Set (feedback arc above row) -->
+        <path d="M542,83 L542,67 L107,67 L107,83" fill="none" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#s2-a-rose)"/>
+        <rect x="268" y="59" width="118" height="16" rx="4" fill="#fafbfd" fill-opacity="0.95" stroke="none"/>
+        <text x="327" y="71" text-anchor="middle" fill="#e11d48" font-size="8.5" font-weight="600" class="tp-txt">augmentation</text>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--  SCORING PATH (right from Decomposed Lemmas)            -->
+        <!--  Decomposed Lemmas → Scorer → GRPO Gradients            -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Decomposed Lemmas → Scorer -->
+        <path d="M637,105 L666,105" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+
+        <!-- Scorer (diamond, centered at x=704, y=105) -->
+        <g>
+          <polygon points="704,125 740,105 704,85 668,105" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="704" y="109" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Scorer</text>
+        </g>
+
+        <!-- Scorer → GRPO Gradients -->
+        <path d="M740,105 L768,105" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- GRPO Gradients -->
+        <g>
+          <rect x="770" y="85" width="180" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+          <text x="860" y="102" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">GRPO Gradients</text>
+          <text x="860" y="116" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">reward = decomposition score ∈ [0,1]</text>
         </g>
 
         <!-- ═══════════════════════════════════════════════════════ -->
-        <!--   TOP ARC (outer): Decomposed Lemmas → Scorer → GRPO → Policy π   -->
-        <!-- ═══════════════════════════════════════════════════════ -->
-
-        <!-- Decomposed Lemmas → UP to Scorer -->
-        <path d="M785,174 L785,132" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
-
-        <!-- Scorer (diamond, centered at x=785, y=110) -->
-        <g>
-          <polygon points="785,130 823,110 785,90 747,110" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="785" y="114" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Scorer</text>
-        </g>
-
-        <!-- Scorer → GRPO Gradients  (horizontal left, y=110) -->
-        <path d="M747,110 L255,110" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
-
-        <!-- GRPO Gradients  (x=55..253, center=154) -->
-        <g>
-          <rect x="55" y="90" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-          <text x="154" y="106" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">GRPO Gradients</text>
-          <text x="154" y="119" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">reward = decomposition score R ∈ [0,1]</text>
-        </g>
-
-        <!-- GRPO Gradients → Policy π  (dashed, straight down) -->
-        <path d="M115,130 L115,170" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
-
-        <!-- ═══════════════════════════════════════════════════════ -->
-        <!--   TOP ARC (inner): Decomposed Lemmas → online augment → Problem Set   -->
-        <!-- ═══════════════════════════════════════════════════════ -->
-
-        <!-- Path: from top of Decomposed Lemmas, arc up to y=152, go left, arc down into Problem Set top -->
-        <path d="M740,174 L740,158 Q740,152 734,152 L341,152 Q335,152 335,158 L335,177" fill="none" stroke="#e11d48" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#s2-a-rose)"/>
-        <rect x="478" y="144" width="128" height="16" rx="4" fill="#fafbfd" fill-opacity="0.95" stroke="none"/>
-        <text x="542" y="156" text-anchor="middle" fill="#e11d48" font-size="8.5" font-weight="600" class="tp-txt">online augment P</text>
-
-        <!-- ═══════════════════════════════════════════════════════ -->
-        <!--   BOTTOM PATH: Decomposed Lemmas → ↓ Completion → ← Completed Proofs → ← Compiler → ← SFT   -->
-        <!--   All at center y=274                                                                           -->
+        <!--  COMPLETION PATH (bottom row)                           -->
         <!-- ═══════════════════════════════════════════════════════ -->
 
         <!-- Decomposed Lemmas → down to Completion -->
-        <path d="M765,210 L765,256" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#s2-a-amber)"/>
+        <path d="M542,141 L542,200 L310,200 L310,233" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#s2-a-gray)"/>
 
-        <!-- Completion  (x=700..830, center=765, y=274) -->
+        <!-- Completion  (x=230..390) -->
         <g>
-          <rect x="700" y="258" width="130" height="32" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-          <text x="765" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion</text>
+          <rect x="230" y="233" width="160" height="58" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+          <text x="310" y="259" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Completion</text>
+          <text x="310" y="275" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">Iterative proof generation</text>
         </g>
 
         <!-- Completion → Completed Proofs -->
-        <path d="M700,274 L640,274" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#s2-a-gray)"/>
+        <path d="M390,262 L445,262" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#s2-a-amber)"/>
 
-        <!-- Completed Proofs  (x=510..638, center=574, y=274) -->
+        <!-- Completed Proofs -->
         <g>
-          <rect x="510" y="258" width="128" height="32" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-          <text x="574" y="278" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completed Proofs</text>
+          <rect x="447" y="242" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
+          <text x="542" y="261" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completed Proofs</text>
+          <text x="542" y="274" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">Proof trajectories</text>
         </g>
 
         <!-- Completed Proofs → Compiler -->
-        <path d="M510,274 L472,274" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
+        <path d="M637,262 L666,262" fill="none" stroke="#6d28d9" stroke-width="1.5" marker-end="url(#s2-a-violet)"/>
 
-        <!-- Compiler (diamond, centered at x=434, y=274) -->
+        <!-- Compiler (diamond, centered at x=704, y=262) -->
         <g>
-          <polygon points="434,294 470,274 434,254 398,274" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-          <text x="434" y="278" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Compiler</text>
+          <polygon points="704,282 740,262 704,242 668,262" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="704" y="266" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600" class="tp-txt">Compiler</text>
         </g>
 
         <!-- Compiler → SFT Gradients -->
-        <path d="M398,274 L255,274" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#s2-a-emerald)"/>
+        <path d="M740,262 L768,262" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#s2-a-emerald)"/>
 
-        <!-- SFT Gradients  (x=55..253, center=154, y=274) -->
+        <!-- SFT Gradients -->
         <g>
-          <rect x="55" y="254" width="198" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-          <text x="154" y="270" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">SFT Gradients</text>
-          <text x="154" y="283" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">replay high-quality proofs · stabilize</text>
+          <rect x="770" y="242" width="180" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+          <text x="860" y="259" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">SFT Gradients</text>
+          <text x="860" y="273" text-anchor="middle" fill="#059669" font-size="8.5" class="tp-txt">replay high-quality proofs · stabilize</text>
         </g>
 
-        <!-- SFT Gradients → Policy π  (dashed, straight up) -->
-        <path d="M115,254 L115,214" fill="none" stroke="#047857" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!--  POLICY  (far right, receives both gradient streams)    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- GRPO → Policy (dashed arrow down) -->
+        <path d="M860,125 L860,144" fill="none" stroke="#047857" stroke-width="1.8" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- SFT → Policy (dashed arrow up) -->
+        <path d="M860,242 L860,222" fill="none" stroke="#047857" stroke-width="1.8" stroke-dasharray="6,4" marker-end="url(#s2-a-emerald)"/>
+
+        <!-- Policy  (far right, 180×78 matching Stage 1 SFT Model) -->
+        <g filter="url(#s2-sh)">
+          <rect x="770" y="144" width="180" height="78" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+          <text x="860" y="176" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700" class="tp-txt">Policy</text>
+          <text x="860" y="194" text-anchor="middle" fill="#4f46e5" font-size="10" class="tp-txt">Unified RL model</text>
+          <text x="860" y="210" text-anchor="middle" fill="#94a3b8" font-size="9" class="tp-txt">decomposition + completion</text>
+        </g>
+
       </svg>
 
     </div>
-  </div>
-</section>
-<section class="section" id="inference-pipeline">
-  <div class="container is-max-desktop is-wider">
-    <h2 class="title is-3 has-text-centered">Inference Pipeline</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">
-      Hierarchical proof search: parallel candidate generation, QuickCheck filtering, scoring-based selection, and independent lemma completion.
+    </div>
+
+    <div id="inference-pipeline" style="margin-top:2.5rem;">
+    <h3 class="title is-4 has-text-centered">Inference Pipeline</h3>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:1rem;">
+      We use a single model for both stages. (1) Decomposition: for a given theorem, the LLM proposes sub-lemmas with a constructive proof that Lean verifies; we keep the best-scoring decomposition and recurse until remaining goals are simple. (2) Completion: each leaf lemma is proved by the same policy in an iterative loop: generate a candidate proof, then refine it using Lean compiler feedback.
     </p>
 
-    <svg viewBox="0 0 960 422" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
+    <svg viewBox="-35 0 1020 385" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
       <defs>
-        <marker id="inf-a-gray"   markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#64748b"/></marker>
         <marker id="inf-a-indigo" markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#4f46e5"/></marker>
         <marker id="inf-a-green"  markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#047857"/></marker>
-        <marker id="inf-a-amber"  markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#b45309"/></marker>
-        <marker id="inf-a-red"    markerWidth="8" markerHeight="5" refX="6.5" refY="2.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,2.5 L0,5 Z" fill="#dc2626"/></marker>
-        <filter id="inf-sh" x="-5%" y="-5%" width="110%" height="120%">
+        <filter id="inf-sh" x="-4%" y="-4%" width="108%" height="116%">
           <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#1e293b" flood-opacity="0.08"/>
         </filter>
         <style>.it{font-family:'Inter','Helvetica Neue',Arial,sans-serif;}</style>
       </defs>
 
-      <!-- ═══════════════════════════════════════════════════ -->
-      <!--  PHASE 1 BACKGROUND                                -->
-      <!-- ═══════════════════════════════════════════════════ -->
-      <rect x="8" y="8" width="944" height="186" rx="10" fill="#f0f4ff" stroke="#c7d2fe" stroke-width="1"/>
-      <rect x="18" y="16" width="5" height="18" rx="2.5" fill="#4f46e5"/>
-      <text x="30" y="30" fill="#4f46e5" font-size="11" font-weight="700" class="it">PHASE 1 — LEMMA DECOMPOSITION</text>
-
-      <!-- ─── Input: Verification Theorem ─── -->
-      <ellipse cx="68" cy="107" rx="55" ry="26" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-      <text x="68" y="103" text-anchor="middle" fill="#334155" font-size="9.5" font-weight="600" class="it">Verification</text>
-      <text x="68" y="115" text-anchor="middle" fill="#334155" font-size="9.5" font-weight="600" class="it">Theorem</text>
-
-      <!-- Arrow: Theorem → Lemma Decomposition -->
-      <path d="M123,107 L152,107" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#inf-a-gray)"/>
-
-      <!-- ─── Lemma Decomposition box ─── -->
-      <g filter="url(#inf-sh)">
-        <rect x="154" y="78" width="178" height="60" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-        <text x="243" y="98" text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="700" class="it">Lemma Decomposition</text>
-        <line x1="166" y1="105" x2="320" y2="105" stroke="#c7d2fe" stroke-width="0.8"/>
-        <text x="243" y="116" text-anchor="middle" fill="#6366f1" font-size="8.5" class="it">Sub-Lemma Proposal</text>
-        <text x="243" y="128" text-anchor="middle" fill="#6366f1" font-size="8.5" class="it">Operand-Based Scoring</text>
+      <!-- Title -->
+      <g>
+        <rect x="-7" y="14" width="5" height="24" rx="2.5" fill="#4f46e5"/>
+        <text x="7" y="34" fill="#1e293b" font-size="19" font-weight="700" class="it">Inference Pipeline</text>
+        <text x="7" y="52" fill="#94a3b8" font-size="11" class="it">Hierarchical proof search with parallel candidate generation, filtering &amp; independent completion</text>
       </g>
 
-      <!-- ─── Fan arrows → 3 parallel candidate sets ─── -->
-      <path d="M332,93  L372,75"  fill="none" stroke="#4f46e5" stroke-width="1.4" marker-end="url(#inf-a-indigo)"/>
-      <path d="M332,108 L372,110" fill="none" stroke="#4f46e5" stroke-width="1.4" marker-end="url(#inf-a-indigo)"/>
-      <path d="M332,123 L372,145" fill="none" stroke="#4f46e5" stroke-width="1.4" marker-end="url(#inf-a-indigo)"/>
+      <!-- ═══ COL 1: Verification Theorem + 3 Proposals ═══ -->
 
-      <!-- Candidate Set #1 -->
-      <rect x="374" y="57" width="148" height="36" rx="7" fill="white" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3"/>
-      <text x="383" y="71"  fill="#475569" font-size="7.5" font-weight="600" class="it">Proposals #1</text>
-      <rect x="383" y="74" width="55" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="411" y="84" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 1a</text>
-      <rect x="444" y="74" width="55" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="472" y="84" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 1b</text>
+      <!-- Verification Theorem -->
+      <rect x="30" y="85" width="195" height="42" rx="21" fill="white" stroke="#4f46e5" stroke-width="1.5"/>
+      <text x="128" y="111" text-anchor="middle" fill="#4338ca" font-size="13" font-weight="700" class="it">Verification Theorem</text>
 
-      <!-- Candidate Set #2 -->
-      <rect x="374" y="99"  width="148" height="36" rx="7" fill="white" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3"/>
-      <text x="383" y="113" fill="#475569" font-size="7.5" font-weight="600" class="it">Proposals #2</text>
-      <rect x="383" y="116" width="55" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="411" y="126" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 2a</text>
-      <rect x="444" y="116" width="55" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="472" y="126" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 2b</text>
+      <!-- Proposal #1 -->
+      <rect x="25" y="143" width="200" height="68" rx="9" fill="rgba(238,242,255,0.22)" stroke="#a5b4fc" stroke-width="1.3" stroke-dasharray="5,3"/>
+      <text x="125" y="159" text-anchor="middle" fill="#4338ca" font-size="11" font-weight="700" class="it">Decomposition Proposal #1</text>
+      <rect x="40" y="165" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="81" y="180" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 1a</text>
+      <rect x="128" y="165" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="169" y="180" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 1b</text>
+      <text x="125" y="203" text-anchor="middle" fill="#6b7280" font-size="13" class="it">…</text>
 
-      <!-- Candidate Set #3 -->
-      <rect x="374" y="141" width="148" height="36" rx="7" fill="white" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3"/>
-      <text x="383" y="155" fill="#475569" font-size="7.5" font-weight="600" class="it">Proposals #3</text>
-      <rect x="383" y="158" width="50" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="408" y="168" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 3a</text>
-      <rect x="440" y="158" width="50" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-      <text x="465" y="168" text-anchor="middle" fill="#334155" font-size="7" class="it">Sub-Lemma 3b</text>
-      <text x="497" y="168" fill="#94a3b8" font-size="10" class="it">…</text>
+      <!-- Proposal #2 -->
+      <rect x="25" y="221" width="200" height="68" rx="9" fill="rgba(238,242,255,0.22)" stroke="#a5b4fc" stroke-width="1.3" stroke-dasharray="5,3"/>
+      <text x="125" y="237" text-anchor="middle" fill="#4338ca" font-size="11" font-weight="700" class="it">Decomposition Proposal #2</text>
+      <rect x="40" y="243" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="81" y="258" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 2a</text>
+      <rect x="128" y="243" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="169" y="258" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 2b</text>
+      <text x="125" y="281" text-anchor="middle" fill="#6b7280" font-size="13" class="it">…</text>
 
-      <!-- ─── Arrows: candidates → QuickCheck ─── -->
-      <path d="M522,75  L546,98"  fill="none" stroke="#64748b" stroke-width="1.4" marker-end="url(#inf-a-gray)"/>
-      <path d="M522,117 L546,110" fill="none" stroke="#64748b" stroke-width="1.4" marker-end="url(#inf-a-gray)"/>
-      <path d="M522,159 L546,120" fill="none" stroke="#64748b" stroke-width="1.4" marker-end="url(#inf-a-gray)"/>
+      <!-- Proposal #3 -->
+      <rect x="25" y="299" width="200" height="68" rx="9" fill="rgba(238,242,255,0.22)" stroke="#a5b4fc" stroke-width="1.3" stroke-dasharray="5,3"/>
+      <text x="125" y="315" text-anchor="middle" fill="#4338ca" font-size="11" font-weight="700" class="it">Decomposition Proposal #3</text>
+      <rect x="40" y="321" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="81" y="336" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 3a</text>
+      <rect x="128" y="321" width="82" height="22" rx="6" fill="white" stroke="#c7d2fe" stroke-width="1"/>
+      <text x="169" y="336" text-anchor="middle" fill="#4338ca" font-size="9.5" font-weight="600" class="it">Sub-Lemma 3b</text>
+      <text x="125" y="359" text-anchor="middle" fill="#6b7280" font-size="13" class="it">…</text>
 
-      <!-- ─── QuickCheck Filtering box ─── -->
-      <rect x="548" y="78" width="168" height="60" rx="10" fill="white" stroke="#94a3b8" stroke-width="1.5"/>
-      <text x="632" y="98"  text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700" class="it">QuickCheck Filtering</text>
-      <line x1="560" y1="105" x2="704" y2="105" stroke="#e2e8f0" stroke-width="0.8"/>
-      <text x="632" y="116" text-anchor="middle" fill="#64748b" font-size="8.5" class="it">Random Testing</text>
-      <text x="632" y="128" text-anchor="middle" fill="#64748b" font-size="8.5" class="it">Discard False Lemmas</text>
+      <!-- ═══ COL 2: Lemma Decomposition + QuickCheck + Select Best ═══ -->
 
-      <!-- Arrow: QuickCheck ↓ Discarded -->
-      <path d="M632,138 L632,155" fill="none" stroke="#dc2626" stroke-width="1.3" marker-end="url(#inf-a-red)"/>
-
-      <!-- Discarded Sub-Lemmas box -->
-      <rect x="548" y="157" width="168" height="30" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.3" stroke-dasharray="4,2"/>
-      <text x="632" y="170" text-anchor="middle" fill="#dc2626" font-size="8"   font-weight="600" class="it">✕  Discarded Sub-Lemmas</text>
-      <text x="632" y="181" text-anchor="middle" fill="#ef4444" font-size="7.5" class="it">Counterexamples or low-scoring</text>
-
-      <!-- Arrow: QuickCheck → Select Best -->
-      <path d="M716,108 L741,108" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#inf-a-gray)"/>
-
-      <!-- ─── Select Best Decomposition box ─── -->
+      <!-- Lemma Decomposition -->
       <g filter="url(#inf-sh)">
-        <rect x="743" y="78" width="196" height="60" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-        <text x="841" y="98"  text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="700" class="it">🏆 Best Decomposition</text>
-        <line x1="755" y1="105" x2="927" y2="105" stroke="#a7f3d0" stroke-width="0.8"/>
-        <text x="841" y="116" text-anchor="middle" fill="#047857" font-size="8.5" class="it">Highest Scoring Sub-Lemmas</text>
-        <text x="841" y="128" text-anchor="middle" fill="#047857" font-size="8.5" class="it">Selected for Completion</text>
+        <rect x="340" y="72" width="255" height="68" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+        <text x="468" y="94" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="it">Lemma Decomposition</text>
+        <line x1="354" y1="102" x2="582" y2="102" stroke="#c7d2fe" stroke-width="0.8"/>
+        <text x="468" y="116" text-anchor="middle" fill="#6366f1" font-size="9" class="it">Sub-lemma proposal · QuickCheck filtering</text>
+        <text x="468" y="129" text-anchor="middle" fill="#6366f1" font-size="9" class="it">Operand-based scoring</text>
       </g>
 
-      <!-- ═══════════════════════════════════════════════════ -->
-      <!--  PHASE 2 BACKGROUND                                -->
-      <!-- ═══════════════════════════════════════════════════ -->
-      <rect x="8" y="250" width="944" height="164" rx="10" fill="#f0fdf4" stroke="#a7f3d0" stroke-width="1"/>
+      <!-- QuickCheck Filtering -->
+      <rect x="340" y="186" width="255" height="66" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+      <text x="468" y="207" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700" class="it">QuickCheck Filtering</text>
+      <line x1="354" y1="215" x2="582" y2="215" stroke="#fde68a" stroke-width="0.8"/>
+      <text x="468" y="229" text-anchor="middle" fill="#78350f" font-size="9" class="it">Tests each complete decomposition</text>
+      <text x="468" y="243" text-anchor="middle" fill="#78350f" font-size="9" class="it">Eliminates falsified proposals</text>
 
-      <!-- ─── Connector: Phase 1 → Phase 2 (U-turn) ─── -->
-      <path d="M841,138 L841,220 Q841,230 831,230 L130,230 Q120,230 120,240 L120,290"
-            fill="none" stroke="#047857" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#inf-a-green)"/>
-      <!-- Label on connector horizontal segment -->
-      <rect x="404" y="220" width="186" height="16" rx="4" fill="white" fill-opacity="0.92" stroke="none"/>
-      <text x="497" y="232" text-anchor="middle" fill="#047857" font-size="8.5" font-weight="600" class="it">→  Pass Selected Sub-Lemmas</text>
-
-      <!-- Phase 2 label (drawn after connector so it's on top) -->
-      <rect x="18" y="257" width="5" height="18" rx="2.5" fill="#047857"/>
-      <text x="30" y="271" fill="#047857" font-size="11" font-weight="700" class="it">PHASE 2 — LEMMA COMPLETION</text>
-
-      <!-- ─── Lemma Completion box ─── -->
+      <!-- Select Best Decomposition -->
       <g filter="url(#inf-sh)">
-        <rect x="20" y="290" width="198" height="76" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
-        <text x="119" y="311" text-anchor="middle" fill="#1e293b" font-size="11.5" font-weight="700" class="it">Lemma Completion</text>
-        <line x1="32" y1="318" x2="206" y2="318" stroke="#a7f3d0" stroke-width="0.8"/>
-        <text x="119" y="330" text-anchor="middle" fill="#047857" font-size="8.5" class="it">LLM Proof Search</text>
-        <text x="119" y="342" text-anchor="middle" fill="#047857" font-size="8"   font-style="italic" class="it">Independent Sub-Lemma Proofs</text>
-        <text x="119" y="354" text-anchor="middle" fill="#047857" font-size="8"   class="it">Revision via Compiler Feedback</text>
+        <rect x="340" y="296" width="255" height="66" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="468" y="317" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="it">Select Best Decomposition</text>
+        <line x1="354" y1="325" x2="582" y2="325" stroke="#a7f3d0" stroke-width="0.8"/>
+        <text x="468" y="339" text-anchor="middle" fill="#047857" font-size="9" class="it">Highest-scoring complete proposal</text>
+        <text x="468" y="353" text-anchor="middle" fill="#047857" font-size="9" class="it">from the candidate pool</text>
       </g>
 
-      <!-- Arrows: Lemma Completion → proof boxes -->
-      <path d="M218,314 L258,305" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#inf-a-green)"/>
-      <path d="M218,350 L258,351" fill="none" stroke="#047857" stroke-width="1.5" marker-end="url(#inf-a-green)"/>
+      <!-- ═══ COL 3: Lemma Completion + Proofs + Final ═══ -->
 
-      <!-- Sub-Lemma Proof 1 -->
-      <rect x="260" y="289" width="192" height="34" rx="8" fill="white" stroke="#059669" stroke-width="1.3"/>
-      <text x="356" y="304" text-anchor="middle" fill="#047857" font-size="9.5" font-weight="600" class="it">✓  Proof of Sub-Lemma 1c</text>
-      <text x="356" y="316" text-anchor="middle" fill="#64748b" font-size="7.5" class="it">Verified by Lean 4 compiler</text>
-
-      <!-- Sub-Lemma Proof 2 -->
-      <rect x="260" y="333" width="192" height="34" rx="8" fill="white" stroke="#059669" stroke-width="1.3"/>
-      <text x="356" y="348" text-anchor="middle" fill="#047857" font-size="9.5" font-weight="600" class="it">✓  Proof of Sub-Lemma 2a</text>
-      <text x="356" y="360" text-anchor="middle" fill="#64748b" font-size="7.5" class="it">Verified by Lean 4 compiler</text>
-
-      <!-- "and more…" indicator -->
-      <text x="356" y="383" text-anchor="middle" fill="#94a3b8" font-size="9" class="it">… and all other sub-lemmas</text>
-
-      <!-- Arrows: proofs → Final Proof of Theorem -->
-      <path d="M452,306 L508,330" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#inf-a-amber)"/>
-      <path d="M452,350 L508,338" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#inf-a-amber)"/>
-
-      <!-- ─── Final Proof of Theorem oval ─── -->
+      <!-- Lemma Completion -->
       <g filter="url(#inf-sh)">
-        <ellipse cx="650" cy="338" rx="135" ry="38" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
-        <text x="650" y="332" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" class="it">Final Proof</text>
-        <text x="650" y="349" text-anchor="middle" fill="#b45309" font-size="10"  class="it">of Theorem  ✓</text>
+        <rect x="685" y="72" width="255" height="68" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+        <text x="813" y="94" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="700" class="it">Lemma Completion</text>
+        <line x1="699" y1="102" x2="927" y2="102" stroke="#fde68a" stroke-width="0.8"/>
+        <text x="813" y="116" text-anchor="middle" fill="#b45309" font-size="9" class="it">LLM proof search · Iterative refinement</text>
+        <text x="813" y="129" text-anchor="middle" fill="#b45309" font-size="9" class="it">Independent sub-lemma proofs</text>
       </g>
+
+      <!-- Proof of Sub-Lemma 1a -->
+      <rect x="685" y="176" width="255" height="32" rx="10" fill="white" stroke="#cbd5e1" stroke-width="1.3"/>
+      <text x="813" y="196" text-anchor="middle" fill="#4338ca" font-size="11" font-weight="600" class="it">Proof of Sub-Lemma 1a</text>
+
+      <!-- Proof of Sub-Lemma 1b -->
+      <rect x="685" y="224" width="255" height="32" rx="10" fill="white" stroke="#cbd5e1" stroke-width="1.3"/>
+      <text x="813" y="244" text-anchor="middle" fill="#4338ca" font-size="11" font-weight="600" class="it">Proof of Sub-Lemma 1b</text>
+
+      <!-- Ellipsis -->
+      <text x="813" y="276" text-anchor="middle" fill="#6b7280" font-size="13" class="it">…</text>
+
+      <!-- Final Proof of Theorem -->
+      <g filter="url(#inf-sh)">
+        <rect x="685" y="302" width="255" height="48" rx="24" fill="#f59e0b" stroke="none"/>
+        <text x="813" y="331" text-anchor="middle" fill="white" font-size="14" font-weight="700" class="it">Final Proof of Theorem</text>
+      </g>
+
+      <!-- ═══ ARROWS ═══ -->
+
+      <!-- ① Verification Theorem → Lemma Decomposition -->
+      <path d="M225,106 L338,106" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+
+      <!-- ② Lemma Decomposition → Bus -->
+      <line x1="468" y1="140" x2="468" y2="150" fill="none" stroke="#4f46e5" stroke-width="1.4" stroke-opacity="0.45"/>
+      <line x1="300" y1="150" x2="468" y2="150" fill="none" stroke="#4f46e5" stroke-width="1.4" stroke-opacity="0.45"/>
+      <line x1="300" y1="150" x2="300" y2="332" fill="none" stroke="#4f46e5" stroke-width="1.4" stroke-opacity="0.45"/>
+
+      <!-- ③ Bus → Proposals (left) -->
+      <path d="M300,176 L227,176" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+      <path d="M300,254 L227,254" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+      <path d="M300,332 L227,332" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+
+      <!-- ④ Bus → QuickCheck (right) -->
+      <path d="M300,219 L338,219" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+
+      <!-- ⑤ QuickCheck → Select Best -->
+      <path d="M468,252 L468,294" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+
+      <!-- ⑥ Select Best → Lemma Completion (L-path) -->
+      <path d="M595,329 L645,329 L645,106 L683,106" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#inf-a-green)"/>
+
+      <!-- ⑦ Lemma Completion → Proof 1a -->
+      <path d="M813,140 L813,174" fill="none" stroke="#047857" stroke-width="1.8" marker-end="url(#inf-a-green)"/>
+
+      <!-- ⑧ Proof 1a → Proof 1b -->
+      <path d="M813,208 L813,222" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
+
+      <!-- ⑨ Proof 1b → … → Final Proof -->
+      <path d="M813,256 L813,267" fill="none" stroke="#4f46e5" stroke-width="1.8"/>
+      <path d="M813,283 L813,300" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#inf-a-indigo)"/>
 
     </svg>
+    </div>
+
   </div>
 </section>
 
