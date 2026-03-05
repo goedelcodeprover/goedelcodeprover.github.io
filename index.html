@@ -60,7 +60,7 @@
               <span class="link-block">
                 <a href="#" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                  <span>Paper</span>
+                  <span>Paper (coming soon)</span>
                 </a>
               </span>
               <span class="link-block">
@@ -72,13 +72,7 @@
               <span class="link-block">
                 <a href="#" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">🤗</span>
-                  <span>Huggingface</span>
-                </a>
-              </span>
-              <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon"><i class="fas fa-play"></i></span>
-                  <span>Demo</span>
+                  <span>HuggingFace</span>
                 </a>
               </span>
             </div>
@@ -505,7 +499,7 @@
 
     <div id="training-pipeline" style="margin-top:2.5rem;">
     <h3 class="title is-4 has-text-centered">Training Pipeline</h3>
-    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training Goedel-Verifier-Preview proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-curated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves.</p>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training Goedel-Verifier-Preview proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-model-generated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves.</p>
 
     <!-- Stage toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -875,7 +869,7 @@
 <section class="section" id="benchmark">
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Prove success rate (%) of baselines and ours across four different benchmarks.</p>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Proof success rate (%) of baselines and ours across three benchmarks.</p>
     <div class="benchmark-table-wrapper table-container">
       <table class="table benchmark-table">
         <thead>
@@ -888,22 +882,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="5" class="group-header">Proprietary Reasoning Models</td></tr>
-          <tr><td>Claude-Opus-4.6</td><td>10.6</td><td>11.1</td><td>3.8</td><td>—</td></tr>
-          <tr><td>Gemini-3-Flash</td><td>19.6</td><td>21.1</td><td>7.7</td><td>—</td></tr>
-          <tr><td>GPT-5.2-Pro</td><td>16.9</td><td>18.0</td><td>7.7</td><td>—</td></tr>
-          <tr><td>GPT-5.3-Codex</td><td>15.9</td><td>23.6</td><td>7.7</td><td>—</td></tr>
-          <tr><td>Deepseek-V3.2-Speciale</td><td>12.2</td><td>14.9</td><td>5.2</td><td>—</td></tr>
-          <tr><td colspan="5" class="group-header">Open-sourced Neural Provers</td></tr>
-          <tr><td>Kimina-Prover-72B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>DeepSeek-Prover-V2-671B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>Goedel-Prover-V2-32B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>BFS-Prover-V2</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr class="ours-row"><td>Ours</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td colspan="5" class="group-header">Frontier Reasoning Models</td></tr>
+          <tr><td>Claude-Opus-4.6</td><td>10.6</td><td>11.1</td><td>11.6</td><td>—</td></tr>
+          <tr><td>Gemini-3-Flash</td><td>19.6</td><td>21.1</td><td>11.6</td><td>—</td></tr>
+          <tr><td>GPT-5.2-Pro</td><td>16.9</td><td>18.0</td><td>18.1</td><td>—</td></tr>
+          <tr><td>GPT-5.3-Codex</td><td>15.9</td><td>23.6</td><td>14.2</td><td>—</td></tr>
+          <tr><td>DeepSeek-V3.2-Speciale</td><td>12.2</td><td>14.9</td><td>5.1</td><td>—</td></tr>
+          <tr><td colspan="5" class="group-header">Advanced Neural Provers</td></tr>
+          <tr><td>Kimina-Prover-72B</td><td>15.8</td><td>22.9</td><td>19.8</td><td>—</td></tr>
+          <tr><td>DeepSeek-Prover-V2-671B</td><td>18.5</td><td>24.8</td><td>23.3</td><td>—</td></tr>
+          <tr><td>Goedel-Prover-V2-32B</td><td>17.9</td><td>25.4</td><td>22.0</td><td>—</td></tr>
+          <tr><td>BFS-Prover-V2-32B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="ours-row"><td>Goedel-Verifier-Preview-8B</td><td>69.3</td><td>—</td><td>—</td><td>—</td></tr>
           <tr class="delta-row"><td>Δ</td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td></tr>
         </tbody>
       </table>
     </div>
+    <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Note. Baseline results are obtained with parallel generation and reported as Pass@128. Our method is evaluated under a search-based inference setting with Goedel-Verifier-Preview-8B.</p>
   </div>
 </section>
 
