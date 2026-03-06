@@ -183,6 +183,21 @@ body {
   margin-bottom: 0;
 }
 
+/* Performance figure: white frame with 3D raised (凸起) */
+#benchmark .performance-figure {
+  display: inline-block;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 6px 12px rgba(0, 0, 0, 0.08),
+    0 14px 28px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
 /* Benchmark Performance table (reference: clean slide table style) */
 #benchmark .benchmark-table-wrapper {
   overflow-x: auto;
@@ -236,6 +251,25 @@ body {
   display: inline-block;
   font-size: 0.9rem;
   margin-left: 0.25rem;
+}
+
+/* Stats table: narrower, first column compact (override above) */
+#benchmark .stats-table-wrapper {
+  max-width: 26rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+#benchmark .stats-table-wrapper .table.benchmark-table {
+  table-layout: fixed;
+  font-size: 0.95rem;
+}
+#benchmark .stats-table-wrapper .table.benchmark-table td:first-child,
+#benchmark .stats-table-wrapper .table.benchmark-table th:first-child {
+  width: 7rem;
+  max-width: 7rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  box-sizing: border-box;
 }
 
 /* Demo: step container + Previous/Next + dots (fixed size to avoid layout jump when switching steps) */

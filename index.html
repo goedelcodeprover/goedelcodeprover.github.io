@@ -110,7 +110,7 @@
             <strong>Model &amp; Release.</strong> We train a single unified model, <strong>Goedel-Verifier-Preview-8B</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
           </p>
           <p>
-            <strong>Results.</strong> Goedel-Verifier-Preview-8B achieves strong performance across multiple Lean 4 code verification benchmarks&mdash;including Verina, Clever, and AlgoVeri&mdash;demonstrating the effectiveness of hierarchical proof search at scale.
+            <strong>Results.</strong> Goedel-Verifier-Preview-8B achieves strong performance across multiple code verification benchmarks&mdash;including Verina, Clever, and AlgoVeri&mdash;demonstrating the effectiveness of hierarchical proof search at scale.
           </p>
         </div>
       </div>
@@ -866,40 +866,43 @@
 <section class="section" id="benchmark">
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Proof success rate (%) of baselines and ours across three benchmarks.</p>
-    <div class="benchmark-table-wrapper table-container">
-      <table class="table benchmark-table">
-        <thead>
-          <tr>
-            <th>Dataset</th>
-            <th>Verina</th>
-            <th>Clever</th>
-            <th>AlgoVeri</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td colspan="5" class="group-header">Frontier Reasoning Models</td></tr>
-          <tr><td>Claude-Opus-4.6</td><td>10.6</td><td>11.1</td><td>11.6</td><td>—</td></tr>
-          <tr><td>Gemini-3-Flash</td><td>19.6</td><td>21.1</td><td>11.6</td><td>—</td></tr>
-          <tr><td>GPT-5.2-Pro</td><td>16.9</td><td>18.0</td><td>18.1</td><td>—</td></tr>
-          <tr><td>GPT-5.3-Codex</td><td>15.9</td><td>23.6</td><td>14.2</td><td>—</td></tr>
-          <tr><td>DeepSeek-V3.2-Speciale</td><td>12.2</td><td>14.9</td><td>5.1</td><td>—</td></tr>
-          <tr><td colspan="5" class="group-header">Advanced Neural Provers</td></tr>
-          <tr><td>Kimina-Prover-72B</td><td>15.8</td><td>22.9</td><td>19.8</td><td>—</td></tr>
-          <tr><td>DeepSeek-Prover-V2-671B</td><td>18.5</td><td>24.8</td><td>23.3</td><td>—</td></tr>
-          <tr><td>Goedel-Prover-V2-32B</td><td>17.9</td><td>25.4</td><td>22.0</td><td>—</td></tr>
-          <tr><td>BFS-Prover-V2-32B</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr class="ours-row"><td>Goedel-Verifier-Preview-8B</td><td>69.3</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr class="delta-row"><td>Δ</td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td><td>— <span class="delta-val">—↑</span></td></tr>
-        </tbody>
-      </table>
-    </div>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Number of solved problems across three code verification benchmarks.</p>
+    <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb; transform: translateY(0); transition: box-shadow 0.3s ease, transform 0.3s ease;">
+      <img src="figs/performance.png?v=2" alt="Number of solved problems on Verina, Clever, and AlgoVeri" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+    </figure>
     <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Note. Baseline results are obtained with parallel generation and reported as Pass@128. Our method is evaluated under a search-based inference setting with Goedel-Verifier-Preview-8B.</p>
+    <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
+      Goedel-Verifier-Preview-8B solves <strong>the most problems across all three benchmarks</strong>, outperforming significantly larger frontier models through hierarchical proof search rather than brute-force scaling.
+    </p>
+
+    <p class="content has-text-centered is-size-6" style="margin-top:2rem; margin-bottom:1rem;">Statistics of proved problems: mean and standard deviation for lemma count and proof length.</p>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="benchmark-table-wrapper table-container stats-table-wrapper">
+          <table class="table benchmark-table stats-table">
+            <thead>
+              <tr>
+                <th>Statistics</th>
+                <th>Verina</th>
+                <th>Clever</th>
+                <th>AlgoVeri</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Lemma count (mean)</td><td>26.82</td><td>12.13</td><td>20.05</td></tr>
+              <tr><td>Lemma count (std)</td><td>9.68</td><td>10.57</td><td>10.97</td></tr>
+              <tr><td>Proof length (mean)</td><td>274.82</td><td>137.78</td><td>198.11</td></tr>
+              <tr><td>Proof length (std)</td><td>115.01</td><td>97.79</td><td>105.45</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
+      The high lemma counts and proof lengths confirm that successfully verified problems require <strong>deep, multi-step decomposition</strong> rather than simple tactic scripts. This demonstrates the model's ability to perform effective structural decomposition and generate complex proofs end-to-end.
+    </p>
   </div>
 </section>
-
-<footer class="footer">
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
