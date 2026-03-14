@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Goedel-Verifier: Automated Code Verification in Lean 4 via Hierarchical Proof Search.">
-  <title>Goedel-Verifier: Automated Code Verification in Lean 4</title>
+  <meta name="description" content="Neumann-Prover: Automated Code Verification via Hierarchical Proof Search.">
+  <title>Neumann-Prover: Automated Code Verification via Hierarchical Proof Search</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -43,8 +43,8 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">
-            <span style="display:block;font-size:0.62em;font-weight:800;letter-spacing:0.02em;color:#4f46e5;margin-bottom:0.15em;">Goedel-Verifier</span>
-            Decompose and Conquer:<br>Automated Code Verification in Lean 4 via Hierarchical Proof Search
+            <span style="display:block;font-size:0.62em;font-weight:800;letter-spacing:0.02em;color:#4f46e5;margin-bottom:0.15em;">Neumann-Prover</span>
+            Automated Code Verification via Hierarchical Proof Search
           </h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">Author One<sup>1</sup>,</span>
@@ -104,13 +104,13 @@
             <strong>Problem.</strong> Code can be tested, but testing never exhausts all inputs&mdash;every passing test suite still leaves room for subtle logical errors and specification violations. <em>Formal verification</em> closes this gap by constructing machine-checkable proofs that an implementation satisfies its specification for all possible inputs. We study this problem in Lean 4, a modern interactive theorem prover, where the goal is to automatically generate such proofs for realistic programs.
           </p>
           <p>
-            <strong>Method.</strong> We propose a <em>hierarchical proof search</em> framework built around two stages: <strong>lemma decomposition</strong>, which breaks a complex verification goal into simpler, independently provable subgoals, and <strong>lemma completion</strong>, which solves each subgoal through iterative proof search with compiler feedback. A principled decomposition score drives both stages&mdash;guiding candidate selection at inference and serving as a dense reward signal during training.
+            <strong>Method.</strong> We propose a <em>hierarchical proof search</em> framework built around two stages: <strong>recursive lemma decomposition</strong>, which iteratively breaks a complex verification goal into simpler, independently provable subgoals until each is tractable, and <strong>iterative lemma completion</strong>, which solves each leaf subgoal through proof search with compiler feedback. A principled decomposition score drives both stages&mdash;guiding candidate selection at inference and serving as a dense reward signal during training.
           </p>
           <p>
             <strong>Model &amp; Release.</strong> We train a single unified model, <strong>Goedel-Verifier-Preview-8B</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
           </p>
           <p>
-            <strong>Results.</strong> Goedel-Verifier-Preview-8B achieves strong performance across multiple code verification benchmarks&mdash;including Verina, Clever, and AlgoVeri&mdash;demonstrating the effectiveness of hierarchical proof search at scale.
+            <strong>Results.</strong> With only <strong>8B parameters</strong>, Goedel-Verifier-Preview-8B outperforms all baselines across every benchmark&mdash;including frontier reasoning models and neural provers 4&ndash;84&times; its size&mdash;achieving a <strong>2.6&times;</strong> improvement over the strongest baseline and an overall prove success rate of <strong>62.0%</strong> on 427 verification tasks.
           </p>
         </div>
       </div>
@@ -121,7 +121,7 @@
 <section class="section" id="demo">
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Example: Find the Unique Number (from Verina Benchmark)</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">This example asks the program to solve a simple task: given a list in which one integer appears exactly once and every other integer appears exactly twice, return the unique integer. The verification goal is stronger than testing on a few examples: we want a machine-checkable proof that for every valid input list, the implementation always returns the correct answer.</p>
+    <p class="content has-text-centered is-size-6" style="margin-bottom:1rem;">This example asks the program to solve a simple task: given a list in which one integer appears exactly once and every other integer appears exactly twice, return the unique integer. For instance, given <code>[2, 1, 3, 2, 3]</code> the answer is <code>1</code>. The verification goal is stronger than testing on a few examples: we want a machine-checkable proof that for every valid input list, the implementation always returns the correct answer.</p>
 
     <!-- View toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -458,6 +458,12 @@
           <pre style="margin:0;padding:1rem 1.25rem;background:#1e1e1e;color:#d4d4d4;font-family:'SF Mono',Monaco,'Cascadia Code',Consolas,monospace;font-size:0.82rem;line-height:1.55;white-space:pre-wrap;"><code id="pt-code-content" class="language-lean">-- Select a node in the proof tree above to see its Lean 4 code here.</code></pre>
         </div>
       </div>
+      <div class="has-text-centered" style="margin-top:0.75rem;">
+        <a id="lean-live-link" href="about:blank" class="external-link button is-small is-rounded is-outlined" target="_blank" rel="noopener">
+          <span class="icon is-small"><i class="fas fa-external-link-alt"></i></span>
+          <span>View Complete Code in Lean 4 Live</span>
+        </a>
+      </div>
     </div>
 
     <!-- ═══ VIEW 2: Step-by-Step (original) ═══ -->
@@ -492,8 +498,8 @@
     <div class="mt-5">
       <div class="methodology-block">
         <h3 class="title is-5">Divide the Proof, Conquer the Goal</h3>
-        <p class="content has-text-justified"><strong>Lemma Decomposition.</strong> Given a verification theorem, the model proposes a set of sub-lemmas together with a constructive proof sketch showing that they imply the original goal. We score each decomposition on two axes: <em>correctness</em> (sub-lemmas must survive QuickCheck random testing&mdash;any counterexample discards the candidate) and <em>effectiveness</em> (measured via an operator-footprint metric that rewards decompositions that genuinely simplify the goal). This score doubles as the RL reward during training and the ranking criterion at inference.</p>
-        <p class="content has-text-justified"><strong>Lemma Completion.</strong> Each surviving sub-lemma is proved independently. The model generates a candidate proof and submits it to the Lean 4 compiler; if it fails, the compiler's error message&mdash;type mismatch, unresolved goal, and so on&mdash;is fed back to the model for revision. This human-like edit&ndash;compile&ndash;fix loop continues until the proof passes or a budget is exhausted, and the same loop is replayed during both SFT and RL training.</p>
+        <p class="content has-text-justified"><strong>Recursive Lemma Decomposition.</strong> Given a verification goal, the model recursively proposes sets of sub-lemmas together with constructive proof sketches showing that they imply the original goal, continuing until each sub-lemma is tractable. We score each decomposition on two axes: <em>correctness</em> (sub-lemmas must survive QuickCheck random testing&mdash;any counterexample discards the candidate) and <em>effectiveness</em> (measured via an operator-footprint metric that rewards decompositions that genuinely simplify the goal). This score doubles as the RL reward during training and the ranking criterion at inference.</p>
+        <p class="content has-text-justified"><strong>Iterative Lemma Completion.</strong> Each surviving sub-lemma is proved independently. The model generates a candidate proof and submits it to the Lean 4 compiler; if it fails, the compiler's error message&mdash;type mismatch, unresolved goal, and so on&mdash;is fed back to the model for revision. This human-like edit&ndash;compile&ndash;fix loop continues until the proof passes or a budget is exhausted, and the same loop is replayed during both SFT and RL training.</p>
       </div>
     </div>
 
@@ -866,41 +872,51 @@
 <section class="section" id="benchmark">
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
-    <p class="content has-text-centered is-size-6" style="margin-bottom:1.5rem;">Number of solved problems across three code verification benchmarks.</p>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:1.5rem;">We evaluate on three Lean 4 code verification benchmarks: <strong>Verina</strong> (189 problems), <strong>Clever</strong> (161 problems), and <strong>AlgoVeri</strong> (77 problems), totaling 427 verification tasks. Baselines include frontier reasoning models (Claude-Opus-4.6, Gemini-3-Flash, GPT-5.2-Pro, GPT-5.3-Codex, Deepseek-V3.2-Speciale) and neural provers (Kimina-Prover-72B, DeepSeek-Prover-V2-671B, Goedel-Prover-V2-32B, BFS-Prover-V2-32B).</p>
     <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb; transform: translateY(0); transition: box-shadow 0.3s ease, transform 0.3s ease;">
       <img src="figs/performance.png?v=2" alt="Number of solved problems on Verina, Clever, and AlgoVeri" style="max-width:100%; height:auto; display:block; margin:0 auto;">
     </figure>
-    <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Note. Baseline results are obtained with parallel generation and reported as Pass@128. Our method is evaluated under a search-based inference setting with Goedel-Verifier-Preview-8B.</p>
+    <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Note. Baseline results are obtained with parallel generation and reported as Pass@128. Our method operates under a search-based inference setting using Goedel-Verifier-Preview-8B.</p>
     <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
-      Goedel-Verifier-Preview-8B solves <strong>the most problems across all three benchmarks</strong>, outperforming significantly larger frontier models through hierarchical proof search rather than brute-force scaling.
+      Goedel-Verifier-Preview-8B achieves prove success rates of <strong>68.8%</strong> on Verina, <strong>54.0%</strong> on Clever, and <strong>62.3%</strong> on AlgoVeri, yielding an overall rate of <strong>62.0%</strong> across all 427 tasks — a <strong>2.6&times;</strong> improvement over the strongest baseline. Notably, this is achieved with an 8B model, surpassing neural provers 4&ndash;84&times; its size (32B&ndash;671B). In addition, the built-in quickcheck mechanism disproves 23, 10, and 14 problems on Verina, Clever, and AlgoVeri respectively by producing concrete counterexamples.
     </p>
 
     <p class="content has-text-centered is-size-6" style="margin-top:2rem; margin-bottom:1rem;">Statistics of proved problems: mean and standard deviation for lemma count and proof length.</p>
     <div class="columns is-centered">
-      <div class="column is-8">
+      <div class="column is-12">
         <div class="benchmark-table-wrapper table-container stats-table-wrapper">
-          <table class="table benchmark-table stats-table">
+          <table class="table benchmark-table stats-table is-fullwidth">
             <thead>
               <tr>
                 <th>Statistics</th>
                 <th>Verina</th>
                 <th>Clever</th>
                 <th>AlgoVeri</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Lemma count (mean)</td><td>26.82</td><td>12.13</td><td>20.05</td></tr>
-              <tr><td>Lemma count (std)</td><td>9.68</td><td>10.57</td><td>10.97</td></tr>
-              <tr><td>Proof length (mean)</td><td>274.82</td><td>137.78</td><td>198.11</td></tr>
-              <tr><td>Proof length (std)</td><td>115.01</td><td>97.79</td><td>105.45</td></tr>
+              <tr><td>Lemma count (mean)</td><td>17.02</td><td>12.13</td><td>8.48</td><td>14.38</td></tr>
+              <tr><td>Lemma count (std)</td><td>11.79</td><td>10.57</td><td>10.97</td><td>11.97</td></tr>
+              <tr><td>Proof length (mean)</td><td>167.11</td><td>137.78</td><td>129.87</td><td>154.28</td></tr>
+              <tr><td>Proof length (std)</td><td>108.50</td><td>97.79</td><td>83.03</td><td>103.11</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
     <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
-      The high lemma counts and proof lengths confirm that successfully verified problems require <strong>deep, multi-step decomposition</strong> rather than simple tactic scripts. This demonstrates the model's ability to perform effective structural decomposition and generate complex proofs end-to-end.
+      On average, each verified problem requires 8 to 17 auxiliary lemmas and over 130 lines of proof code, with the longest proofs reaching 680, 559, and 534 lines on Verina, Clever, and AlgoVeri. These statistics confirm that successfully verified problems demand <strong>deep, multi-step decomposition</strong> rather than simple tactic scripts, reflecting the depth of reasoning the framework can sustain.
     </p>
+
+    <h3 class="title is-4 has-text-centered" style="margin-top:2.5rem;">Inference-Time Scaling</h3>
+    <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb;">
+      <img src="figs/scaling.png" alt="Prove success rate vs. completion iterations under different pass@k budgets" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+    </figure>
+    <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
+      By first decomposing verification goals into simpler sub-lemmas, the completion stage enjoys significantly improved inference-time scaling: prove success rate grows steadily with more iterations and larger pass@k across all benchmarks, with no sign of saturation. This confirms that effective decomposition is the key enabler: it transforms intractable monolithic proofs into independently solvable pieces, allowing completion to scale efficiently with additional compute.
+    </p>
+
   </div>
 </section>
   <div class="container">
@@ -975,6 +991,15 @@
       d.addEventListener('click', function() { loadStep(parseInt(d.getAttribute('data-step'), 10)); });
     });
     loadStep(1);
+  })();
+
+  // Lean 4 Live link: construct absolute URL from relative path
+  (function() {
+    var link = document.getElementById('lean-live-link');
+    if (link) {
+      var base = new URL('./demo/find_single_number.lean', document.baseURI).href;
+      link.href = 'https://live.lean-lang.org/#url=' + base;
+    }
   })();
 
   // ═══════════════════════════════════════════

@@ -255,7 +255,7 @@ body {
 
 /* Stats table: narrower, first column compact (override above) */
 #benchmark .stats-table-wrapper {
-  max-width: 26rem;
+  max-width: 32rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -265,8 +265,8 @@ body {
 }
 #benchmark .stats-table-wrapper .table.benchmark-table td:first-child,
 #benchmark .stats-table-wrapper .table.benchmark-table th:first-child {
-  width: 7rem;
-  max-width: 7rem;
+  width: 11rem;
+  max-width: 11rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   box-sizing: border-box;
