@@ -330,6 +330,15 @@ body {
   color: #fff;
 }
 
+/* Paragraph headings (LaTeX \paragraph style) */
+.para-heading {
+  font-variant: small-caps;
+  font-weight: 700;
+  font-size: 1.05em;
+  color: #1e293b;
+  letter-spacing: 0.03em;
+}
+
 /* Completion tag: darker yellow */
 #demo .tag.is-warning {
   background-color: #c9a227;
