@@ -114,14 +114,17 @@
           </p>
         </div>
 
-        <!-- Bar chart right after intro -->
-        <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb; margin-top:1.5rem;">
-          <img src="figs/performance.png?v=2" alt="Number of solved problems on Verina, Clever, and AlgoVeri" style="max-width:100%; height:auto; display:block; margin:0 auto;">
-        </figure>
-        <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Number of solved problems by baselines and our framework across three benchmarks. Baseline results are reported as Pass@128; our method uses search-based inference.</p>
-
       </div>
     </div>
+
+  </div>
+
+  <!-- Bar chart: wider than intro text -->
+  <div class="container is-max-desktop is-wider" style="margin-top:1.5rem;">
+    <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb;">
+      <img src="figs/performance.png?v=2" alt="Number of solved problems on Verina, Clever, and AlgoVeri" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+    </figure>
+    <p class="content is-size-7 has-text-justified" style="margin-top:0.5rem;color:#64748b;">Note: Baselines use parallel whole-proof generation (Pass@128), while our framework employs search-based hierarchical inference&mdash;a fundamentally different inference paradigm enabled by our trained decomposition and completion pipeline. This comparison reflects end-to-end system-level performance. Even scaling open-source provers to significantly larger budgets shows diminishing returns (see paper for details), suggesting that the gap is not merely a matter of compute allocation.</p>
   </div>
 </section>
 
@@ -909,25 +912,21 @@
   <div class="container is-max-desktop is-wider">
     <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
     <p class="content has-text-justified is-size-6" style="margin-bottom:1.5rem;">We evaluate on three Lean 4 code verification benchmarks: <strong>Verina</strong> (189 problems), <strong>Clever</strong> (161 problems), and <strong>AlgoVeri</strong> (77 problems), totaling 427 verification tasks. Baselines include frontier reasoning models (Claude-Opus-4.6, Gemini-3-Flash, GPT-5.2-Pro, GPT-5.3-Codex, Deepseek-V3.2-Speciale) and neural provers (Kimina-Prover-72B, DeepSeek-Prover-V2-671B, Goedel-Prover-V2-32B, BFS-Prover-V2-32B).</p>
-    <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb; transform: translateY(0); transition: box-shadow 0.3s ease, transform 0.3s ease;">
-      <img src="figs/performance.png?v=2" alt="Number of solved problems on Verina, Clever, and AlgoVeri" style="max-width:100%; height:auto; display:block; margin:0 auto;">
-    </figure>
-    <p class="content is-size-7 has-text-left" style="margin-top:0.5rem;color:#64748b;">Note. Baseline results are obtained with parallel generation and reported as Pass@128. Our method operates under a search-based inference setting using Goedel-Code-Prover-Preview-8B.</p>
     <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
       Goedel-Code-Prover-Preview-8B achieves prove success rates of <strong>68.8%</strong> on Verina, <strong>54.0%</strong> on Clever, and <strong>62.3%</strong> on AlgoVeri, yielding an overall rate of <strong>62.0%</strong> across all 427 tasks — a <strong>2.6&times;</strong> improvement over the strongest baseline. Notably, this is achieved with an 8B model, surpassing neural provers 4&ndash;84&times; its size (32B&ndash;671B). In addition, the built-in quickcheck mechanism disproves 23, 10, and 14 problems on Verina, Clever, and AlgoVeri respectively by producing concrete counterexamples.
     </p>
 
-    <!-- AUROC + Stats Table side by side -->
-    <div class="columns is-centered" style="margin-top:2rem;">
-      <div class="column is-6">
-        <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10); border:1px solid #e5e7eb;">
-          <img src="figs/auroc.png" alt="Decomposition score vs. prove rate on Verina (AUROC = 0.903)" style="max-width:100%; height:auto; display:block; margin:0 auto;">
-        </figure>
-        <p class="content is-size-7 has-text-centered" style="margin-top:0.5rem;color:#64748b;">Decomposition score vs. prove rate on Verina. The score reliably separates provable from unprovable instances (AUROC&nbsp;=&nbsp;0.903).</p>
-      </div>
-      <div class="column is-6">
-        <p class="content has-text-centered is-size-6" style="margin-bottom:0.75rem;">Statistics of proved problems.</p>
-        <div class="benchmark-table-wrapper table-container stats-table-wrapper" style="max-width:100%;">
+    <!-- AUROC figure -->
+    <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10); border:1px solid #e5e7eb; margin-top:2rem;">
+      <img src="figs/auroc.png" alt="Decomposition score vs. prove rate on Verina (AUROC = 0.903)" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+    </figure>
+    <p class="content is-size-7 has-text-centered" style="margin-top:0.5rem;color:#64748b;">Decomposition score vs. prove rate on Verina. The score reliably separates provable from unprovable instances (AUROC&nbsp;=&nbsp;0.903).</p>
+
+    <!-- Stats Table -->
+    <p class="content has-text-centered is-size-6" style="margin-top:2rem; margin-bottom:1rem;">Statistics of proved problems: mean and standard deviation for lemma count and proof length.</p>
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <div class="benchmark-table-wrapper table-container stats-table-wrapper">
           <table class="table benchmark-table stats-table is-fullwidth">
             <thead>
               <tr>
@@ -946,11 +945,11 @@
             </tbody>
           </table>
         </div>
-        <p class="content has-text-justified is-size-7" style="margin-top:0.5rem;color:#64748b;">
-          On average, each verified problem requires 8&ndash;17 auxiliary lemmas and over 130 lines of proof code, with the longest exceeding 680 lines.
-        </p>
       </div>
     </div>
+    <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
+      On average, each verified problem requires 8&ndash;17 auxiliary lemmas and over 130 lines of proof code, with the longest exceeding 680 lines. These statistics confirm that successfully verified problems demand <strong>deep, multi-step decomposition</strong> rather than simple tactic scripts.
+    </p>
 
     <h3 class="title is-4 has-text-centered" style="margin-top:2.5rem;">Inference-Time Scaling</h3>
     <figure class="has-text-centered performance-figure" style="background:#fff; border-radius:14px; padding:1.5rem 1.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -3px rgba(0,0,0,0.10), 0 -2px 0 0 rgba(0,0,0,0.02); border:1px solid #e5e7eb;">
