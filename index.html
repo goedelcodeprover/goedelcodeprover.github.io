@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Goedel-Code-Prover: Automated Code Verification via Hierarchical Proof Search.">
-  <title>Goedel-Code-Prover: Automated Code Verification via Hierarchical Proof Search</title>
+  <meta name="description" content="Goedel-Code-Prover: Hierarchical Proof Search for Open State-of-the-Art Code Verification.">
+  <title>Goedel-Code-Prover: Hierarchical Proof Search for Open State-of-the-Art Code Verification</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -44,16 +44,28 @@
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">
             <span style="display:block;font-size:0.62em;font-weight:800;letter-spacing:0.02em;color:#4f46e5;margin-bottom:0.15em;">Goedel-Code-Prover</span>
-            Automated Code Verification via Hierarchical Proof Search
+            Hierarchical Proof Search for Open State-of-the-Art Code Verification
           </h1>
           <div class="is-size-5 publication-authors">
-            <span class="author-block">Author One<sup>1</sup>,</span>
-            <span class="author-block">Author Two<sup>2</sup>,</span>
-            <span class="author-block">Author Three<sup>1</sup></span>
+            <span class="author-block">Zenan Li<sup>1,*</sup>,</span>
+            <span class="author-block">Ziran Yang<sup>2,*</sup>,</span>
+            <span class="author-block">Deyuan (Mike) He<sup>3</sup>,</span>
+            <span class="author-block">Haoyu Zhao<sup>3</sup>,</span>
+            <span class="author-block">Andrew Zhao<sup>3</sup>,</span>
+            <span class="author-block">Shange Tang<sup>2</sup>,</span>
+            <span class="author-block">Kaiyu Yang<sup>4</sup>,</span>
+            <span class="author-block">Aarti Gupta<sup>3</sup>,</span>
+            <span class="author-block">Zhendong Su<sup>1</sup>,</span>
+            <span class="author-block">Chi Jin<sup>2</sup></span>
           </div>
           <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>Institution One</span>
-            <span class="author-block"><sup>2</sup>Institution Two</span>
+            <span class="author-block"><sup>1</sup>ETH Z&uuml;rich,</span>
+            <span class="author-block"><sup>2</sup>Princeton Language and Intelligence,</span>
+            <span class="author-block"><sup>3</sup>Princeton University,</span>
+            <span class="author-block"><sup>4</sup>MiroMind</span>
+          </div>
+          <div class="is-size-6 publication-authors" style="margin-top:0.25rem;">
+            <span class="author-block"><sup>*</sup>Equal contribution</span>
           </div>
           <div class="column has-text-centered" style="margin-top:1rem;">
             <div class="publication-links">
@@ -107,10 +119,10 @@
             <span class="para-heading">Method.</span> We propose a <em>hierarchical proof search</em> framework built around two stages: <strong>recursive lemma decomposition</strong>, which iteratively breaks a complex verification goal into simpler, independently provable subgoals until each is tractable, and <strong>iterative lemma completion</strong>, which solves each leaf subgoal through proof search with compiler feedback. A principled decomposition score drives both stages&mdash;guiding candidate selection at inference and serving as a dense reward signal during training.
           </p>
           <p>
-            <span class="para-heading">Model & Release.</span> We train a single unified model, <strong>Goedel-Code-Prover-Preview-8B</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
+            <span class="para-heading">Model & Release.</span> We train a single unified model, <strong>G&ouml;edel-Code-Prover-8B</strong>, for both decomposition and completion via supervised initialization followed by hybrid reinforcement learning. We publicly release the model weights and an evaluation framework to support future research in automated code verification.
           </p>
           <p>
-            <span class="para-heading">Results.</span> Goedel-Code-Prover-Preview-8B achieves prove success rates of <strong>68.8%</strong>, <strong>54.0%</strong>, and <strong>62.3%</strong> across three Lean 4 code verification benchmarks, for an overall rate of <strong>62.0%</strong>&mdash;a <strong>2.6&times;</strong> improvement over the strongest baseline. Among frontier reasoning models, the best performer (GPT-5.3-Codex) reaches only 18.5%; among neural provers, DeepSeek-Prover-V2-671B and Goedel-Prover-V2-32B achieve 21.8% and 21.5% respectively. With only <strong>8B parameters</strong>, our model surpasses all of them, including provers 4&ndash;84&times; its size.
+            <span class="para-heading">Results.</span> G&ouml;edel-Code-Prover-8B achieves prove success rates of <strong>68.8%</strong>, <strong>54.0%</strong>, and <strong>62.3%</strong> across three Lean 4 code verification benchmarks, for an overall rate of <strong>62.0%</strong>&mdash;a <strong>2.6&times;</strong> improvement over the strongest baseline. Among frontier reasoning models, the best performer (GPT-5.3-Codex) reaches only 18.5%; among neural provers, DeepSeek-Prover-V2-671B and Goedel-Prover-V2-32B achieve 21.8% and 21.5% respectively. With only <strong>8B parameters</strong>, our model surpasses all of them, including provers 4&ndash;84&times; its size.
           </p>
         </div>
 
@@ -544,7 +556,7 @@
 
     <div id="training-pipeline" style="margin-top:2.5rem;">
     <h3 class="title is-4 has-text-centered">Training Pipeline</h3>
-    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training Goedel-Code-Prover-Preview-8B proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-model-generated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves. During RL, a policy-first strategy is employed for completion: the model first attempts each lemma itself, and a frontier model is invoked only when it fails within a fixed attempt budget, ensuring that the policy learns from its own successful proofs rather than relying solely on external demonstrations.</p>
+    <p class="content has-text-justified is-size-6" style="margin-bottom:0.5rem;">Training G&ouml;edel-Code-Prover-8B proceeds in two stages. We first warm up the model with supervised fine-tuning on frontier-model-generated decomposition and completion trajectories, giving it a strong behavioral prior. We then switch to hybrid reinforcement learning: GRPO uses the decomposition score as a dense reward to push the model toward better proof decompositions, while high-quality completion trajectories are replayed as SFT signal to keep proof generation stable. Both gradients update the same shared policy. Sub-lemmas discovered during online rollouts are fed back into the problem set, creating a self-generated curriculum that grows harder as the model improves. During RL, a policy-first strategy is employed for completion: the model first attempts each lemma itself, and a frontier model is invoked only when it fails within a fixed attempt budget, ensuring that the policy learns from its own successful proofs rather than relying solely on external demonstrations.</p>
 
     <!-- Stage toggle -->
     <div class="has-text-centered" style="margin-bottom:1rem;">
@@ -573,7 +585,7 @@
         <g>
           <rect x="28" y="14" width="5" height="24" rx="2.5" fill="#4f46e5"/>
           <text x="42" y="34" fill="#1e293b" font-size="19" font-weight="700" class="tp-txt">Stage 1: Supervised Fine-Tuning (SFT)</text>
-          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier-model trajectories into Goedel-Code-Prover-Preview-8B</text>
+          <text x="42" y="52" fill="#94a3b8" font-size="11" class="tp-txt">Distill frontier-model trajectories into G&ouml;edel-Code-Prover-8B</text>
         </g>
 
         <!-- Formal Problems -->
@@ -588,7 +600,7 @@
         <g>
           <rect x="230" y="85" width="160" height="58" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
           <text x="310" y="111" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Decomposition</text>
-          <text x="310" y="127" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-Curated</text>
+          <text x="310" y="127" text-anchor="middle" fill="#6366f1" font-size="9" class="tp-txt">GPT-5.2 &amp; Gemini-3-Flash</text>
         </g>
         <path d="M390,100 L445,82" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
         <path d="M390,125 L455,150" fill="none" stroke="#4f46e5" stroke-width="1.8" marker-end="url(#s1-a-indigo)"/>
@@ -597,7 +609,7 @@
         <g>
           <rect x="447" y="62" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
           <text x="542" y="81" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Decomposition Trajectories</text>
-          <text x="542" y="94" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~280K input-output pairs</text>
+          <text x="542" y="94" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~281K input-output pairs</text>
         </g>
 
         <!-- Decomposed Lemmas -->
@@ -612,7 +624,7 @@
         <g>
           <rect x="230" y="220" width="160" height="58" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
           <text x="310" y="246" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600" class="tp-txt">Lemma-Completion</text>
-          <text x="310" y="262" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">Gemini-Curated</text>
+          <text x="310" y="262" text-anchor="middle" fill="#b45309" font-size="9" class="tp-txt">GPT-5.2 &amp; Gemini-3-Flash</text>
         </g>
         <path d="M390,249 L445,249" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#s1-a-amber)"/>
 
@@ -620,7 +632,7 @@
         <g>
           <rect x="447" y="229" width="190" height="40" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.3"/>
           <text x="542" y="248" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600" class="tp-txt">Completion Trajectories</text>
-          <text x="542" y="261" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~150K input-output pairs</text>
+          <text x="542" y="261" text-anchor="middle" fill="#059669" font-size="9" class="tp-txt">~151K input-output pairs</text>
         </g>
 
         <!-- Arrows to SFT Model -->
@@ -746,7 +758,7 @@
 
         <g filter="url(#s2-sh)">
           <rect x="228" y="214" width="168" height="52" rx="12" fill="#fff1f2" stroke="#fda4af" stroke-width="1.9"/>
-          <text x="312" y="235" text-anchor="middle" fill="#9f1239" font-size="11.5" font-weight="700" class="tp-txt">Goedel-Code-Prover-Preview</text>
+          <text x="312" y="235" text-anchor="middle" fill="#9f1239" font-size="11.5" font-weight="700" class="tp-txt">G&ouml;edel-Code-Prover</text>
           <text x="312" y="252" text-anchor="middle" fill="#e11d48" font-size="8.2" font-weight="700" class="tp-txt">(decompose+completion) policy</text>
         </g>
 
@@ -760,7 +772,7 @@
     <div id="inference-pipeline" style="margin-top:2.5rem;">
     <h3 class="title is-4 has-text-centered">Inference Pipeline</h3>
     <p class="content has-text-justified is-size-6" style="margin-bottom:1rem;">
-      Goedel-Code-Prover-Preview-8B uses a single unified model for both stages at inference time. Starting from the original theorem, it performs <em>iterative recursive decomposition</em>: for each currently unsolved goal, the model generates <em>N</em> parallel decomposition candidates, filters them with QuickCheck random testing, ranks survivors by the decomposition score, and recursively expands the best decomposition until a proof tree of manageable sub-lemmas is obtained or a budget is reached. Each resulting leaf sub-lemma is then proved independently via an iterative edit&ndash;compile&ndash;fix loop with the Lean 4 compiler, and the resulting proofs are assembled into a final verified proof of the original theorem.
+      G&ouml;edel-Code-Prover-8B uses a single unified model for both stages at inference time. Starting from the original theorem, it performs <em>iterative recursive decomposition</em>: for each currently unsolved goal, the model generates <em>N</em> parallel decomposition candidates, filters them with QuickCheck random testing, ranks survivors by the decomposition score, and recursively expands the best decomposition until a proof tree of manageable sub-lemmas is obtained or a budget is reached. Each resulting leaf sub-lemma is then proved independently via an iterative edit&ndash;compile&ndash;fix loop with the Lean 4 compiler, and the resulting proofs are assembled into a final verified proof of the original theorem.
     </p>
 
     <svg viewBox="-35 0 1020 385" width="100%" style="display:block;border:1px solid #e5e7eb;border-radius:12px;background:#fafbfd;">
@@ -913,7 +925,7 @@
     <h2 class="title is-3 has-text-centered">Benchmark Performance</h2>
     <p class="content has-text-justified is-size-6" style="margin-bottom:1.5rem;">We evaluate on three Lean 4 code verification benchmarks: <strong>Verina</strong> (189 problems), <strong>Clever</strong> (161 problems), and <strong>AlgoVeri</strong> (77 problems), totaling 427 verification tasks. Baselines include frontier reasoning models (Claude-Opus-4.6, Gemini-3-Flash, GPT-5.2-Pro, GPT-5.3-Codex, Deepseek-V3.2-Speciale) and neural provers (Kimina-Prover-72B, DeepSeek-Prover-V2-671B, Goedel-Prover-V2-32B, BFS-Prover-V2-32B).</p>
     <p class="content has-text-justified is-size-6" style="margin-top:1rem;color:#334155;">
-      Goedel-Code-Prover-Preview-8B achieves prove success rates of <strong>68.8%</strong> on Verina, <strong>54.0%</strong> on Clever, and <strong>62.3%</strong> on AlgoVeri, yielding an overall rate of <strong>62.0%</strong> across all 427 tasks — a <strong>2.6&times;</strong> improvement over the strongest baseline. Notably, this is achieved with an 8B model, surpassing neural provers 4&ndash;84&times; its size (32B&ndash;671B). In addition, the built-in quickcheck mechanism disproves 23, 10, and 14 problems on Verina, Clever, and AlgoVeri respectively by producing concrete counterexamples.
+      G&ouml;edel-Code-Prover-8B achieves prove success rates of <strong>68.8%</strong> on Verina, <strong>54.0%</strong> on Clever, and <strong>62.3%</strong> on AlgoVeri, yielding an overall rate of <strong>62.0%</strong> across all 427 tasks — a <strong>2.6&times;</strong> improvement over the strongest baseline. Notably, this is achieved with an 8B model, surpassing neural provers 4&ndash;84&times; its size (32B&ndash;671B). In addition, the built-in quickcheck mechanism disproves 23, 10, and 14 problems on Verina, Clever, and AlgoVeri respectively by producing concrete counterexamples.
     </p>
 
     <!-- AUROC figure -->
