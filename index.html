@@ -176,15 +176,14 @@
             <span style="font-weight:600;color:#065f46;font-size:0.9rem;">Implementation (Lean 4)</span>
           </div>
           <pre style="margin:0;padding:1rem 1.25rem;background:#1e1e1e;color:#d4d4d4;font-family:'SF Mono',Monaco,'Cascadia Code',Consolas,monospace;font-size:0.8rem;line-height:1.55;overflow-x:auto;"><code><span style="color:#6a9955;">-- Implementation: find the unique element that appears exactly once</span>
+<span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">filterlist</span> (x : Int) (nums : List Int) : List Int :=
+  nums.filter (<span style="color:#569cd6;">fun</span> y => y == x)
+
 <span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">FindSingleNumber</span> (nums : List Int)
-    (h_precond : FindSingleNumber_precond nums) : Int :=
-  <span style="color:#569cd6;">let rec</span> findUnique (remaining : List Int) : Int :=
-    <span style="color:#c586c0;">match</span> remaining <span style="color:#c586c0;">with</span>
-    | [] => 0
-    | x :: xs =>
-      <span style="color:#c586c0;">if</span> (filterlist x nums).length = 1 <span style="color:#c586c0;">then</span> x
-      <span style="color:#c586c0;">else</span> findUnique xs
-  findUnique nums</code></pre>
+    (h : FindSingleNumber_precond nums) : Int :=
+  <span style="color:#c586c0;">match</span> nums.filter (<span style="color:#569cd6;">fun</span> x => (filterlist x nums).length == 1) <span style="color:#c586c0;">with</span>
+  | x :: _ => x
+  | []     => 0</code></pre>
           <div style="padding:0.5rem 1rem;background:#fff1f2;border-top:1px solid #fecaca;">
             <span style="font-weight:600;color:#9f1239;font-size:0.9rem;">Verification Goal</span>
           </div>
