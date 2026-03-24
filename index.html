@@ -154,10 +154,29 @@
           <div style="padding:0.5rem 1rem;background:#eef2ff;border-bottom:1px solid #c7d2fe;">
             <span style="font-weight:600;color:#4338ca;font-size:0.9rem;">Specification (Lean 4)</span>
           </div>
-          <pre style="margin:0;padding:1rem 1.25rem;background:#1e1e1e;color:#d4d4d4;font-family:'SF Mono',Monaco,'Cascadia Code',Consolas,monospace;font-size:0.8rem;line-height:1.55;overflow-x:auto;"><code><span style="color:#6a9955;">-- Precondition: every element appears 1 or 2 times; exactly one is unique</span>
+          <pre style="margin:0;padding:1rem 1.25rem;background:#1e1e1e;color:#d4d4d4;font-family:'SF Mono',Monaco,'Cascadia Code',Consolas,monospace;font-size:0.8rem;line-height:1.55;overflow-x:auto;"><code><span style="color:#6a9955;">-- Helper function used in the specification</span>
+<span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">filterlist</span> (x : Int) (nums : List Int) : List Int :=
+  <span style="color:#569cd6;">let rec</span> aux (lst : List Int) : List Int :=
+    <span style="color:#c586c0;">match</span> lst <span style="color:#c586c0;">with</span>
+    | []      => []
+    | y :: ys => <span style="color:#c586c0;">if</span> y = x <span style="color:#c586c0;">then</span> y :: aux ys <span style="color:#c586c0;">else</span> aux ys
+  aux nums
+
+<span style="color:#6a9955;">-- Precondition: every element appears 1 or 2 times; exactly one is unique</span>
 <span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">FindSingleNumber_precond</span> (nums : List Int) : Prop :=
   <span style="color:#569cd6;">let</span> numsCount := nums.map (<span style="color:#569cd6;">fun</span> x => nums.count x)
   numsCount.all (<span style="color:#569cd6;">fun</span> c => c = 1 ∨ c = 2) ∧ numsCount.count 1 = 1
+
+<span style="color:#6a9955;">-- Implementation: find the unique element that appears exactly once</span>
+<span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">FindSingleNumber</span> (nums : List Int)
+    (h_precond : FindSingleNumber_precond nums) : Int :=
+  <span style="color:#569cd6;">let rec</span> findUnique (remaining : List Int) : Int :=
+    <span style="color:#c586c0;">match</span> remaining <span style="color:#c586c0;">with</span>
+    | [] => 0
+    | x :: xs =>
+      <span style="color:#c586c0;">if</span> (filterlist x nums).length = 1 <span style="color:#c586c0;">then</span> x
+      <span style="color:#c586c0;">else</span> findUnique xs
+  findUnique nums
 
 <span style="color:#6a9955;">-- Postcondition: result is the unique element; others appear twice</span>
 <span style="color:#569cd6;">def</span> <span style="color:#dcdcaa;">FindSingleNumber_postcond</span> (nums : List Int) (result : Int)
